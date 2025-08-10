@@ -1,33 +1,31 @@
-
 {
   "semaine": {
     "dimanche": {
-      "nuit": "4 rakʿât (1 Fātiḥa + 3 Ikhlāṣ) | Zikr : 70 Istighfār",
-      "jour":  "4 rakʿât (1 Fātiḥa + 1 Kāfirūn) | Zikr : 10 Ikhlāṣ"
+      "nuit": "4 rak'ât × 3 Taslîmah | Zikr : 70 Istighfâr",
+      "jour": "1 rak'ât ḍuḥā | 3 rak'ât × 3 Taslîmah | Zikr : 100 Taslîmah"
     },
     "lundi": {
-      "nuit": "2 rakʿât (1 Fātiḥa + 15 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās)",
-      "jour":  "2 rakʿât (1 Fātiḥa + 1 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 10 Istighfār + 10 Ṣalāt"
+      "nuit": "2 rak'ât × 1 Fâtiḥa + 3× Aʿrâf Âyat + 1 Ikhlâṣ + 1 Falaq + 1 Nâs",
+      "jour": "2 rak'ât × 1 Fâtiḥa + 3× Aʿrâf Âyat + 3 Ikhlâṣ + 3 Falaq + 3 Nâs | Zikr : 70 Istighfâr"
     },
     "mardi": {
-      "nuit": "6 rakʿât (1 Fātiḥa + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 70 Tawḥīd",
-      "jour":  "10 rakʿât (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ)"
+      "nuit": "4 rak'ât × 3 Fâtiḥa + 1 Ikhlâṣ + 1 Falaq + 1 Nâs | Zikr : 70 Tawhîd"
     },
     "mercredi": {
-      "nuit": "4 rakʿât (1 Fātiḥa + 40 Ikhlāṣ) | Zikr : 70 Istighfār",
-      "jour":  "4 rakʿât (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ + 1 Falaq + 1 Nās)"
+      "nuit": "4 rak'ât × 3 Fâtiḥa × 40 Ikhlâṣ | Zikr : 70 Istighfâr",
+      "jour": "1 rak'ât au milieu de la nuit | 3 rak'ât × Aʿrâf Âyat + 3 Ikhlâṣ + 1 Falaq + 1 Nâs"
     },
     "jeudi": {
-      "nuit": "8 rakʿât (1 Fātiḥa + 10 Ikhlāṣ) | Zikr : 100 Formule du jeudi",
-      "jour":  "4 rakʿât (1 Fātiḥa + 5 Naṣr + 50 Kawthar) | Zikr : 10 Istighfār"
+      "nuit": "4 rak'ât × 3 Fâtiḥa + 10 Ikhlâṣ | Zikr : 100 Formule du Jeudi Soir",
+      "jour": "1 rak'ât × 1 Fâtiḥa + 3 Nâr | Zikr : 100 Ṣalawât | Zikr : 70 Istighfâr"
     },
     "vendredi": {
-      "nuit": "4 rakʿât (1 Fātiḥa + 50 Zalzalah)",
-      "jour":  "2 rakʿât — 1ʳᵉ : 1 Fātiḥa + 1 Āyat al-Kursī + 25 Falaq ; 2ᵉ : 1 Fātiḥa + 1 Ikhlāṣ + 25 Nās | Zikr : 50 Formule du vendredi"
+      "nuit": "4 rak'ât × 3 Fâtiḥa + 10 Ikhlâṣ | Zikr : 70 Istighfâr",
+      "jour": "2 rak'ât au milieu + 3 Fâtiḥa + 3× Aʿrâf Âyat + 3 Ikhlâṣ + 3 Falaq + 3 Nâs | Jour : 2 rak'ât + 3× Fâtiḥa + 70 Ṣalawât Vendredi"
     },
     "samedi": {
-      "nuit": "6 rakʿât (1 Fātiḥa + 3 Ikhlāṣ)",
-      "jour":  "4 rakʿât (1 Fātiḥa + 3 Kāfirūn) | Zikr : 3 Āyat al-Kursī"
+      "nuit": "4 rak'ât × 3 Fâtiḥa + 3 Ikhlâṣ",
+      "jour": "1 rak'ât au milieu + 3 rak'ât × 3 Aʿrâf Âyat + 3 Ikhlâṣ + 7 Nâr"
     }
   },
   "zikrPersonnels": [
