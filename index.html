@@ -566,8 +566,7 @@
           const t = todayAt(p.time);
           if (now.isBefore(t)) return { p, t };
         }
-        // sinon Fajr de demain
-        return { p: PRAYERS[0], t: todayAt(PRAYERS[0].time).add(1, "day") };
+        return { p: PRAYERS[0], t: todayAt(PRAYERS[0].time).add(1, 'day') };
       }
 
       function updateCountdown() {
