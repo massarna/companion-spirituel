@@ -1182,14 +1182,36 @@
 
       // Charger une sourate spécifique
       async function loadSurah(surahKey) {
+        const contentEl = $("#lect-content");
+        
         try {
+          // Affichage du chargement
+          contentEl.innerHTML = `
+            <div class="text-center py-8">
+              <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-slate-600 rounded-full mb-4"></div>
+              <p class="text-slate-600">جاري التحميل...</p>
+            </div>
+          `;
+          
           const surah = availableSurahs[surahKey];
           if (!surah) throw new Error('Sourate non trouvée');
 
-          const response = await fetch(`./data/lectures/${surah.file}`);
+          const response = await fetch(`./data/lectures/${surah.file}?v=${Date.now()}`);
           if (!response.ok) throw new Error(`Erreur ${response.status}`);
 
           currentSurahData = await response.json();
+          renderSurahContent(surah.title);
+          console.log('[Lectures] Sourate chargée:', surah.title);
+        } catch (error) {
+          console.error('[Lectures] Erreur chargement sourate:', error);
+          contentEl.innerHTML = `
+            <div class="text-red-600 p-4 rounded-lg bg-red-50 text-center">
+              <p><strong>خطأ في التحميل</strong></p>
+              <p>لا يمكن تحميل هذه السورة</p>
+            </div>
+          `;
+        }
+      }rahData = await response.json();
           renderSurahContent(surah.title);
           console.log('[Lectures] Sourate chargée:', surah.title);
         } catch (error) {
@@ -1208,6 +1230,28 @@
         if (!currentSurahData || !currentSurahData.ayahs) return;
 
         const contentEl = $("#lect-content");
+        
+        let html = `
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-center mb-6" style="font-family: 'Amiri', serif;">${title}</h2>
+            <div class="space-y-4">
+        `;
+        
+        currentSurahData.ayahs.forEach(ayah => {
+          html += `
+            <div class="ayah-container">
+              <div class="ayah-number">${ayah.n}</div>
+              <p class="arabic-text" dir="rtl" lang="ar">${ayah.ar}</p>
+            </div>
+          `;
+        });
+        
+        html += `
+            </div>
+          </div>
+        `;
+        
+        contentEl.innerHTML = html;
         let html = `
           <div class="mb-6 text-center">
             <h3 class="text-3xl font-semibold mb-2 title arabic-text">${title}</h3>
