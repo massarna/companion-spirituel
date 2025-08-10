@@ -266,6 +266,14 @@
             </div>
           </div>
         </div>
+
+        <!-- Focus du jour -->
+        <div class="mt-6 card">
+          <h3 class="text-lg font-semibold mb-3">Focus du jour</h3>
+          <div id="focus-list" class="space-y-2">
+            <!-- Contenu généré dynamiquement -->
+          </div>
+        </div>
       </section>
 
       <!-- Programme -->
@@ -370,56 +378,58 @@
 
       <!-- Journal -->
       <section data-page="journal" class="hidden">
-        <div class="card">
-          <h2 class="title text-2xl mb-4">Journal quotidien</h2>
-          <div class="grid sm:grid-cols-2 gap-6">
-            <div>
-              <h3 class="font-semibold mb-2">Prières</h3>
-              <div class="space-y-2">
-                <label class="flex items-center gap-2"
-                  ><input type="checkbox" class="jp" value="Fajr" /> Fajr</label
-                >
-                <label class="flex items-center gap-2"
-                  ><input type="checkbox" class="jp" value="Dhuhr" />
-                  Dhuhr</label
-                >
-                <label class="flex items-center gap-2"
-                  ><input type="checkbox" class="jp" value="Asr" /> Asr</label
-                >
-                <label class="flex items-center gap-2"
-                  ><input type="checkbox" class="jp" value="Maghrib" />
-                  Maghrib</label
-                >
-                <label class="flex items-center gap-2"
-                  ><input type="checkbox" class="jp" value="Isha" /> Isha</label
-                >
-              </div>
-
-              <h3 class="font-semibold mt-6 mb-2">Tasbih</h3>
-              <div class="flex items-center gap-3">
-                <button id="tasbih-" class="px-3 py-2 rounded-lg border">
-                  -1
-                </button>
-                <div
-                  id="tasbih-val"
-                  class="min-w-[3ch] text-center font-semibold"
-                >
-                  0
+        <div class="space-y-8" id="journal-container">
+          <div class="card">
+            <h2 class="title text-2xl mb-4">Journal quotidien</h2>
+            <div class="grid sm:grid-cols-2 gap-6">
+              <div>
+                <h3 class="font-semibold mb-2">Prières</h3>
+                <div class="space-y-2">
+                  <label class="flex items-center gap-2"
+                    ><input type="checkbox" class="jp" value="Fajr" /> Fajr</label
+                  >
+                  <label class="flex items-center gap-2"
+                    ><input type="checkbox" class="jp" value="Dhuhr" />
+                    Dhuhr</label
+                  >
+                  <label class="flex items-center gap-2"
+                    ><input type="checkbox" class="jp" value="Asr" /> Asr</label
+                  >
+                  <label class="flex items-center gap-2"
+                    ><input type="checkbox" class="jp" value="Maghrib" />
+                    Maghrib</label
+                  >
+                  <label class="flex items-center gap-2"
+                    ><input type="checkbox" class="jp" value="Isha" /> Isha</label
+                  >
                 </div>
-                <button id="tasbih+" class="px-3 py-2 rounded-lg border">
-                  +1
-                </button>
-              </div>
-            </div>
 
-            <div>
-              <h3 class="font-semibold mb-2">Notes personnelles</h3>
-              <textarea
-                id="note"
-                rows="7"
-                class="w-full rounded-lg border p-3"
-                placeholder="Écris ici ce que ton cœur a retenu aujourd’hui…"
-              ></textarea>
+                <h3 class="font-semibold mt-6 mb-2">Tasbih</h3>
+                <div class="flex items-center gap-3">
+                  <button id="tasbih-minus" class="px-3 py-2 rounded-lg border">
+                    -1
+                  </button>
+                  <div
+                    id="tasbih-count"
+                    class="min-w-[3ch] text-center font-semibold"
+                  >
+                    0
+                  </div>
+                  <button id="tasbih-plus" class="px-3 py-2 rounded-lg border">
+                    +1
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <h3 class="font-semibold mb-2">Notes personnelles</h3>
+                <textarea
+                  id="note"
+                  rows="7"
+                  class="w-full rounded-lg border p-3"
+                  placeholder="Écris ici ce que ton cœur a retenu aujourd’hui…"
+                ></textarea>
+              </div>
             </div>
           </div>
         </div>
@@ -531,7 +541,7 @@
       async function refreshRetreat() {
         const api = window.storageAPI;
         if (!api) return;
-        
+
         const startDate = await api.storageGet("retreatStart", null);
         if (!startDate) {
           $("#mode-badge").textContent = "Planning Annuel";
@@ -554,12 +564,58 @@
           $("#retreat-msg").textContent = `Retraite en cours : ${start.format("DD/MM/YYYY")} → ${endDate.format("DD/MM/YYYY")} (Semaine ${Math.max(1, Math.min(currentWeek, 4))}/4)`;
         }
       }
-      
+
+      // Focus du jour - mise à jour dynamique
+      async function updateFocusDuJour() {
+        const api = window.storageAPI;
+        if (!api) return;
+
+        const now = moment();
+        const today = now.format("YYYY-MM-DD");
+        const tasks = todayTasks(now);
+        const focusContainer = $("#focus-list");
+
+        if (!focusContainer) return;
+
+        let html = '';
+
+        for (const task of tasks) {
+          const done = await isDone(task.key, today);
+          html += `
+            <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50">
+              <input type="checkbox" class="form-checkbox" data-key="${task.key}" ${done ? 'checked' : ''}>
+              <div class="flex-1">
+                <div class="font-medium text-sm">${task.label}</div>
+                <div class="text-xs text-slate-500">${task.when}</div>
+              </div>
+            </label>
+          `;
+        }
+
+        if (tasks.length === 0) {
+          html = '<p class="text-sm text-slate-500 text-center py-2">Aucun zikr spécifique aujourd\'hui</p>';
+        }
+
+        focusContainer.innerHTML = html;
+
+        // Event listeners pour les cases
+        focusContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+          checkbox.addEventListener('change', async () => {
+            const key = checkbox.dataset.key;
+            if (checkbox.checked) {
+              await markDone(key, today);
+            } else {
+              await api.storageSet(`zikrDone:${today}:${key}`, false);
+            }
+          });
+        });
+      }
+
       // Charger la date sauvegardée dans l'input
       async function loadRetreatDate() {
         const api = window.storageAPI;
         if (!api) return;
-        
+
         const savedDate = await api.storageGet("retreatStart", null);
         if (savedDate) {
           $("#retreat-start").value = savedDate;
@@ -668,209 +724,242 @@
       updateCountdown();
       setInterval(updateCountdown, 1000);
 
-      // Journal: persistance locale finalisée avec feedback
-      let journalLoaded = false;
-      
-      // Helper pour afficher un feedback visuel
-      function showJournalFeedback(message, isSuccess = true) {
-        console.log(`[Journal] ${message}`);
-        
-        // Toast simple (disparaît après 2s)
-        const toast = document.createElement('div');
-        toast.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-white text-sm ${isSuccess ? 'bg-emerald-500' : 'bg-red-500'}`;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-          toast.style.opacity = '0';
-          toast.style.transition = 'opacity 0.3s';
-          setTimeout(() => document.body.removeChild(toast), 300);
-        }, 2000);
+      // Journal - fonctions utilitaires et d'initialisation
+      let count = 0;
+      let journalInitialized = false;
+
+      function isFriday(date) {
+        return date.day() === 5; // 0 = Lundi, 5 = Vendredi
       }
 
-      async function loadJournal() {
+      async function loadJournalData() {
         const api = window.storageAPI;
-        if (!api || journalLoaded) return;
+        if (!api) return;
 
         try {
           const today = moment().format("YYYY-MM-DD");
-          
-          // 1. Tasbih - charger et brancher les boutons
-          let tasbihValue = await api.storageGet("tasbihCount", 0);
-          $("#tasbih-val").textContent = tasbihValue;
 
-          // Nettoyer les anciens event listeners
-          const btnPlus = $("#tasbih+");
-          const btnMinus = $("#tasbih-");
-          btnPlus.replaceWith(btnPlus.cloneNode(true));
-          btnMinus.replaceWith(btnMinus.cloneNode(true));
+          // Charger le compteur tasbih
+          const $count = $("#tasbih-count");
+          if ($count) {
+            count = await api.storageGet("tasbihCount", 0);
+            $count.textContent = count;
+          }
 
-          $("#tasbih+").addEventListener("click", async () => {
-            tasbihValue = (tasbihValue | 0) + 1;
-            $("#tasbih-val").textContent = tasbihValue;
-            await api.storageSet("tasbihCount", tasbihValue);
-            showJournalFeedback(`Tasbih: ${tasbihValue}`);
-          });
+          // Charger les cases de prières
+          const jpCheckboxes = $$(".jp");
+          for (let i = 0; i < jpCheckboxes.length; i++) {
+            const checkbox = jpCheckboxes[i];
+            if (checkbox) {
+              const isChecked = await api.storageGet(`jp:${today}`, false);
+              checkbox.checked = isChecked;
+            }
+          }
 
-          $("#tasbih-").addEventListener("click", async () => {
-            tasbihValue = Math.max(0, (tasbihValue | 0) - 1);
-            $("#tasbih-val").textContent = tasbihValue;
-            await api.storageSet("tasbihCount", tasbihValue);
-            showJournalFeedback(`Tasbih: ${tasbihValue}`);
-          });
+          // Charger la note du jour
+          const $note = $("#note");
+          if ($note) {
+            const noteContent = await api.storageGet(`note:${today}`, "");
+            $note.value = noteContent;
+          }
 
-          // 2. Note du jour - charger et auto-sauvegarder
-          const noteKey = `note:${today}`;
-          const savedNote = await api.storageGet(noteKey, "");
-          const noteEl = $("#note");
-          noteEl.value = savedNote || "";
+          // Charger les cases Duʿāʾ al-Mayyit si vendredi
+          if (isFriday(moment())) {
+            await loadMayyitCases(today);
+          }
 
-          // Nettoyer l'ancien listener
-          noteEl.replaceWith(noteEl.cloneNode(true));
-          let noteTimeout;
-          $("#note").addEventListener("input", async (e) => {
-            clearTimeout(noteTimeout);
-            noteTimeout = setTimeout(async () => {
-              await api.storageSet(noteKey, e.target.value);
-              showJournalFeedback("Note sauvegardée");
-            }, 1000); // Délai de 1s pour éviter trop de sauvegardes
-          });
-
-          // 3. Cases à cocher prières - charger et brancher par date
-          const prayersKey = `jp:${today}`;
-          const savedPrayers = await api.storageGet(prayersKey, {});
-
-          // Nettoyer les anciens listeners
-          $$(".jp").forEach((checkbox) => {
-            checkbox.replaceWith(checkbox.cloneNode(true));
-          });
-
-          // Re-brancher avec sauvegarde immédiate
-          $$(".jp").forEach((checkbox) => {
-            checkbox.checked = Boolean(savedPrayers[checkbox.value]);
-            checkbox.addEventListener("change", async () => {
-              savedPrayers[checkbox.value] = checkbox.checked;
-              await api.storageSet(prayersKey, savedPrayers);
-              const status = checkbox.checked ? 'cochée' : 'décochée';
-              showJournalFeedback(`${checkbox.value} ${status}`);
-            });
-          });
-
-          journalLoaded = true;
-          showJournalFeedback(`Données chargées pour ${today}`, true);
-          
+          console.log('[Journal] Données chargées avec succès');
         } catch (error) {
-          console.error('[Journal] Erreur lors du chargement:', error);
-          showJournalFeedback("Erreur de chargement", false);
+          console.error("[Journal] Erreur lors du chargement:", error);
         }
       }
 
-      // Réinitialiser lors du changement de jour
-      function resetJournalOnNewDay() {
-        const currentDate = moment().format("YYYY-MM-DD");
-        const lastDate = localStorage.getItem('lastJournalDate');
-        if (lastDate && lastDate !== currentDate) {
-          journalLoaded = false;
-          localStorage.setItem('lastJournalDate', currentDate);
+      async function loadMayyitCases(today) {
+        const api = window.storageAPI;
+        if (!api) return;
+
+        const prayers = ['Fajr', 'Zuhr', 'Asr', 'Maghrib', 'Isha'];
+        for (const prayer of prayers) {
+          const checkbox = $(`#mayyit-${prayer.toLowerCase()}`);
+          if (checkbox) {
+            const isChecked = await api.storageGet(`mayyit:${today}:${prayer}`, false);
+            checkbox.checked = isChecked;
+          }
         }
       }
 
-      // Charger à l'ouverture de l'onglet Journal
-      $$('[data-tab="journal"]')[0].addEventListener("click", () => {
-        resetJournalOnNewDay();
-        loadJournal();
-      });
+      function setupJournalEventListeners() {
+        // Event listeners pour le tasbih
+        const $plus = $("#tasbih-plus");
+        const $minus = $("#tasbih-minus");
+        const $count = $("#tasbih-count");
 
-      // Qibla (Kaaba)
-      const MECCA = { lat: 21.4225, lon: 39.8262 };
-      const DEFAULT_BOBO = { lat: 11.186, lon: -4.29 }; // Bobo-Dioulasso
+        if ($plus) {
+          $plus.addEventListener("click", async () => {
+            count++;
+            if ($count) $count.textContent = count;
+            const api = window.storageAPI;
+            if (api) await api.storageSet("tasbihCount", count);
+          });
+        }
 
-      // Fonctions utilitaires pour la géolocalisation
-      function toRad(degrees) {
-        return (degrees * Math.PI) / 180;
+        if ($minus) {
+          $minus.addEventListener("click", async () => {
+            if (count > 0) count--;
+            if ($count) $count.textContent = count;
+            const api = window.storageAPI;
+            if (api) await api.storageSet("tasbihCount", count);
+          });
+        }
+
+        // Event listeners pour les cases de prières
+        $$(".jp").forEach((checkbox) => {
+          if (checkbox) {
+            checkbox.addEventListener("change", async () => {
+              const api = window.storageAPI;
+              if (api) {
+                const today = moment().format("YYYY-MM-DD");
+                await api.storageSet(`jp:${today}`, checkbox.checked);
+              }
+            });
+          }
+        });
+
+        // Event listener pour la note
+        const $note = $("#note");
+        if ($note) {
+          $note.addEventListener("input", async () => {
+            const api = window.storageAPI;
+            if (api) {
+              const today = moment().format("YYYY-MM-DD");
+              await api.storageSet(`note:${today}`, $note.value);
+            }
+          });
+        }
+
+        // Event listeners pour les cases Duʿāʾ al-Mayyit
+        const prayers = ['fajr', 'zuhr', 'asr', 'maghrib', 'isha'];
+        prayers.forEach((prayer) => {
+          const checkbox = $(`#mayyit-${prayer}`);
+          if (checkbox) {
+            checkbox.addEventListener("change", async () => {
+              const api = window.storageAPI;
+              if (api) {
+                const today = moment().format("YYYY-MM-DD");
+                const prayerName = prayer.charAt(0).toUpperCase() + prayer.slice(1);
+                await api.storageSet(`mayyit:${today}:${prayerName}`, checkbox.checked);
+              }
+            });
+          }
+        });
       }
-      
-      function toDeg(radians) {
-        return (radians * 180) / Math.PI;
-      }
-      
-      // Calcul du bearing (cap) entre deux points géographiques
-      function calculateBearing(fromPos, toPos) {
-        const φ1 = toRad(fromPos.lat);
-        const φ2 = toRad(toPos.lat);
-        const Δλ = toRad(toPos.lon - fromPos.lon);
-        
-        const y = Math.sin(Δλ) * Math.cos(φ2);
-        const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
-        
-        const bearing = (toDeg(Math.atan2(y, x)) + 360) % 360;
-        return bearing;
-      }
-      
-      // Mettre à jour la direction de la Qibla
-      function updateQiblaDirection(position, locationLabel = "Par défaut : Bobo-Dioulasso") {
-        const bearing = calculateBearing(position, MECCA);
-        const roundedAngle = Math.round(bearing * 10) / 10; // Arrondi à 0.1°
-        
-        // Rotation de la flèche
-        $("#qibla-arrow").style.transform = `translate(-50%,-80%) rotate(${bearing}deg)`;
-        
-        // Affichage de l'angle
-        $("#qibla-angle-label").textContent = `Qibla ${roundedAngle}°`;
-        $("#qibla-text").textContent = `${locationLabel} - Direction : ${roundedAngle}°`;
-      }
-      
-      // Initialisation avec la position par défaut
-      updateQiblaDirection(DEFAULT_BOBO);
-      
-      // Géolocalisation au clic
-      $("#btn-geo").addEventListener("click", () => {
-        if (!navigator.geolocation) {
-          alert("Géolocalisation non disponible sur ce navigateur.");
+
+      async function initJournal() {
+        if (journalInitialized) return;
+
+        if (!window.storageAPI) {
+          setTimeout(initJournal, 100);
           return;
         }
-        
-        // Options de géolocalisation
-        const options = {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 300000 // 5 minutes
-        };
-        
-        $("#qibla-text").textContent = "Localisation en cours...";
-        
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const coords = {
-              lat: position.coords.latitude,
-              lon: position.coords.longitude
-            };
-            updateQiblaDirection(coords, "Position actuelle");
-          },
-          (error) => {
-            console.error("Erreur géolocalisation:", error);
-            let errorMsg = "Accès à la position refusé";
-            
-            switch(error.code) {
-              case error.PERMISSION_DENIED:
-                errorMsg = "Permission de géolocalisation refusée";
-                break;
-              case error.POSITION_UNAVAILABLE:
-                errorMsg = "Position indisponible";
-                break;
-              case error.TIMEOUT:
-                errorMsg = "Délai de localisation dépassé";
-                break;
-            }
-            
-            alert(errorMsg + ". Utilisation de la position par défaut.");
-            updateQiblaDirection(DEFAULT_BOBO);
-          },
-          options
-        );
-      });
 
-      // Lectures: gestion du contenu JSON
+        // Ajouter la section Duʿāʾ al-Mayyit si vendredi
+        if (isFriday(moment())) {
+          addMayyitSection();
+        }
+
+        setupJournalEventListeners();
+        await loadJournalData();
+        journalInitialized = true;
+      }
+
+      function addMayyitSection() {
+        const journalContainer = $('#journal-container');
+        if (!journalContainer || $("#journal-zikr")) return;
+
+        const mayyitHtml = `
+          <div class="card" id="journal-zikr">
+            <h3 class="text-lg font-semibold mb-3">Duʿāʾ al-Mayyit (Vendredi)</h3>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-fajr">
+                <span>Fajr</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-zuhr">
+                <span>Ẓuhr</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-asr">
+                <span>ʿAṣr</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-maghrib">
+                <span>Maghrib</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-isha">
+                <span>ʿIshāʾ</span>
+              </label>
+            </div>
+          </div>
+        `;
+
+        journalContainer.insertAdjacentHTML('beforeend', mayyitHtml);
+      }
+
+      // Initialisation au chargement de la page et à l'ouverture de l'onglet
+      document.addEventListener("DOMContentLoaded", initJournal);
+
+
+      // Fonctions pour le Focus du jour (Zikrs personnalisés)
+      const ZIKR_CONFIG = {
+        "fajr": { label: "Tawhid", when: "après Fajr" },
+        "shuruq": { label: "Istighfar", when: "à Shuruq" },
+        "dhuhr": { label: "Salât ʿala n-Nabî", when: "après Dhuhr" },
+        "asr": { label: "Tasbih", when: "après Asr" },
+        "maghrib": { label: "Duʿāʾ", when: "après Maghrib" },
+        "isha": { label: "Tasbih", when: "après Isha" },
+        "night": { label: "Salawat", when: "avant de dormir" }
+      };
+
+      function todayTasks(now) {
+        const day = now.day(); // 0=Lun, 5=Ven, 6=Sam
+        const tasks = [];
+
+        if (day !== 5) { // Si ce n'est pas vendredi
+          tasks.push({ key: "fajr", ...ZIKR_CONFIG["fajr"] });
+          tasks.push({ key: "shuruq", ...ZIKR_CONFIG["shuruq"] });
+          tasks.push({ key: "dhuhr", ...ZIKR_CONFIG["dhuhr"] });
+          tasks.push({ key: "asr", ...ZIKR_CONFIG["asr"] });
+          tasks.push({ key: "maghrib", ...ZIKR_CONFIG["maghrib"] });
+          tasks.push({ key: "isha", ...ZIKR_CONFIG["isha"] });
+        } else { // Si c'est vendredi
+          tasks.push({ key: "fajr", ...ZIKR_CONFIG["fajr"] });
+          tasks.push({ key: "shuruq", ...ZIKR_CONFIG["shuruq"] });
+          tasks.push({ key: "dhuhr", ...ZIKR_CONFIG["dhuhr"] });
+          tasks.push({ key: "asr", ...ZIKR_CONFIG["asr"] });
+          tasks.push({ key: "maghrib", ...ZIKR_CONFIG["maghrib"] });
+          tasks.push({ key: "isha", ...ZIKR_CONFIG["isha"] });
+        }
+
+        tasks.push({ key: "night", ...ZIKR_CONFIG["night"] });
+        return tasks;
+      }
+
+      async function isDone(key, today) {
+        const api = window.storageAPI;
+        if (!api) return false;
+        return await api.storageGet(`zikrDone:${today}:${key}`, false);
+      }
+
+      async function markDone(key, today) {
+        const api = window.storageAPI;
+        if (!api) return;
+        await api.storageSet(`zikrDone:${today}:${key}`, true);
+      }
+
+
+      // Fonctions pour les lectures
       let currentLectureData = null;
       let currentLecturePage = 0;
       const ITEMS_PER_PAGE = 20;
@@ -880,12 +969,12 @@
         try {
           const response = await fetch(`./data/${type}.json`);
           if (!response.ok) throw new Error(`Erreur ${response.status}`);
-          
+
           currentLectureData = await response.json();
           currentLecturePage = 0;
-          
+
           renderLectureContent(type);
-          
+
         } catch (error) {
           console.error('[Lectures] Erreur de chargement:', error);
           $("#lect-content").innerHTML = `
@@ -902,7 +991,7 @@
         if (!currentLectureData) return;
 
         const contentEl = $("#lect-content");
-        
+
         if (type === 'kahf') {
           renderKahfContent(contentEl);
         } else if (type === 'special') {
@@ -958,7 +1047,7 @@
         }
 
         contentEl.innerHTML = html;
-        
+
         // Brancher les événements de pagination
         setupPagination();
       }
@@ -966,13 +1055,13 @@
       // Rendre le contenu spécial quotidien
       function renderSpecialContent(contentEl) {
         const data = currentLectureData;
-        
+
         let html = `
           <div class="mb-6">
             <h3 class="text-2xl font-semibold mb-2 title">Lecture Spirituelle Quotidienne</h3>
             <p class="text-slate-600 mb-4">${data.description}</p>
           </div>
-          
+
           <div class="bg-emerald-50 p-6 rounded-xl mb-6">
             <h4 class="font-semibold mb-3 text-emerald-800">Invocation du jour</h4>
             <div class="text-right text-xl leading-loose font-arabic mb-3" style="font-family: 'Amiri', serif;">${data.dua}</div>
@@ -1017,7 +1106,7 @@
       function setupPagination() {
         const prevBtn = $("#prev-page");
         const nextBtn = $("#next-page");
-        
+
         if (prevBtn) {
           prevBtn.addEventListener("click", () => {
             if (currentLecturePage > 0) {
@@ -1026,7 +1115,7 @@
             }
           });
         }
-        
+
         if (nextBtn) {
           nextBtn.addEventListener("click", () => {
             const totalPages = Math.ceil(currentLectureData.length / ITEMS_PER_PAGE);
@@ -1044,7 +1133,7 @@
           // Mise à jour visuelle des boutons
           $$('[data-lect]').forEach(b => b.setAttribute('aria-pressed', 'false'));
           btn.setAttribute('aria-pressed', 'true');
-          
+
           // Chargement du contenu
           const lectureType = btn.dataset.lect;
           loadLecture(lectureType);
@@ -1058,20 +1147,20 @@
       let programmeLoaded = false;
       async function renderProgramme() {
         if (programmeLoaded) return;
-        
+
         try {
           const response = await fetch('./data/programme.json');
           if (!response.ok) throw new Error(`Erreur ${response.status}`);
-          
+
           const data = await response.json();
-          
+
           // 1. Programme semaine (jour par jour)
           const weekContainer = $("#prog-week");
           let weekHtml = '';
-          
+
           const jours = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
           const joursNoms = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-          
+
           jours.forEach((jour, index) => {
             const jourData = data.semaine[jour];
             weekHtml += `
@@ -1091,11 +1180,11 @@
             `;
           });
           weekContainer.innerHTML = weekHtml;
-          
+
           // 2. Zikrs personnels
           const zikrsContainer = $("#prog-zikrs");
           let zikrsHtml = '';
-          
+
           data.zikrPersonnels.forEach(zikr => {
             zikrsHtml += `
               <div class="border rounded-lg p-4">
@@ -1108,11 +1197,11 @@
             `;
           });
           zikrsContainer.innerHTML = zikrsHtml;
-          
+
           // 3. Formules
           const formulesContainer = $("#prog-formules");
           let formulesHtml = '';
-          
+
           Object.values(data.formules).forEach(formule => {
             formulesHtml += `
               <div class="border-l-4 border-emerald-200 pl-6 py-4">
@@ -1125,10 +1214,10 @@
             `;
           });
           formulesContainer.innerHTML = formulesHtml;
-          
+
           programmeLoaded = true;
           console.log('[Programme] Contenu chargé avec succès');
-          
+
         } catch (error) {
           console.error('[Programme] Erreur de chargement:', error);
           $("#prog-week").innerHTML = '<p class="text-red-600">Erreur de chargement du programme</p>';
@@ -1139,13 +1228,13 @@
       let retraiteLoaded = false;
       async function renderRetraite() {
         if (retraiteLoaded) return;
-        
+
         try {
           const response = await fetch('./data/retraite.json');
           if (!response.ok) throw new Error(`Erreur ${response.status}`);
-          
+
           const data = await response.json();
-          
+
           // 1. Grille quotidienne
           const gridContainer = $("#retreat-grid");
           let gridHtml = `
@@ -1158,7 +1247,7 @@
               </thead>
               <tbody>
           `;
-          
+
           data.grilleQuotidienne.forEach(item => {
             gridHtml += `
               <tr>
@@ -1167,21 +1256,21 @@
               </tr>
             `;
           });
-          
+
           gridHtml += '</tbody></table>';
           gridContainer.innerHTML = gridHtml;
-          
+
           // 2. Accents par semaine
           const weeksContainer = $("#retreat-weeks");
           let weeksHtml = '';
-          
+
           Object.entries(data.themes).forEach(([semaine, theme]) => {
             const accent = data.accentsHebdo[semaine];
             weeksHtml += `
               <div class="border rounded-lg p-4">
                 <h3 class="font-semibold mb-2">Semaine ${semaine}</h3>
                 <h4 class="text-emerald-600 font-medium mb-3">${theme}</h4>
-                
+
                 <div class="space-y-3">
                   <div>
                     <h5 class="font-medium text-sm mb-1">Notes :</h5>
@@ -1189,7 +1278,7 @@
                       ${accent.notes.map(note => `<li>• ${note}</li>`).join('')}
                     </ul>
                   </div>
-                  
+
                   <div>
                     <h5 class="font-medium text-sm mb-1">Exemples :</h5>
                     <ul class="text-sm text-slate-600 space-y-1">
@@ -1201,7 +1290,7 @@
             `;
           });
           weeksContainer.innerHTML = weeksHtml;
-          
+
           // 3. Planning annuel allégé
           const annualContainer = $("#retreat-annual");
           const annual = data.annuelAllege;
@@ -1224,7 +1313,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="border rounded-lg p-4">
                 <h3 class="font-semibold mb-3">Avant le Sommeil</h3>
                 <p class="text-sm text-slate-600">${annual.avantSommeil}</p>
@@ -1232,10 +1321,10 @@
             </div>
           `;
           annualContainer.innerHTML = annualHtml;
-          
+
           retraiteLoaded = true;
           console.log('[Retraite] Contenu chargé avec succès');
-          
+
         } catch (error) {
           console.error('[Retraite] Erreur de chargement:', error);
           $("#retreat-grid").innerHTML = '<p class="text-red-600">Erreur de chargement de la retraite</p>';
@@ -1245,9 +1334,36 @@
       // Charger le contenu lors de l'ouverture des onglets
       $$('[data-tab="programme"]')[0].addEventListener("click", renderProgramme);
       $$('[data-tab="retraite"]')[0].addEventListener("click", renderRetraite);
+      $$('[data-tab="journal"]')[0].addEventListener("click", initJournal); // Assure l'initialisation si l'onglet Journal est ouvert
 
       // Icônes lucide
       window.lucide?.createIcons();
+
+
+      // Horloge générale et mise à jour du focus du jour
+      function tick() {
+        const now = moment();
+        $("#clock").textContent = now.format("HH:mm:ss");
+        $("#date-greg").textContent = now.format("dddd D MMMM YYYY");
+        $("#date-hijri").textContent = now.format("iYYYY/iMM/iDD");
+
+        const next = nextPrayer();
+        $("#next-prayer-name").textContent = next.p.name;
+        $("#next-prayer-eta").textContent = next.t.format("HH:mm:ss"); // Affiche l'heure exacte de la prochaine prière
+
+        // Mettre à jour le focus du jour toutes les minutes
+        if (now.seconds() === 0) {
+          updateFocusDuJour();
+        }
+      }
+      setInterval(tick, 1000);
+      tick();
+
+      // Initialisation du focus du jour au chargement
+      document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(updateFocusDuJour, 500); // Attendre que storageAPI soit prêt
+      });
+
     </script>
   </body>
 </html>
