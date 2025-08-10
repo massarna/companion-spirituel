@@ -1,4 +1,4 @@
-const CACHE_NAME = "compagnon-spirituel-v2";
+const CACHE_NAME = "compagnon-spirituel-v6";
 const urlsToCache = [
   "/",
   "/index.html",

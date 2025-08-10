@@ -502,13 +502,14 @@
       for (const p of PRAYERS) {
         $("#t-" + p.name).textContent = p.time;
       }
-      console.log("Chart version:", window.Chart?.version);
+      console.log('Chart version:', window.Chart?.version);
 
-      const ctxR = document.getElementById("chart-rakaa")?.getContext("2d");
-      const ctxZ = document.getElementById("chart-zikr")?.getContext("2d");
+      // Charts - créés UNE seule fois
+      const ctxRakaa = document.getElementById("chart-rakaa")?.getContext("2d");
+      const ctxZikr = document.getElementById("chart-zikr")?.getContext("2d");
 
-      if (window.Chart && ctxR && ctxZ) {
-        new Chart(ctxR, {
+      if (window.Chart && ctxRakaa && ctxZikr) {
+        new Chart(ctxRakaa, {
           type: "bar",
           data: {
             labels: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
@@ -519,7 +520,7 @@
           options: { responsive: true, maintainAspectRatio: false },
         });
 
-        new Chart(ctxZ, {
+        new Chart(ctxZikr, {
           type: "doughnut",
           data: {
             labels: ["Tawhid", "Istighfar", "Salât ʿala n-Nabî", "Autres"],
@@ -535,7 +536,7 @@
         console.warn("Chart.js non chargé ou canvas introuvable.");
       }
 
-      // --- PATCH countdown début ---
+      // Helper pour créer une date "aujourd'hui" à partir de HH:mm
       function todayAt(hhmm) {
         const [H, M] = hhmm.split(":").map(Number);
         return moment().clone().hours(H).minutes(M).seconds(0).milliseconds(0);
@@ -544,7 +545,7 @@
       function nextPrayer() {
         const now = moment();
         for (const p of PRAYERS) {
-          const t = todayAt(p.time); // <- force “aujourd’hui”
+          const t = todayAt(p.time);
           if (now.isBefore(t)) return { p, t };
         }
         // sinon Fajr de demain
@@ -572,7 +573,6 @@
 
       updateCountdown();
       setInterval(updateCountdown, 1000);
-      // --- PATCH countdown fin ---
 
       // Journal: tasbih + notes + cases
       async function loadJournal() {
