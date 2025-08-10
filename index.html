@@ -157,6 +157,11 @@
         color: var(--ring);
         font-weight: bold;
       }
+
+      /* Styles spécifiques pour le nouveau Tasbih */
+      .tasbih-btn {
+        /* Couleurs et forme déjà définies inline pour la simplicité */
+      }
     </style>
   </head>
 
@@ -479,19 +484,14 @@
                   </label>
                 </div>
 
-                <h3 class="font-semibold mt-6 mb-2">Tasbih</h3>
-                <div class="flex items-center gap-3 flex-wrap">
-                  <button id="tasbih-dec" class="px-4 py-3 rounded-lg border-2 border-red-200 bg-red-50 hover:bg-red-100 text-red-700 font-bold text-lg transition-colors">
-                    −
+                <h3 class="font-semibold mb-2 mt-6">Compteur Tasbih</h3>
+                <div class="text-center">
+                  <div id="tasbih-value" class="text-8xl font-mono text-[#6A4A3C] mb-4">0</div>
+                  <button id="tasbih-btn" class="tasbih-btn bg-[#00A0B0] text-white rounded-full w-40 h-40 flex items-center justify-center text-2xl font-bold shadow-xl mx-auto mb-4 transition-transform duration-100 active:scale-95">
+                    Compter
                   </button>
-                  <div id="tasbih-value" class="min-w-[5ch] text-center font-bold text-2xl px-4 py-3 bg-slate-100 rounded-lg border-2 border-slate-200">
-                    0
-                  </div>
-                  <button id="tasbih-inc" class="px-4 py-3 rounded-lg border-2 border-green-200 bg-green-50 hover:bg-green-100 text-green-700 font-bold text-lg transition-colors">
-                    +
-                  </button>
-                  <button id="tasbih-reset" class="px-3 py-2 rounded-lg border-2 border-slate-200 bg-slate-50 hover:bg-slate-100 text-sm font-medium transition-colors">
-                    Reset
+                  <button id="tasbih-reset" class="text-sm text-gray-500 hover:text-red-500">
+                    Réinitialiser
                   </button>
                 </div>
               </div>
@@ -743,7 +743,7 @@
       let chartsInitialized = false;
       function initCharts() {
         if (chartsInitialized) return;
-        
+
         const ctxRakaa = document.getElementById("chart-rakaa")?.getContext("2d");
         const ctxZikr = document.getElementById("chart-zikr")?.getContext("2d");
 
@@ -753,15 +753,15 @@
             data: {
               labels: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
               datasets: [
-                { 
-                  label: "Rakʿât (jour+nuit)", 
+                {
+                  label: "Rakʿât (jour+nuit)",
                   data: [6, 8, 10, 4, 12, 8, 6],
                   backgroundColor: "rgba(16, 185, 129, 0.8)"
                 },
               ],
             },
-            options: { 
-              responsive: true, 
+            options: {
+              responsive: true,
               maintainAspectRatio: false,
               plugins: {
                 legend: {
@@ -776,11 +776,11 @@
             type: "doughnut",
             data: {
               labels: ["Tawhid", "Istighfar", "Salât ʿala n-Nabî", "Autres"],
-              datasets: [{ 
+              datasets: [{
                 data: [40, 30, 20, 10],
                 backgroundColor: [
                   "rgba(16, 185, 129, 0.8)",
-                  "rgba(59, 130, 246, 0.8)", 
+                  "rgba(59, 130, 246, 0.8)",
                   "rgba(245, 158, 11, 0.8)",
                   "rgba(156, 163, 175, 0.8)"
                 ]
@@ -798,7 +798,7 @@
           console.warn("Chart.js non chargé ou canvas introuvable.");
         }
       }
-      
+
       // Initialiser les graphiques après un court délai
       setTimeout(initCharts, 100);
 
@@ -900,34 +900,23 @@
 
       function setupJournalEventListeners() {
         // Event listeners pour le tasbih avec garde-fous
-        const $plus = $("#tasbih-inc");
-        const $minus = $("#tasbih-dec");
-        const $reset = $("#tasbih-reset");
-        const $count = $("#tasbih-value");
+        const $tasbihBtn = $("#tasbih-btn");
+        const $tasbihReset = $("#tasbih-reset");
+        const $tasbihValue = $("#tasbih-value");
 
-        if ($plus) {
-          $plus.addEventListener("click", async () => {
-            let currentCount = parseInt($count.textContent || '0', 10);
+        if ($tasbihBtn) {
+          $tasbihBtn.addEventListener("click", async () => {
+            let currentCount = parseInt($tasbihValue.textContent || '0', 10);
             currentCount++;
-            $count.textContent = currentCount;
+            $tasbihValue.textContent = currentCount;
             const api = window.storageAPI;
             if (api) await api.storageSet("tasbihCount", currentCount);
           });
         }
 
-        if ($minus) {
-          $minus.addEventListener("click", async () => {
-            let currentCount = parseInt($count.textContent || '0', 10);
-            if (currentCount > 0) currentCount--;
-            $count.textContent = currentCount;
-            const api = window.storageAPI;
-            if (api) await api.storageSet("tasbihCount", currentCount);
-          });
-        }
-
-        if ($reset) {
-          $reset.addEventListener("click", async () => {
-            $count.textContent = '0';
+        if ($tasbihReset) {
+          $tasbihReset.addEventListener("click", async () => {
+            $tasbihValue.textContent = '0';
             const api = window.storageAPI;
             if (api) await api.storageSet("tasbihCount", 0);
           });
@@ -1006,7 +995,7 @@
 
         const mayyitHtml = `
           <div class="card" id="journal-zikr">
-            <h3 class="text-lg font-semibold mb-3">Duʿāʾ al-Mayyit (Vendredi)</h3>
+            <h3 class="font-semibold mb-2">Duʿāʾ al-Mayyit (Vendredi)</h3>
             <div class="grid grid-cols-2 gap-2 text-sm">
               <label class="flex items-center gap-2">
                 <input type="checkbox" class="form-checkbox" id="mayyit-fajr">
@@ -1262,9 +1251,9 @@
         if (!currentSurahData || !currentSurahData.ayahs) return;
 
         const contentEl = $("#lect-content");
-        
+
         // Créer le texte continu avec marqueurs de versets
-        const continuousText = currentSurahData.ayahs.map(ayah => 
+        const continuousText = currentSurahData.ayahs.map(ayah =>
           `${ayah.ar} <span class="ayah-marker">﴿${ayah.n}﴾</span>`
         ).join(' ');
 
@@ -1613,7 +1602,7 @@
                 <h3 class="font-semibold mb-3">Routine Hebdomadaire</h3>
                 <div class="space-y-3">
                   <div>
-                    <h4 class="font-medium text-slate-700 mb-1">🌅 Matin</h4>
+                    <h4 class="font-medium text-slate-700 mb-1">🌙 Matin</h4>
                     <p class="text-sm text-slate-600">${annual.semaine.matin}</p>
                   </div>
                   <div>
