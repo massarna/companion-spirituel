@@ -1,0 +1,38 @@
+Objectif : corriger Focus du jour et Journal, et intégrer exactement ces 4 zikrs personnels :
+- Tous les jours : 1261 × Istighfār
+- Chaque vendredi : 313 × Ṣalāt ʿala n-Nabī
+- Mercredi nuit : 450 × « حَسْبُنَا اللّٰهُ وَنِعْمَ الْوَكِيلُ »
+- Chaque vendredi, après chaque prière obligatoire : Duʿāʾ al-Mayyit (دعاء الميت)
+
+Tâches :
+1) Dans index.html (App Controller), créer un petit module/objet ZIKR avec :
+   ZIKR.daily = [{key:'istighfar1261', label:'استغفار — ١٢٦١×', count:1261}]
+   ZIKR.friday = [
+     {key:'salat313', label:'الصلاة على النبي — ٣١٣×', count:313},
+     {key:'mayyitFajr',  label:'دعاء الميت بعد الفجر',  count:1},
+     {key:'mayyitDhuhr', label:'دعاء الميت بعد الظهر',  count:1},
+     {key:'mayyitAsr',   label:'دعاء الميت بعد العصر',  count:1},
+     {key:'mayyitMaghrib',label:'دعاء الميت بعد المغرب',count:1},
+     {key:'mayyitIsha',  label:'دعاء الميت بعد العشاء', count:1}
+   ]
+   ZIKR.wedNight = [{key:'hasbunallah450', label:'حَسْبُنَا اللّٰهُ وَنِعْمَ الْوَكِيلُ — ٤٥٠×', count:450}]
+
+   Helpers :
+   - isFriday(now) (ISO weekday 5)
+   - isWedNight(now) : entre mercredi 18:00 et jeudi 04:00
+   - todayItems(now) : concatène daily + (friday si vendredi) + (wedNight si créneau), en renvoyant {key,label,count,done}
+   - Les statuts “done” sont stockés par date : storageGet/Set('zikrDone:YYYY-MM-DD:<key>', true/false)
+
+2) Focus du jour :
+   - Déterminer le mode : si retreatStart existe et now ∈ [start, start+28j) → badge “Mode Retraite – Semaine X”, sinon “Planning Annuel”.
+   - Dans #focus-list, afficher les items de todayItems(now) avec une case à cocher et le compte (ex. “Istighfār — 1261×”).
+   - Coche/décoche persiste immédiatement via storageAPI.
+
+3) Journal :
+   - Corriger l’initialisation : attacher l’init au DOMContentLoaded et lors du passage sur l’onglet Journal ; mettre des garde-fous si un sélecteur est absent (ne pas planter).
+   - Tasbih : #tasbih+, #tasbih- branchés sur 'tasbihCount'.
+   - Cases journalières (.jp) : clé 'jp:YYYY-MM-DD'.
+   - Note #note : clé 'note:YYYY-MM-DD'.
+   - Si vendredi, afficher un sous-bloc “Duʿāʾ al-Mayyit” avec 5 cases (Fajr→ʿIshāʾ) branchées sur les clés ci-dessus (mayyitFajr…).
+
+4) Idempotence : ré-appel sans doublons, pas de styles agressifs. Lister les fichiers modifiés.
