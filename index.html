@@ -117,10 +117,43 @@
         border: 0;
       }
       
-      .mode-badge{
-        position: absolute;
-        top: 0.75rem;
-        right: 0.75rem;
+      /* Animations pour le Focus du jour */
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+      
+      @keyframes glow {
+        0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+        50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.5); }
+      }
+
+      /* Amélioration des notifications spéciales */
+      .special-notification {
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 16px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+      }
+
+      .special-notification:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+      }
+
+      .notification-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        margin-right: 0.75rem;
+        font-size: 1rem;
       }
 
       /* Styles pour le texte arabe */
@@ -225,6 +258,52 @@
         </div>
         <div class="mt-4">
           <span id="mode-badge" class="badge">Planning Annuel</span>
+        </div>
+      </div>
+
+      <!-- Focus du jour - Version modernisée -->
+      <div class="mt-8 max-w-4xl mx-auto">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-blue-50 to-indigo-100 shadow-2xl border border-white/50">
+          <!-- Badge flottant -->
+          <div class="absolute top-4 right-4 z-10">
+            <div id="focus-mode-badge" class="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg border border-emerald-200">
+              <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span class="text-xs font-semibold text-emerald-700"></span>
+            </div>
+          </div>
+
+          <!-- Contenu principal -->
+          <div class="relative p-8 md:p-12">
+            <!-- Titre avec icône animée -->
+            <div class="text-center mb-6">
+              <div class="inline-flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                  </svg>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Focus du Jour
+                </h2>
+              </div>
+              <p id="daily-focus-time" class="text-lg text-slate-600 font-medium"></p>
+            </div>
+
+            <!-- Contenu principal avec design moderne -->
+            <div class="relative">
+              <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-2xl blur-xl"></div>
+              <div class="relative bg-white/70 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/50 shadow-lg">
+                <div id="daily-focus-content" class="text-lg md:text-xl text-slate-700 leading-relaxed text-center font-medium"></div>
+              </div>
+            </div>
+
+            <!-- Section spéciale avec effets visuels -->
+            <div id="weekly-special-focus" class="mt-8 space-y-4"></div>
+          </div>
+
+          <!-- Ornements décoratifs -->
+          <div class="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-emerald-400/20 to-transparent rounded-full blur-2xl"></div>
+          <div class="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-blue-400/20 to-transparent rounded-full blur-2xl"></div>
         </div>
       </div>
     </header>
@@ -458,16 +537,7 @@
           </div>
         </div>
 
-        <!-- Focus du jour -->
-        <section id="daily-focus-section" class="mt-6 card relative">
-          <div id="focus-mode-badge" class="mode-badge">
-            <span class="inline-block rounded-full bg-emerald-100 text-emerald-700 px-3 py-1 text-xs font-semibold"></span>
-          </div>
-          <h2 class="text-3xl font-bold text-center mb-2 text-[#00A0B0]">Focus du Jour</h2>
-          <p id="daily-focus-time" class="text-center text-gray-500 mb-4"></p>
-          <div id="daily-focus-content" class="text-center text-lg text-gray-700 leading-relaxed"></div>
-          <div id="weekly-special-focus" class="mt-6"></div>
-        </section>
+        
       </section>
 
       <!-- Programme -->
@@ -1086,29 +1156,74 @@
           $("#daily-focus-content").innerHTML = `<p>C'est un moment de transition entre les activités planifiées.</p>`;
         }
 
-        // Ajouter les zikrs personnalisés
+        // Ajouter les zikrs personnalisés avec design moderne
         const dayOfWeek = currentTime.day(); // 0=Sunday, 1=Monday...
         const hijriDay = currentTime.iDate();
         const weeklyFocusContainer = $("#weekly-special-focus");
         let weeklyHTML = '';
         
         // Toujours afficher l'istighfar quotidien
-        weeklyHTML += `<div class="bg-gray-50 border-l-4 border-gray-400 text-gray-700 p-4 rounded-r-lg mb-4"><p class="font-bold">Zikr quotidien :</p><p>1261× Istighfār</p></div>`;
+        weeklyHTML += `
+          <div class="special-notification">
+            <div class="flex items-center">
+              <div class="notification-icon bg-gradient-to-r from-gray-400 to-gray-600 text-white">📿</div>
+              <div>
+                <p class="font-bold text-gray-800">Zikr quotidien</p>
+                <p class="text-gray-600">1261× Istighfār</p>
+              </div>
+            </div>
+          </div>`;
         
         if (dayOfWeek === 1 || dayOfWeek === 4) { // Monday or Thursday
-          weeklyHTML += `<div class="bg-blue-50 border-l-4 border-blue-400 text-blue-700 p-4 rounded-r-lg mb-4"><p class="font-bold">Rappel du jour :</p><p>C'est lundi/jeudi, un jour propice au jeûne surérogatoire.</p></div>`;
+          weeklyHTML += `
+            <div class="special-notification">
+              <div class="flex items-center">
+                <div class="notification-icon bg-gradient-to-r from-blue-400 to-blue-600 text-white">🌙</div>
+                <div>
+                  <p class="font-bold text-blue-800">Rappel du jour</p>
+                  <p class="text-blue-600">C'est lundi/jeudi, un jour propice au jeûne surérogatoire.</p>
+                </div>
+              </div>
+            </div>`;
         }
         if (dayOfWeek === 5) { // Friday
-          weeklyHTML += `<div class="bg-green-50 border-l-4 border-green-400 text-green-700 p-4 rounded-r-lg mb-4"><p class="font-bold">Rappel du Vendredi :</p><p>313× Ṣalāt sur le Prophète + Duʿāʾ pour les défunts après chaque prière</p></div>`;
+          weeklyHTML += `
+            <div class="special-notification">
+              <div class="flex items-center">
+                <div class="notification-icon bg-gradient-to-r from-green-400 to-green-600 text-white">🕌</div>
+                <div>
+                  <p class="font-bold text-green-800">Rappel du Vendredi</p>
+                  <p class="text-green-600">313× Ṣalāt sur le Prophète + Duʿāʾ pour les défunts après chaque prière</p>
+                </div>
+              </div>
+            </div>`;
         }
         if (hijriDay >= 13 && hijriDay <= 15) {
-          weeklyHTML += `<div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 p-4 rounded-r-lg mb-4"><p class="font-bold">Jours Blancs :</p><p>Nous sommes dans la période des jours blancs (${hijriDay}e jour), propice au jeûne.</p></div>`;
+          weeklyHTML += `
+            <div class="special-notification">
+              <div class="flex items-center">
+                <div class="notification-icon bg-gradient-to-r from-yellow-400 to-yellow-600 text-white">⭐</div>
+                <div>
+                  <p class="font-bold text-yellow-800">Jours Blancs</p>
+                  <p class="text-yellow-600">Nous sommes dans la période des jours blancs (${hijriDay}e jour), propice au jeûne.</p>
+                </div>
+              </div>
+            </div>`;
         }
         
         // Nuit du mercredi (Hasbunallah)
         const isWednesdayNight = (dayOfWeek === 3 && currentTimeStr >= "19:00") || (dayOfWeek === 4 && currentTimeStr < "04:30");
         if (isWednesdayNight) {
-          weeklyHTML += `<div class="bg-purple-50 border-l-4 border-purple-400 text-purple-700 p-4 rounded-r-lg mb-4"><p class="font-bold">Nuit du mercredi :</p><p>450× Ḥasbunallāh wa niʿmal-wakīl</p></div>`;
+          weeklyHTML += `
+            <div class="special-notification">
+              <div class="flex items-center">
+                <div class="notification-icon bg-gradient-to-r from-purple-400 to-purple-600 text-white">✨</div>
+                <div>
+                  <p class="font-bold text-purple-800">Nuit du mercredi</p>
+                  <p class="text-purple-600">450× Ḥasbunallāh wa niʿmal-wakīl</p>
+                </div>
+              </div>
+            </div>`;
         }
         
         weeklyFocusContainer.innerHTML = weeklyHTML;
