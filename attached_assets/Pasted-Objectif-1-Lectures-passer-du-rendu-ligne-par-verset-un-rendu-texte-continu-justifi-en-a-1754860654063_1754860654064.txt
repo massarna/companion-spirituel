@@ -1,0 +1,38 @@
+Objectif :
+1) Lectures : passer du rendu “ligne par verset” à un rendu “texte continu justifié en arabe (RTL)”, en insérant un petit marqueur de verset ﴿n﴾.
+2) Journal : ne s’initialise et ne s’affiche QUE dans l’onglet Journal (plus de widgets Journal sous Lectures).
+3) Tasbih : s’assurer que les boutons + / – / Reset existent et sont branchés.
+
+Tâches :
+
+[1] Lectures – rendu continu justifié
+- Dans le code du loader des lectures, après avoir fetch le JSON d’une sourate :
+  const html = data.ayahs.map(a => `${a.ar} <span class="ayah-marker">﴿${a.n}﴾</span>`).join(' ');
+  host.innerHTML = `<div id="surah-text" dir="rtl" lang="ar" class="text-[22px] leading-9 text-justify">${html}</div>`;
+- Ajouter un petit style (dans index.html ou un bloc <style> global) pour le marqueur :
+  .ayah-marker{ font-size:0.9em; margin:0 0.25rem; opacity:.8 }
+- Conserver le titre de la sourate. Ne pas casser la sélection Fātiḥa/Yāsīn/etc.
+
+[2] Journal – cantonner l’init à l’onglet Journal
+- Encapsuler le code d’initialisation du Journal dans une fonction initJournal(root), où root = document.getElementById('journal-root') (ou l’ID réellement présent sur la page Journal).
+- Appeler initJournal() UNIQUEMENT :
+  * au clic sur l’onglet “Journal”, ou
+  * si la page s’ouvre déjà sur l’onglet Journal (détection de l’onglet actif).
+- Mettre des garde-fous : si root est null, ne rien faire (return).
+- Supprimer tout append/insert du Journal qui ciblerait un conteneur générique utilisé par d’autres onglets.
+
+[3] Tasbih – boutons visibles et branchés
+- S’assurer que dans l’onglet Journal existent des boutons :
+  #tasbih-inc, #tasbih-dec, #tasbih-reset (ou créer un petit groupe si absent).
+- Brancher les handlers :
+  - inc : count++ ; dec : count=Math.max(0,count-1) ; reset : 0
+  - persister sous la clé 'tasbihCount' via window.storageAPI.
+- Afficher la valeur courante dans #tasbih-value.
+
+[4] Service Worker
+- Incrémenter CACHE_NAME (ex. 'compagnon-spirituel-v16').
+
+[5] Rendre idempotent
+- Ré-appeler l’init Lectures/Journal ne doit pas dupliquer le DOM (vider la cible avant de rerendre).
+
+Donne la liste des fichiers modifiés.
