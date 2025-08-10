@@ -1,0 +1,22 @@
+
+{
+  "mois": [
+    { "i":0, "nom":"Muharram", "sens":"Sacré", "cles":["ʿĀshūrāʾ (10)"], "pratiques":["Jeûner 9-10 ou 10-11","Dhikr, sadaqa, repentir"] },
+    { "i":1, "nom":"Ṣafar", "sens":"Patience & confiance", "cles":[], "pratiques":["Sadaqa","Ziyārah, patience"] },
+    { "i":2, "nom":"Rabīʿ al-Awwal", "sens":"Joie & Mawlid", "cles":["Mawlid"], "pratiques":["Sīra, ṣalawāt"] },
+    { "i":3, "nom":"Rabīʿ al-Thānī", "sens":"Constante", "cles":[], "pratiques":["Rattrapages, qiyām"] },
+    { "i":4, "nom":"Jumādā al-Ūlā", "sens":"Persévérance", "cles":[], "pratiques":["Charité, qiyām"] },
+    { "i":5, "nom":"Jumādā al-Thāniyah", "sens":"Famille", "cles":[], "pratiques":["Lien familial"] },
+    { "i":6, "nom":"Rajab", "sens":"Mois sacré", "cles":["27 : Isrāʾ & Miʿrāj"], "pratiques":["Jeûnes volontaires","Dhikr & pardon"] },
+    { "i":7, "nom":"Shaʿbān", "sens":"Pont vers Ramaḍān", "cles":["15 : Laylat al-Barāʾah"], "pratiques":["Jeûnes, réconciliation"] },
+    { "i":8, "nom":"Ramaḍān", "sens":"Révélation & jeûne", "cles":["Laylat al-Qadr"], "pratiques":["Sawm, tarāwīḥ, Coran"] },
+    { "i":9, "nom":"Shawwāl", "sens":"Gratitude", "cles":["6 jours de jeûne"], "pratiques":["Continuer les bonnes œuvres"] },
+    { "i":10,"nom":"Dhū al-Qiʿdah", "sens":"Trêve (sacré)", "cles":[], "pratiques":["Préparer le Hajj"] },
+    { "i":11,"nom":"Dhū al-Ḥijjah", "sens":"Hajj & sacrifice (sacré)", "cles":["Jour dʾArafat (9)","ʿĪd al-Adḥā (10)"], "pratiques":["Dhikr intensif","Jeûne dʾArafat (non-pèlerin)"] }
+  ],
+  "jours": [
+    { "code":"ashura", "m":0, "d":10, "titre":"ʿĀshūrāʾ", "reco":["Jeûne 9-10 ou 10-11","Dhikr et aumône"] },
+    { "code":"nisf-shaban", "m":7, "d":15, "titre":"Nuit du pardon", "reco":["Qiyām et repentir"] },
+    { "code":"arafat", "m":11, "d":9, "titre":"Jour dʾArafat", "reco":["Jeûne (non-pèlerin)","Dhikr & duʿāʾ"] }
+  ]
+}

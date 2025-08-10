@@ -437,10 +437,19 @@
 
       <!-- Mois -->
       <section data-page="mois" class="hidden">
-        <div class="card">
-          <h2 class="title text-2xl mb-3">Mois hégirien en cours</h2>
-          <div id="mois-info" class="text-slate-600">
-            Nom, sens, pratiques recommandées… (structure prête)
+        <div class="space-y-6">
+          <!-- Alerte du jour si applicable -->
+          <div id="jour-alerte" class="hidden card bg-amber-50 border-amber-200">
+            <h3 class="text-lg font-semibold mb-2 text-amber-800">🌟 Jour spécial aujourd'hui</h3>
+            <div id="jour-alerte-content"></div>
+          </div>
+
+          <!-- Mois en cours -->
+          <div class="card">
+            <h2 class="title text-2xl mb-4">Mois hégirien en cours</h2>
+            <div id="mois-info" class="space-y-4">
+              <div class="text-center text-slate-600">Chargement...</div>
+            </div>
           </div>
         </div>
       </section>
@@ -1331,10 +1340,108 @@
         }
       }
 
+      // Fonction de rendu des mois
+      let moisLoaded = false;
+      async function renderMois() {
+        if (moisLoaded) return;
+
+        try {
+          const response = await fetch('./data/mois.json');
+          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+          const data = await response.json();
+          const now = moment();
+          const currentHijriMonth = now.iMonth(); // Index du mois hijri (0-11)
+          const currentHijriDay = now.iDate(); // Jour du mois hijri
+
+          // Trouver le mois actuel
+          const currentMonth = data.mois.find(m => m.i === currentHijriMonth);
+
+          // Vérifier s'il y a un jour spécial aujourd'hui
+          const specialDay = data.jours.find(j => j.m === currentHijriMonth && j.d === currentHijriDay);
+
+          // Afficher l'alerte si jour spécial
+          const alerteEl = $("#jour-alerte");
+          const alerteContentEl = $("#jour-alerte-content");
+          
+          if (specialDay) {
+            alerteEl.classList.remove("hidden");
+            alerteContentEl.innerHTML = `
+              <h4 class="font-semibold mb-2 text-amber-800">${specialDay.titre}</h4>
+              <div class="space-y-2">
+                <p class="text-sm text-amber-700">Recommandations :</p>
+                <ul class="text-sm text-amber-700 space-y-1">
+                  ${specialDay.reco.map(r => `<li>• ${r}</li>`).join('')}
+                </ul>
+              </div>
+            `;
+          } else {
+            alerteEl.classList.add("hidden");
+          }
+
+          // Afficher les informations du mois
+          const moisInfoEl = $("#mois-info");
+          let moisHtml = '';
+
+          if (currentMonth) {
+            moisHtml = `
+              <div class="text-center mb-6">
+                <h3 class="text-3xl font-semibold mb-2 title">${currentMonth.nom}</h3>
+                <p class="text-slate-600 text-lg">${currentMonth.sens}</p>
+                <p class="text-sm text-slate-500 mt-1">${now.format('iMMMM iYYYY')}</p>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="border rounded-lg p-4">
+                  <h4 class="font-semibold mb-3 text-emerald-600">✨ Jours clés ce mois-ci</h4>
+                  ${currentMonth.cles.length > 0 
+                    ? `<ul class="space-y-2">${currentMonth.cles.map(c => `<li class="text-sm">• ${c}</li>`).join('')}</ul>`
+                    : '<p class="text-sm text-slate-500">Aucun jour particulier ce mois-ci</p>'
+                  }
+                </div>
+
+                <div class="border rounded-lg p-4">
+                  <h4 class="font-semibold mb-3 text-blue-600">🤲 Pratiques recommandées</h4>
+                  <ul class="space-y-2">
+                    ${currentMonth.pratiques.map(p => `<li class="text-sm">• ${p}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mt-6 bg-slate-50 rounded-lg p-4">
+                <h4 class="font-semibold mb-3">📅 Autres jours importants de l'année</h4>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                  ${data.jours.map(j => {
+                    const mois = data.mois.find(m => m.i === j.m);
+                    return `
+                      <div class="p-3 border rounded-lg">
+                        <div class="font-medium">${j.titre}</div>
+                        <div class="text-slate-500">${j.d} ${mois?.nom || ''}</div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `;
+          } else {
+            moisHtml = '<p class="text-red-600 text-center">Erreur : mois hijri non trouvé</p>';
+          }
+
+          moisInfoEl.innerHTML = moisHtml;
+          moisLoaded = true;
+          console.log('[Mois] Contenu chargé avec succès');
+
+        } catch (error) {
+          console.error('[Mois] Erreur de chargement:', error);
+          $("#mois-info").innerHTML = '<p class="text-red-600 text-center">Erreur de chargement des données du mois</p>';
+        }
+      }
+
       // Charger le contenu lors de l'ouverture des onglets
       $$('[data-tab="programme"]')[0].addEventListener("click", renderProgramme);
       $$('[data-tab="retraite"]')[0].addEventListener("click", renderRetraite);
       $$('[data-tab="journal"]')[0].addEventListener("click", initJournal); // Assure l'initialisation si l'onglet Journal est ouvert
+      $$('[data-tab="mois"]')[0].addEventListener("click", renderMois);
 
       // Icônes lucide
       window.lucide?.createIcons();
