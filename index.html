@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lato:wght@300;400;700&family=Orbitron:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Lato:wght@300;400;700&family=Orbitron:wght@400;700&display=swap"
       rel="stylesheet"
     />
     <link rel="manifest" href="manifest.json" />
@@ -161,6 +161,32 @@
       /* Styles spécifiques pour le nouveau Tasbih */
       .tasbih-btn {
         /* Couleurs et forme déjà définies inline pour la simplicité */
+      }
+
+      /* Conteneur de lecture */
+      #surah-wrap{ max-width:62rem; margin-inline:auto; }
+
+      /* Titre et basmala */
+      #surah-title{ text-align:center; margin:.5rem 0 1rem; font-weight:700; color:#0e7490; }
+      .bismillah{ display:block; text-align:center; margin:.25rem 0 1.25rem; opacity:.95 }
+
+      /* Bloc de texte mushaf : un seul paragraphe */
+      .ayahs-block{
+        font-family:"Amiri Quran","Amiri",serif;
+        direction:rtl; text-align:justify; text-justify:inter-word;
+        font-size:1.35rem; line-height:2.6rem; color:#1f2937; word-break:break-word;
+      }
+
+      /* Pastille du numéro de verset (orange doux) */
+      .ayah-badge{
+        display:inline-block; min-width:1.45em; height:1.45em; line-height:1.45em;
+        margin:0 .35rem; border-radius:9999px; text-align:center;
+        font-size:.8rem; font-weight:700; color:#EB6841; background:#FFF3EE; outline:2px solid #F9D3C7;
+        vertical-align:middle; direction:ltr;
+      }
+
+      @media (max-width:480px){
+        .ayahs-block{ font-size:1.25rem; line-height:2.3rem; }
       }
     </style>
   </head>
@@ -1215,6 +1241,30 @@
         select.innerHTML = html;
       }
 
+      // Convertit 123 -> ١٢٣
+      function toArabicDigits(n){
+        return String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+      }
+
+      // Rendu mushaf : titre + basmala + bloc justifié avec pastilles
+      function renderSurahMushaf(container, data, title){
+        if(!container || !data || !Array.isArray(data.ayahs)) return;
+
+        const showBasmala = (data.surah !== 9); // pas de basmala en sourate 9
+
+        const htmlAyahs = data.ayahs
+          .map(a => `${a.ar}<span class="ayah-badge">${toArabicDigits(a.n || a.numberInSurah || a.number || 0)}</span>`)
+          .join(' ');
+
+        container.innerHTML = `
+          <div id="surah-wrap">
+            <div id="surah-title">${title}</div>
+            ${showBasmala ? '<span class="bismillah">﷽</span>' : ''}
+            <p class="ayahs-block" dir="rtl" lang="ar">${htmlAyahs}</p>
+          </div>
+        `;
+      }
+
       // Charger une sourate spécifique
       async function loadSurah(surahKey) {
         const contentEl = $("#lect-content");
@@ -1235,7 +1285,7 @@
           if (!response.ok) throw new Error(`Erreur ${response.status}`);
 
           currentSurahData = await response.json();
-          renderSurahContent(surah.title);
+          renderSurahMushaf(contentEl, currentSurahData, surah.title);
           console.log('[Lectures] Sourate chargée:', surah.title);
         } catch (error) {
           console.error('[Lectures] Erreur chargement sourate:', error);
@@ -1246,29 +1296,6 @@
             </div>
           `;
         }
-      }
-
-      // Rendre le contenu d'une sourate en arabe
-      function renderSurahContent(title) {
-        if (!currentSurahData || !currentSurahData.ayahs) return;
-
-        const contentEl = $("#lect-content");
-
-        // Créer le texte continu avec marqueurs de versets
-        const continuousText = currentSurahData.ayahs.map(ayah =>
-          `${ayah.ar} <span class="ayah-marker">﴿${ayah.n}﴾</span>`
-        ).join(' ');
-
-        let html = `
-          <div class="mb-6">
-            <h2 class="text-2xl font-bold text-center mb-6" style="font-family: 'Amiri', serif;">${title}</h2>
-            <div id="surah-text" dir="rtl" lang="ar" class="text-[22px] leading-9 text-justify" style="font-family: 'Amiri', serif;">
-              ${continuousText}
-            </div>
-          </div>
-        `;
-
-        contentEl.innerHTML = html;
       }
 
       // Charger le contenu spécial quotidien (conservé de l'ancien système)
