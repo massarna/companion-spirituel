@@ -1,0 +1,11 @@
+
+{
+  "kahf":   { "title":"سورة الكهف",  "file":"surah-18-al-kahf.ar.json" },
+  "fatiha": { "title":"سورة الفاتحة", "file":"surah-1-al-fatiha.ar.json" },
+  "yasin":  { "title":"سورة يس",     "file":"surah-36-yasin.ar.json" },
+  "dukhan": { "title":"سورة الدخان", "file":"surah-44-dukhan.ar.json" },
+  "waqiah": { "title":"سورة الواقعة", "file":"surah-56-waqiah.ar.json" },
+  "mulk":   { "title":"سورة الملك",   "file":"surah-67-mulk.ar.json" },
+  "insan":  { "title":"سورة الإنسان", "file":"surah-76-insan.ar.json" },
+  "buruj":  { "title":"سورة البروج",  "file":"surah-85-buruj.ar.json" }
+}

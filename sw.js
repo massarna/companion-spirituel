@@ -1,7 +1,9 @@
-const CACHE_NAME = "compagnon-spirituel-v10";
+const CACHE_NAME = "compagnon-spirituel-v11";
 const urlsToCache = [
   "/",
   "/index.html",
+  "/data/lectures/manifest.json",
+  "/data/lectures/surah-18-al-kahf.ar.json",
   "https://cdn.tailwindcss.com",
   "https://cdn.jsdelivr.net/npm/chart.js",
   "https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js",
