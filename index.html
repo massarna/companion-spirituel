@@ -209,6 +209,22 @@
         /* Couleurs et forme déjà définies inline pour la simplicité */
       }
 
+      /* Styles pour les cartes de prières */
+      .prayer-card.ring {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+        border-color: rgba(16, 185, 129, 0.3);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .prayer-card:hover {
+        transform: translateY(-1px);
+      }
+
+      .prayer-card.ring:hover {
+        transform: translateY(-3px);
+      }
+
       /* Conteneur de lecture */
       #surah-wrap{ max-width:62rem; margin-inline:auto; }
 
@@ -380,35 +396,97 @@
       <section data-page="accueil">
         <div class="grid md:grid-cols-2 gap-6">
           <!-- Prochaine prière -->
-          <div class="card">
-            <h2 class="title text-2xl mb-3">Prochaine prière</h2>
-            <div class="flex items-center gap-4">
-              <div>
-                <div class="text-sm text-slate-500">Ville : Bobo-Dioulasso</div>
-                <div class="mt-1 text-lg font-semibold">
-                  <span id="next-prayer-name">—</span> dans
-                  <span id="next-prayer-eta">--:--:--</span>
+          <div class="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-3xl shadow-xl border border-white/50">
+            <!-- Ornements décoratifs -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-400/20 to-transparent rounded-full blur-2xl"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-400/20 to-transparent rounded-full blur-xl"></div>
+            
+            <div class="relative p-6">
+              <!-- En-tête avec icône -->
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="title text-2xl font-bold text-slate-800">Prochaine prière</h2>
+                  <p class="text-sm text-slate-600 flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Bobo-Dioulasso, Burkina Faso
+                  </p>
                 </div>
               </div>
-            </div>
-            <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
-              <div class="p-3 rounded-xl border" id="p-Fajr">
-                Fajr : <b id="t-Fajr">—</b>
+
+              <!-- Prochaine prière en évidence -->
+              <div class="relative mb-6">
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg">
+                  <div class="text-center">
+                    <div class="text-lg text-slate-600 mb-2">Prochaine prière</div>
+                    <div class="text-3xl font-bold text-slate-800 mb-2" id="next-prayer-name">—</div>
+                    <div class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-full shadow-lg">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      <span class="text-xl font-mono font-bold" id="next-prayer-eta">--:--:--</span>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">temps restant</div>
+                  </div>
+                </div>
               </div>
-              <div class="p-3 rounded-xl border" id="p-Shuruq">
-                Shuruq : <b id="t-Shuruq">—</b>
-              </div>
-              <div class="p-3 rounded-xl border" id="p-Dhuhr">
-                Dhuhr : <b id="t-Dhuhr">—</b>
-              </div>
-              <div class="p-3 rounded-xl border" id="p-Asr">
-                Asr : <b id="t-Asr">—</b>
-              </div>
-              <div class="p-3 rounded-xl border" id="p-Maghrib">
-                Maghrib : <b id="t-Maghrib">—</b>
-              </div>
-              <div class="p-3 rounded-xl border" id="p-Isha">
-                Isha : <b id="t-Isha">—</b>
+
+              <!-- Grille des horaires -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Fajr">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-orange-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Fajr</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Fajr">—</div>
+                </div>
+                
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Shuruq">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Shuruq</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Shuruq">—</div>
+                </div>
+                
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Dhuhr">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Dhuhr</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Dhuhr">—</div>
+                </div>
+                
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Asr">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Asr</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Asr">—</div>
+                </div>
+                
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Maghrib">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-red-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Maghrib</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Maghrib">—</div>
+                </div>
+                
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Isha">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-purple-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Isha</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Isha">—</div>
+                </div>
               </div>
             </div>
           </div>
