@@ -591,18 +591,38 @@
       updateCountdown();
       setInterval(updateCountdown, 1000);
 
-      // Journal: persistance locale unifiée
+      // Journal: persistance locale finalisée avec feedback
       let journalLoaded = false;
+      
+      // Helper pour afficher un feedback visuel
+      function showJournalFeedback(message, isSuccess = true) {
+        console.log(`[Journal] ${message}`);
+        
+        // Toast simple (disparaît après 2s)
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-white text-sm ${isSuccess ? 'bg-emerald-500' : 'bg-red-500'}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transition = 'opacity 0.3s';
+          setTimeout(() => document.body.removeChild(toast), 300);
+        }, 2000);
+      }
+
       async function loadJournal() {
         const api = window.storageAPI;
         if (!api || journalLoaded) return;
 
         try {
+          const today = moment().format("YYYY-MM-DD");
+          
           // 1. Tasbih - charger et brancher les boutons
           let tasbihValue = await api.storageGet("tasbihCount", 0);
           $("#tasbih-val").textContent = tasbihValue;
 
-          // Nettoyer les anciens event listeners si ils existent
+          // Nettoyer les anciens event listeners
           const btnPlus = $("#tasbih+");
           const btnMinus = $("#tasbih-");
           btnPlus.replaceWith(btnPlus.cloneNode(true));
@@ -612,16 +632,17 @@
             tasbihValue = (tasbihValue | 0) + 1;
             $("#tasbih-val").textContent = tasbihValue;
             await api.storageSet("tasbihCount", tasbihValue);
+            showJournalFeedback(`Tasbih: ${tasbihValue}`);
           });
 
           $("#tasbih-").addEventListener("click", async () => {
             tasbihValue = Math.max(0, (tasbihValue | 0) - 1);
             $("#tasbih-val").textContent = tasbihValue;
             await api.storageSet("tasbihCount", tasbihValue);
+            showJournalFeedback(`Tasbih: ${tasbihValue}`);
           });
 
-          // 2. Note du jour - charger et brancher l'input
-          const today = moment().format("YYYY-MM-DD");
+          // 2. Note du jour - charger et auto-sauvegarder
           const noteKey = `note:${today}`;
           const savedNote = await api.storageGet(noteKey, "");
           const noteEl = $("#note");
@@ -629,36 +650,59 @@
 
           // Nettoyer l'ancien listener
           noteEl.replaceWith(noteEl.cloneNode(true));
+          let noteTimeout;
           $("#note").addEventListener("input", async (e) => {
-            await api.storageSet(noteKey, e.target.value);
+            clearTimeout(noteTimeout);
+            noteTimeout = setTimeout(async () => {
+              await api.storageSet(noteKey, e.target.value);
+              showJournalFeedback("Note sauvegardée");
+            }, 1000); // Délai de 1s pour éviter trop de sauvegardes
           });
 
           // 3. Cases à cocher prières - charger et brancher par date
           const prayersKey = `jp:${today}`;
           const savedPrayers = await api.storageGet(prayersKey, {});
 
+          // Nettoyer les anciens listeners
           $$(".jp").forEach((checkbox) => {
-            // Nettoyer l'ancien listener
             checkbox.replaceWith(checkbox.cloneNode(true));
           });
 
+          // Re-brancher avec sauvegarde immédiate
           $$(".jp").forEach((checkbox) => {
             checkbox.checked = Boolean(savedPrayers[checkbox.value]);
             checkbox.addEventListener("change", async () => {
               savedPrayers[checkbox.value] = checkbox.checked;
               await api.storageSet(prayersKey, savedPrayers);
+              const status = checkbox.checked ? 'cochée' : 'décochée';
+              showJournalFeedback(`${checkbox.value} ${status}`);
             });
           });
 
           journalLoaded = true;
-          console.log('[Journal] Données chargées pour', today);
+          showJournalFeedback(`Données chargées pour ${today}`, true);
+          
         } catch (error) {
           console.error('[Journal] Erreur lors du chargement:', error);
+          showJournalFeedback("Erreur de chargement", false);
+        }
+      }
+
+      // Réinitialiser lors du changement de jour
+      function resetJournalOnNewDay() {
+        const currentDate = moment().format("YYYY-MM-DD");
+        const lastDate = localStorage.getItem('lastJournalDate');
+        if (lastDate && lastDate !== currentDate) {
+          journalLoaded = false;
+          localStorage.setItem('lastJournalDate', currentDate);
         }
       }
 
       // Charger à l'ouverture de l'onglet Journal
-      $$('[data-tab="journal"]')[0].addEventListener("click", loadJournal);
+      $$('[data-tab="journal"]')[0].addEventListener("click", () => {
+        resetJournalOnNewDay();
+        loadJournal();
+      });
 
       // Qibla (Kaaba)
       const MECCA = { lat: 21.4225, lon: 39.8262 };
