@@ -1,0 +1,40 @@
+Objectif : 
+- Corriger le chargement de l’onglet Journal (init propre + garde-fous).
+- Implémenter le “Focus du jour” (Planning Annuel vs Mode Retraite).
+- Injecter les 4 zikrs personnels et les faire remonter dans Focus du jour + Journal les jours concernés.
+
+Tâches :
+1) Dans index.html (script “App Controller”), créer un module “agenda.js” interne (ou un bloc isolé) avec :
+   const ZIKR_PERSO = {
+     daily: [{ key:'istighfar1261', label:'Istighfār (استغفار) — 1261×', when:'tous les jours' }],
+     friday: [
+       { key:'salat313', label:'Ṣalāt ʿala n-Nabī — 313×', when:'chaque vendredi' },
+       { key:'dua-mayyit', label:'Duʿāʾ al-Mayyit après chaque prière', when:'chaque prière du vendredi' }
+     ],
+     wedNight: [{ key:'hasbunallah450', label:'حَسْبُنَا اللّهُ وَنِعْمَ الوَكِيل — 450×', when:'mercredi nuit' }]
+   };
+
+   Helpers :
+   - isFriday(now) (isoWeekday()==5)
+   - isWedNight(now) : de mercredi 18:00 à jeudi 04:00
+   - todayTasks(now) : renvoie un tableau d’items à afficher (daily + selon vendredi / wedNight)
+   - markDone(key, dateISO) => storageSet(`zikrDone:${dateISO}:${key}`, true)
+   - isDone(key, dateISO) => storageGet(...)
+
+2) Focus du jour :
+   - Si une retraite est en cours (retreatStart défini et now ∈ [start, start+28j)), badge “Mode Retraite – Semaine X”.
+   - Sinon badge “Planning Annuel”.
+   - Sous l’horloge : lister les items renvoyés par todayTasks(now) avec une case à cocher ; cocher = markDone(key, YYYY-MM-DD).
+   - Les cases reflètent l’état via isDone().
+
+3) Journal : solidifier l’initialisation
+   - Attacher l’init au DOMContentLoaded et à l’entrée sur l’onglet Journal.
+   - Null-guards (si un sélecteur manque, ne rien faire plutôt que planter).
+   - Tasbih : boutons +/−, persistance clé 'tasbihCount'.
+   - Cases journalières (.jp) : clé 'jp:YYYY-MM-DD'.
+   - Note du jour #note : clé 'note:YYYY-MM-DD'.
+   - Ajouter, les vendredis uniquement, une sous-section “Duʿāʾ al-Mayyit” (après chaque prière) avec 5 cases (Fajr→ʿIshāʾ) persistant sous clés 'mayyit:YYYY-MM-DD:Fajr' etc.
+
+4) Ne pas casser la mise en page : réutiliser les conteneurs existants, ou créer des <div id="focus-list"> / <div id="journal-zikr"> sobres si besoin.
+
+5) Donner la liste des fichiers modifiés.
