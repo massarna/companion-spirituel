@@ -738,43 +738,90 @@
 
       // Qibla (Kaaba)
       const MECCA = { lat: 21.4225, lon: 39.8262 };
-      const DEFAULT = { lat: 11.186, lon: -4.29 }; // Bobo-Dioulasso
-      function toRad(x) {
-        return (x * Math.PI) / 180;
+      const DEFAULT_BOBO = { lat: 11.186, lon: -4.29 }; // Bobo-Dioulasso
+
+      // Fonctions utilitaires pour la géolocalisation
+      function toRad(degrees) {
+        return (degrees * Math.PI) / 180;
       }
-      function toDeg(x) {
-        return (x * 180) / Math.PI;
+      
+      function toDeg(radians) {
+        return (radians * 180) / Math.PI;
       }
-      function bearing(from, to) {
-        const φ1 = toRad(from.lat),
-          φ2 = toRad(to.lat),
-          Δλ = toRad(to.lon - from.lon);
+      
+      // Calcul du bearing (cap) entre deux points géographiques
+      function calculateBearing(fromPos, toPos) {
+        const φ1 = toRad(fromPos.lat);
+        const φ2 = toRad(toPos.lat);
+        const Δλ = toRad(toPos.lon - fromPos.lon);
+        
         const y = Math.sin(Δλ) * Math.cos(φ2);
-        const x =
-          Math.cos(φ1) * Math.sin(φ2) -
-          Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
-        return (toDeg(Math.atan2(y, x)) + 360) % 360;
+        const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+        
+        const bearing = (toDeg(Math.atan2(y, x)) + 360) % 360;
+        return bearing;
       }
-      function setQibla(pos, label = "Par défaut : Bobo-Dioulasso") {
-        const ang = bearing(pos, MECCA);
-        $("#qibla-arrow").style.transform =
-          `translate(-50%,-80%) rotate(${ang}deg)`;
-        $("#qibla-angle-label").textContent = `Qibla ${ang.toFixed(1)}°`;
-        $("#qibla-text").textContent = label;
+      
+      // Mettre à jour la direction de la Qibla
+      function updateQiblaDirection(position, locationLabel = "Par défaut : Bobo-Dioulasso") {
+        const bearing = calculateBearing(position, MECCA);
+        const roundedAngle = Math.round(bearing * 10) / 10; // Arrondi à 0.1°
+        
+        // Rotation de la flèche
+        $("#qibla-arrow").style.transform = `translate(-50%,-80%) rotate(${bearing}deg)`;
+        
+        // Affichage de l'angle
+        $("#qibla-angle-label").textContent = `Qibla ${roundedAngle}°`;
+        $("#qibla-text").textContent = `${locationLabel} - Direction : ${roundedAngle}°`;
       }
-      setQibla(DEFAULT);
+      
+      // Initialisation avec la position par défaut
+      updateQiblaDirection(DEFAULT_BOBO);
+      
+      // Géolocalisation au clic
       $("#btn-geo").addEventListener("click", () => {
         if (!navigator.geolocation) {
-          alert("Géolocalisation non disponible.");
+          alert("Géolocalisation non disponible sur ce navigateur.");
           return;
         }
+        
+        // Options de géolocalisation
+        const options = {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // 5 minutes
+        };
+        
+        $("#qibla-text").textContent = "Localisation en cours...";
+        
         navigator.geolocation.getCurrentPosition(
-          (p) =>
-            setQibla(
-              { lat: p.coords.latitude, lon: p.coords.longitude },
-              "Position actuelle",
-            ),
-          (_) => alert("Accès à la position refusé."),
+          (position) => {
+            const coords = {
+              lat: position.coords.latitude,
+              lon: position.coords.longitude
+            };
+            updateQiblaDirection(coords, "Position actuelle");
+          },
+          (error) => {
+            console.error("Erreur géolocalisation:", error);
+            let errorMsg = "Accès à la position refusé";
+            
+            switch(error.code) {
+              case error.PERMISSION_DENIED:
+                errorMsg = "Permission de géolocalisation refusée";
+                break;
+              case error.POSITION_UNAVAILABLE:
+                errorMsg = "Position indisponible";
+                break;
+              case error.TIMEOUT:
+                errorMsg = "Délai de localisation dépassé";
+                break;
+            }
+            
+            alert(errorMsg + ". Utilisation de la position par défaut.");
+            updateQiblaDirection(DEFAULT_BOBO);
+          },
+          options
         );
       });
 
