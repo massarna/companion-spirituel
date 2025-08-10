@@ -431,6 +431,24 @@
 
     <!-- 3) App Controller (horloge, onglets, prières, charts, qibla) -->
     <script type="module">
+      // --- Fallback localStorage ---
+      if (!window.storageAPI) {
+        window.storageAPI = {
+          storageGet: async (key, defVal) => {
+            try { const v = localStorage.getItem(key); return v == null ? defVal : JSON.parse(v); }
+            catch { return defVal; }
+          },
+          storageSet: async (key, val) => { localStorage.setItem(key, JSON.stringify(val)); return true; },
+          storageRemove: async (key) => { localStorage.removeItem(key); return true; },
+          storageSubscribe: (key, cb) => {
+            const h = (e) => { if (e.key === key) cb(e.newValue ? JSON.parse(e.newValue) : null); };
+            window.addEventListener('storage', h); return () => window.removeEventListener('storage', h);
+          }
+        };
+        console.log('[Compagnon] fallback storage ready');
+      }
+      // -----------------------------
+
       // util
       const $ = (s, r = document) => r.querySelector(s);
       const $$ = (s, r = document) => [...r.querySelectorAll(s)];
