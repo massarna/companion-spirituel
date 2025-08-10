@@ -1,0 +1,127 @@
+Contexte projet
+- Application monopage (index.html) avec Tailwind, Chart.js, Moment + moment-hijri.
+- Je veux REFAIRE UNIQUEMENT la page “Programme” (#tab-panel-program) pour qu’elle corresponde à mon ancienne maquette (capture fournie) + intégrer mes 4 zikrs personnels.
+- Police arabe souhaitée : Amiri/Amiri Quran. Les textes arabes doivent être en rtl avec une ligne confortable.
+
+Objectif
+Refactoriser #tab-panel-program pour contenir, dans cet ordre:
+1) Programme Détaillé Jour par Jour (7 cartes avec le contenu EXACT ci-dessous)
+2) Mes Zikrs Personnalisés (4 cartes avec mes règles et badges conditionnels)
+3) Formules de Zikr à Réciter + Pratique des Invocations Spéciales (reprendre l’existant et le replacer ici)
+
+NE RIEN MODIFIER ailleurs (Accueil, Lectures, Journal, etc.). Garder le style “cartes blanches, coins 2xl, ombre”.
+
+----------------------------------------------------------------
+A) Structure HTML (insérer/remplacer DANS #tab-panel-program)
+----------------------------------------------------------------
+<section id="program-daily" class="mb-12">
+  <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Programme Détaillé Jour par Jour</h2>
+  <div id="program-daily-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+</section>
+
+<section id="personal-zikr" class="mb-12">
+  <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Mes Zikrs Personnalisés</h2>
+  <div id="personal-zikr-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6"></div>
+</section>
+
+<!-- Sous ces deux sections, replacer les deux blocs existants -->
+<section id="zikr-formulas" class="mb-12"><!-- Formules de Zikr à Réciter (3 cartes) --></section>
+<section id="special-invocations" class="mb-12"><!-- Pratique des Invocations Spéciales (2 cartes) --></section>
+
+Si la classe utilitaire .arabic-text n’existe pas, ajoute-la:
+.arabic-text{ direction:rtl; text-align:right; font-family:"Amiri Quran","Amiri",serif; line-height:2; }
+
+----------------------------------------------------------------
+B) Programme Détaillé Jour par Jour – CONTENU EXACT
+----------------------------------------------------------------
+Créer 7 cartes (bg-white rounded-2xl shadow-lg p-6 space-y-3). Titre jour: class "text-2xl font-bold text-[#6A4A3C]".
+Texte en <p> simple. Contenu:
+
+1) Dimanche
+- Nuit : 4 rak’at (1 Fātiḥa + 3 Ikhlāṣ) | Zikr : 70 Istighfār.
+- Jour : 4 rak’at (1 Fātiḥa + 1 Kāfirūn) | Zikr : 10 Ikhlāṣ.
+
+2) Lundi
+- Nuit : 2 rak’at (1 Fātiḥa + 15 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās).
+- Jour : 2 rak’at (1 Fātiḥa + 1 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 10 Istighfār + 10 Ṣalāt.
+
+3) Mardi
+- Nuit : 6 rak’at (1 Fātiḥa + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 70 Tawḥīd.
+- Jour : 10 rak’at (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ).
+
+4) Mercredi
+- Nuit : 4 rak’at (1 Fātiḥa + 40 Ikhlāṣ) | Zikr : 70 Istighfār.
+- Jour : 4 rak’at (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ + 1 Falaq + 1 Nās).
+
+5) Jeudi
+- Nuit : 8 rak’at (1 Fātiḥa + 10 Ikhlāṣ) | Zikr : 100 Formule du Jeudi.
+- Jour : 4 rak’at (1 Fātiḥa + 5 Naṣr + 50 Kawthar) | Zikr : 10 Istighfār.
+
+6) Vendredi
+- Nuit : 4 rak’at (1 Fātiḥa + 50 Zalzalah).
+- Jour : 2 rak’at (1ʳᵉ : 1 Fātiḥa + 1 Āyat al-Kursī + 25 Falaq ; 2ᵉ : 1 Fātiḥa + 1 Ikhlāṣ + 25 Nās) | Zikr : 50 Formule du Vendredi.
+
+7) Samedi
+- Nuit : 6 rak’at (1 Fātiḥa + 3 Ikhlāṣ).
+- Jour : 4 rak’at (1 Fātiḥa + 3 Kāfirūn) | Zikr : 3 Āyat al-Kursī.
+
+----------------------------------------------------------------
+C) Mes Zikrs Personnalisés – 4 CARTES
+----------------------------------------------------------------
+Gabarit carte: bg-white rounded-2xl shadow-lg p-6 flex flex-col justify-between.
+Sous-titre/périodicité en gris (#64748b). Compteur grand: "text-3xl font-bold".
+Texte arabe: <p class="arabic-text text-lg mt-2"></p>.
+Badges conditionnels: span.inline-flex.rounded-full.bg-emerald-100.text-emerald-700.text-xs.px-2.py-0.5
+
+Données et règles EXACTES:
+1) Istighfār Quotidien
+   - Compteur: 1261×
+   - Périodicité: "Tous les jours"
+   - Arabe: "أستغفرُ الله"
+   - Badge: "Quotidien" (toujours)
+2) Ṣalāt sur le Prophète (ﷺ)
+   - Compteur: 313×
+   - Périodicité: "Chaque vendredi"
+   - Arabe: "اللهم صلِّ على سيدِنا محمدٍ وعلى آله وصحبه وسلم"
+   - SI jour == vendredi => badge "Aujourd’hui"
+3) Hasbunallah
+   - Compteur: 450×
+   - Périodicité: "Chaque mercredi (nuit)"
+   - Arabe: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ"
+   - SI jour == mercredi => badge "Ce soir"
+4) Du‘ā pour les défunts
+   - Périodicité: "Après chaque prière du vendredi"
+   - Arabe: "اللَّهُمَّ اغْفِرْ لِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ الأَحْيَاءِ مِنْهُمْ وَالأَمْوَاتِ"
+   - SI jour == vendredi => badge "À chaque ṣalāt"
+
+Implémentation JS:
+- Créer un array personalZikr = [{id, title, count?, periodicity, arabic, condition: 'daily'|'friday'|'wednesday'|'friday-every-prayer'}].
+- Utiliser moment().day() pour connaître le jour (0=dimanche…6=samedi).
+- Générer #personal-zikr-grid depuis personalZikr, en ajoutant les badges si condition satisfaite.
+- Idempotent: vider les conteneurs avant d’injecter pour éviter les doublons.
+
+----------------------------------------------------------------
+D) Formules de Zikr + Invocations Spéciales
+----------------------------------------------------------------
+Reprendre SANS MODIFIER le contenu déjà présent dans l’ancienne page:
+- “Formules de Zikr à Réciter” (3 cartes: Tawḥīd, Formule du Jeudi Soir, Formule du Vendredi) avec leurs textes arabes/styling couleur (ex bleu/jaune/orange).
+- “Pratique des Invocations Spéciales” (2 cartes: Litanie d’amour du Prophète ﷺ + Invocation protectrice avant le sommeil) avec listes et paragraphes arabes.
+
+----------------------------------------------------------------
+E) Styles & accessibilité
+----------------------------------------------------------------
+- Cartes: bg-white rounded-2xl shadow-lg p-6
+- Titres sections: teal #00A0B0
+- Titres cartes: #6A4A3C
+- Textes arabes: classe .arabic-text (rtl + Amiri + line-height 2)
+- Grilles responsive: grid-cols-1 md:grid-cols-2 xl:grid-cols-3 (ou 4 pour les zikrs)
+
+----------------------------------------------------------------
+F) Critères d’acceptation
+----------------------------------------------------------------
+- L’onglet Programme affiche:
+  (1) “Programme Détaillé Jour par Jour” avec EXACTEMENT les textes ci-dessus;
+  (2) “Mes Zikrs Personnalisés” avec 4 cartes et badges conditionnels vendredi/mercredi;
+  (3) Les deux sous-sections “Formules de Zikr” et “Pratique des Invocations Spéciales” replacées en bas, identiques à l’ancienne version.
+- Police Amiri/Amiri Quran appliquée aux arabes, direction rtl correcte.
+- Pas d’impact visuel/code sur les autres onglets.
