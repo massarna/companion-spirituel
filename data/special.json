@@ -1,0 +1,21 @@
+
+{
+  "sourates": [
+    "Al-Fatiha (L'Ouverture)",
+    "Yasin (Ya-Sin)",
+    "Ad-Dukhan (La Fumée)",
+    "Al-Waqiah (L'Événement)",
+    "Al-Mulk (La Royauté)",
+    "Al-Insan (L'Homme)",
+    "Al-Buruj (Les Constellations)"
+  ],
+  "dua": "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+  "dua_fr": "Ô Allah, aide-moi à T'invoquer, à Te remercier et à T'adorer de la meilleure manière.",
+  "description": "Lecture spirituelle quotidienne recommandée pour l'élévation de l'âme et la proximité avec Allah.",
+  "recommendations": [
+    "Réciter ces sourates avec méditation et présence du cœur",
+    "Préférer les moments de calme (après Fajr ou avant Maghrib)",
+    "Accompagner la récitation d'invocations et de dhikr",
+    "Réfléchir aux enseignements et messages contenus"
+  ]
+}

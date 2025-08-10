@@ -778,6 +778,190 @@
         );
       });
 
+      // Lectures: gestion du contenu JSON
+      let currentLectureData = null;
+      let currentLecturePage = 0;
+      const ITEMS_PER_PAGE = 20;
+
+      // Charger et afficher le contenu des lectures
+      async function loadLecture(type) {
+        try {
+          const response = await fetch(`./data/${type}.json`);
+          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+          
+          currentLectureData = await response.json();
+          currentLecturePage = 0;
+          
+          renderLectureContent(type);
+          
+        } catch (error) {
+          console.error('[Lectures] Erreur de chargement:', error);
+          $("#lect-content").innerHTML = `
+            <div class="text-red-600 p-4 rounded-lg bg-red-50">
+              <p><strong>Erreur de chargement</strong></p>
+              <p>Impossible de charger le contenu "${type}". Vérifiez que le fichier existe.</p>
+            </div>
+          `;
+        }
+      }
+
+      // Rendre le contenu selon le type
+      function renderLectureContent(type) {
+        if (!currentLectureData) return;
+
+        const contentEl = $("#lect-content");
+        
+        if (type === 'kahf') {
+          renderKahfContent(contentEl);
+        } else if (type === 'special') {
+          renderSpecialContent(contentEl);
+        }
+      }
+
+      // Rendre la sourate Al-Kahf avec pagination
+      function renderKahfContent(contentEl) {
+        const data = currentLectureData;
+        const startIndex = currentLecturePage * ITEMS_PER_PAGE;
+        const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, data.length);
+        const pageData = data.slice(startIndex, endIndex);
+
+        let html = `
+          <div class="mb-6">
+            <h3 class="text-2xl font-semibold mb-2 title">Sourate Al-Kahf (La Caverne)</h3>
+            <p class="text-slate-600 mb-4">Versets ${startIndex + 1} à ${endIndex} sur ${data.length}</p>
+          </div>
+          <div class="space-y-6">
+        `;
+
+        pageData.forEach(verse => {
+          html += `
+            <div class="border-l-4 border-emerald-200 pl-4 py-3">
+              <div class="flex items-start gap-2 mb-2">
+                <span class="inline-flex items-center justify-center w-6 h-6 bg-emerald-100 text-emerald-800 text-sm font-bold rounded-full">${verse.ayah}</span>
+              </div>
+              <div class="text-right text-2xl leading-loose font-arabic mb-3" style="font-family: 'Amiri', serif;">${verse.ar}</div>
+              <div class="text-slate-700 leading-relaxed">${verse.fr}</div>
+            </div>
+          `;
+        });
+
+        html += '</div>';
+
+        // Boutons de pagination si nécessaire
+        if (data.length > ITEMS_PER_PAGE) {
+          const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
+          html += `
+            <div class="flex justify-center gap-3 mt-8">
+              <button id="prev-page" class="px-4 py-2 rounded-lg border ${currentLecturePage === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}">
+                Précédent
+              </button>
+              <span class="px-4 py-2 text-slate-600">
+                Page ${currentLecturePage + 1} sur ${totalPages}
+              </span>
+              <button id="next-page" class="px-4 py-2 rounded-lg border ${currentLecturePage >= totalPages - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}">
+                Suivant
+              </button>
+            </div>
+          `;
+        }
+
+        contentEl.innerHTML = html;
+        
+        // Brancher les événements de pagination
+        setupPagination();
+      }
+
+      // Rendre le contenu spécial quotidien
+      function renderSpecialContent(contentEl) {
+        const data = currentLectureData;
+        
+        let html = `
+          <div class="mb-6">
+            <h3 class="text-2xl font-semibold mb-2 title">Lecture Spirituelle Quotidienne</h3>
+            <p class="text-slate-600 mb-4">${data.description}</p>
+          </div>
+          
+          <div class="bg-emerald-50 p-6 rounded-xl mb-6">
+            <h4 class="font-semibold mb-3 text-emerald-800">Invocation du jour</h4>
+            <div class="text-right text-xl leading-loose font-arabic mb-3" style="font-family: 'Amiri', serif;">${data.dua}</div>
+            <div class="text-slate-700">${data.dua_fr}</div>
+          </div>
+
+          <div class="mb-6">
+            <h4 class="font-semibold mb-3">Sourates recommandées</h4>
+            <div class="grid sm:grid-cols-2 gap-2">
+        `;
+
+        data.sourates.forEach((sourate, index) => {
+          html += `
+            <div class="p-3 bg-slate-50 rounded-lg text-sm">
+              <span class="font-medium">${index + 1}.</span> ${sourate}
+            </div>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+
+          <div class="bg-blue-50 p-6 rounded-xl">
+            <h4 class="font-semibold mb-3 text-blue-800">Conseils de lecture</h4>
+            <ul class="space-y-2">
+        `;
+
+        data.recommendations.forEach(rec => {
+          html += `<li class="flex items-start gap-2"><span class="text-blue-600 mt-1">•</span><span class="text-slate-700">${rec}</span></li>`;
+        });
+
+        html += `
+            </ul>
+          </div>
+        `;
+
+        contentEl.innerHTML = html;
+      }
+
+      // Configuration des boutons de pagination
+      function setupPagination() {
+        const prevBtn = $("#prev-page");
+        const nextBtn = $("#next-page");
+        
+        if (prevBtn) {
+          prevBtn.addEventListener("click", () => {
+            if (currentLecturePage > 0) {
+              currentLecturePage--;
+              renderLectureContent('kahf');
+            }
+          });
+        }
+        
+        if (nextBtn) {
+          nextBtn.addEventListener("click", () => {
+            const totalPages = Math.ceil(currentLectureData.length / ITEMS_PER_PAGE);
+            if (currentLecturePage < totalPages - 1) {
+              currentLecturePage++;
+              renderLectureContent('kahf');
+            }
+          });
+        }
+      }
+
+      // Gestion des boutons de sélection des lectures
+      $$('[data-lect]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Mise à jour visuelle des boutons
+          $$('[data-lect]').forEach(b => b.setAttribute('aria-pressed', 'false'));
+          btn.setAttribute('aria-pressed', 'true');
+          
+          // Chargement du contenu
+          const lectureType = btn.dataset.lect;
+          loadLecture(lectureType);
+        });
+      });
+
+      // Chargement initial de Al-Kahf
+      loadLecture('kahf');
+
       // Icônes lucide
       window.lucide?.createIcons();
     </script>
