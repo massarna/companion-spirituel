@@ -1094,29 +1094,61 @@
       <!-- Lectures -->
       <section data-page="lectures" class="hidden">
         <div class="card">
-          <h2 class="title text-2xl mb-4">Lectures</h2>
-          <div class="flex gap-2 mb-4" id="lecture-tabs">
+          <h2 class="title text-2xl mb-4">Lectures Spirituelles</h2>
+          
+          <!-- Onglets modernisés avec menu français -->
+          <div class="flex flex-wrap gap-3 mb-6" id="lecture-tabs">
             <button
-              class="px-3 py-1.5 rounded-lg border"
+              class="tab-btn px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
               data-lect="arabic"
               aria-pressed="true"
             >
-              القرآن الكريم
+              <div class="flex items-center gap-2">
+                <span class="text-lg">📖</span>
+                <div class="text-left">
+                  <div class="font-bold">Coran</div>
+                  <div class="text-xs opacity-80">القرآن الكريم</div>
+                </div>
+              </div>
             </button>
-            <button class="px-3 py-1.5 rounded-lg border" data-lect="special">
-              القراءة الخاصة اليومية
+            <button 
+              class="tab-btn px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300" 
+              data-lect="special"
+            >
+              <div class="flex items-center gap-2">
+                <span class="text-lg">✨</span>
+                <div class="text-left">
+                  <div class="font-bold">Lecture Quotidienne</div>
+                  <div class="text-xs opacity-80">القراءة الخاصة</div>
+                </div>
+              </div>
             </button>
           </div>
 
-          <!-- Sélection des sourates (affiché quand onglet arabe est actif) -->
-          <div id="surah-selector" class="mb-4">
-            <select id="surah-select" class="border rounded-lg px-3 py-2 text-lg">
-              <option value="">اختر سورة...</option>
+          <!-- Sélection des sourates avec design modernisé -->
+          <div id="surah-selector" class="mb-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-gradient-islamic rounded-full flex items-center justify-center shadow-lg">
+                <span class="text-white text-lg">📚</span>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-800">Choisissez une sourate</h3>
+                <p class="text-sm text-slate-600">Sélectionnez le chapitre à réciter</p>
+              </div>
+            </div>
+            <select id="surah-select" class="w-full border-2 border-slate-200 rounded-xl px-4 py-3 text-lg font-medium focus:border-islamic-green focus:ring-4 focus:ring-emerald-100 transition-all duration-300">
+              <option value="">— Sélectionnez une sourate —</option>
             </select>
           </div>
 
           <div id="lect-content" class="max-w-none">
-            <p class="text-center text-slate-500">اختر قراءة</p>
+            <div class="text-center py-12">
+              <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span class="text-white text-2xl">📖</span>
+              </div>
+              <p class="text-slate-500 text-lg">Choisissez une lecture ci-dessus</p>
+              <p class="text-slate-400 text-sm mt-2">اختر قراءة من الأعلى</p>
+            </div>
           </div>
         </div>
       </section>
@@ -1296,28 +1328,44 @@
           <!-- Compteur Tasbih modernisé -->
           <div class="journal-section">
             <div class="tasbih-section">
-              <div class="flex items-center justify-center gap-3 mb-4">
-                <div class="w-12 h-12 bg-gradient-warm rounded-full flex items-center justify-center shadow-lg">
-                  <span class="text-2xl">📿</span>
-                </div>
-                <div class="text-center">
-                  <h3 class="text-xl font-bold text-slate-800">سُبْحَان اللّهِ</h3>
-                  <p class="text-muted">Compteur de Dhikr</p>
+              <!-- En-tête centré -->
+              <div class="text-center mb-6">
+                <div class="inline-flex items-center gap-3 mb-4">
+                  <div class="w-12 h-12 bg-gradient-warm rounded-full flex items-center justify-center shadow-lg">
+                    <span class="text-2xl">📿</span>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-bold text-slate-800">سُبْحَان اللّهِ</h3>
+                    <p class="text-muted">Compteur de Dhikr</p>
+                  </div>
                 </div>
               </div>
               
-              <div class="tasbih-counter" id="tasbih-counter-display">0</div>
+              <!-- Compteur centré -->
+              <div class="text-center mb-8">
+                <div class="tasbih-counter" id="tasbih-counter-display">0</div>
+                <p class="text-muted mt-2">invocations comptées</p>
+              </div>
               
-              <button id="tasbih-counter-btn" class="tasbih-button">
-                <div class="text-center">
-                  <div class="text-2xl mb-2">اذْكُر</div>
-                  <div class="text-sm opacity-90">Invoquer</div>
-                </div>
-              </button>
+              <!-- Bouton principal centré -->
+              <div class="text-center mb-6">
+                <button id="tasbih-counter-btn" class="tasbih-button">
+                  <div class="text-center">
+                    <div class="text-2xl mb-2">اذْكُر</div>
+                    <div class="text-sm opacity-90">Invoquer</div>
+                  </div>
+                </button>
+              </div>
               
-              <button id="tasbih-reset-btn" class="text-muted hover:text-red-500 underline transition-colors duration-300 mt-4">
-                ↻ Réinitialiser
-              </button>
+              <!-- Bouton reset centré -->
+              <div class="text-center">
+                <button id="tasbih-reset-btn" class="inline-flex items-center gap-2 text-muted hover:text-red-500 underline transition-colors duration-300">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                  </svg>
+                  Réinitialiser le compteur
+                </button>
+              </div>
             </div>
           </div>
 
@@ -2193,10 +2241,23 @@
       // Remplir le sélecteur de sourates
       function populateSurahSelector() {
         const select = $("#surah-select");
-        let html = '<option value="">اختر سورة...</option>';
+        let html = '<option value="">— Sélectionnez une sourate —</option>';
+
+        // Mapping des noms français pour les sourates
+        const frenchNames = {
+          'fatiha': 'Al-Fatiha (L\'Ouverture)',
+          'kahf': 'Al-Kahf (La Caverne)',
+          'yasin': 'Ya-Sin',
+          'dukhan': 'Ad-Dukhan (La Fumée)',
+          'waqiah': 'Al-Waqiah (L\'Événement)',
+          'mulk': 'Al-Mulk (La Royauté)',
+          'insan': 'Al-Insan (L\'Homme)',
+          'buruj': 'Al-Buruj (Les Constellations)'
+        };
 
         Object.entries(availableSurahs).forEach(([key, surah]) => {
-          html += `<option value="${key}">${surah.title}</option>`;
+          const frenchName = frenchNames[key] || key;
+          html += `<option value="${key}">${frenchName} - ${surah.title}</option>`;
         });
 
         select.innerHTML = html;
@@ -2235,7 +2296,8 @@
           contentEl.innerHTML = `
             <div class="text-center py-8">
               <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-slate-600 rounded-full mb-4"></div>
-              <p class="text-slate-600">جاري التحميل...</p>
+              <p class="text-slate-600">Chargement en cours...</p>
+              <p class="text-slate-400 text-sm mt-1">جاري التحميل...</p>
             </div>
           `;
 
@@ -2251,9 +2313,13 @@
         } catch (error) {
           console.error('[Lectures] Erreur chargement sourate:', error);
           contentEl.innerHTML = `
-            <div class="text-red-600 p-4 rounded-lg bg-red-50 text-center">
-              <p><strong>خطأ في التحميل</strong></p>
-              <p>لا يمكن تحميل هذه السورة</p>
+            <div class="text-red-600 p-6 rounded-xl bg-red-50 text-center border border-red-200">
+              <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-red-600 text-xl">⚠️</span>
+              </div>
+              <p class="font-semibold text-red-800 mb-2">Erreur de chargement</p>
+              <p class="text-red-600">Impossible de charger cette sourate</p>
+              <p class="text-red-500 text-sm mt-2">لا يمكن تحميل هذه السورة</p>
             </div>
           `;
         }
@@ -2342,7 +2408,15 @@
 
             if (lectureType === 'arabic') {
               surahSelector.style.display = 'block';
-              $("#lect-content").innerHTML = '<p class="text-center text-slate-500">اختر سورة من القائمة أعلاه</p>';
+              $("#lect-content").innerHTML = `
+                <div class="text-center py-12">
+                  <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-white text-2xl">📖</span>
+                  </div>
+                  <p class="text-slate-500 text-lg">Choisissez une sourate ci-dessus</p>
+                  <p class="text-slate-400 text-sm mt-2">اختر سورة من القائمة أعلاه</p>
+                </div>
+              `;
             } else if (lectureType === 'special') {
               surahSelector.style.display = 'none';
               loadSpecialContent();
@@ -2356,7 +2430,15 @@
           if (selectedSurah) {
             loadSurah(selectedSurah);
           } else {
-            $("#lect-content").innerHTML = '<p class="text-center text-slate-500">اختر سورة من القائمة</p>';
+            $("#lect-content").innerHTML = `
+              <div class="text-center py-12">
+                <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <span class="text-white text-2xl">📖</span>
+                </div>
+                <p class="text-slate-500 text-lg">Choisissez une sourate ci-dessus</p>
+                <p class="text-slate-400 text-sm mt-2">اختر سورة من القائمة</p>
+              </div>
+            `;
           }
         });
       }
