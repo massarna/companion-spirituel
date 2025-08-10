@@ -484,16 +484,18 @@
                   </label>
                 </div>
 
-                <h3 class="font-semibold mb-2 mt-6">Compteur Tasbih</h3>
+                <div>
+                <h3 class="text-2xl font-bold text-[#00A0B0] mb-4">Compteur Tasbih</h3>
                 <div class="text-center">
-                  <div id="tasbih-value" class="text-8xl font-mono text-[#6A4A3C] mb-4">0</div>
-                  <button id="tasbih-btn" class="tasbih-btn bg-[#00A0B0] text-white rounded-full w-40 h-40 flex items-center justify-center text-2xl font-bold shadow-xl mx-auto mb-4 transition-transform duration-100 active:scale-95">
+                  <div id="tasbih-counter-display" class="text-8xl font-mono text-[#6A4A3C] mb-4">0</div>
+                  <button id="tasbih-counter-btn" class="bg-[#00A0B0] text-white rounded-full w-40 h-40 flex items-center justify-center text-2xl font-bold shadow-xl mx-auto mb-4 transition-transform duration-100 active:scale-95 hover:bg-[#007A8A]">
                     Compter
                   </button>
-                  <button id="tasbih-reset" class="text-sm text-gray-500 hover:text-red-500">
+                  <button id="tasbih-reset-btn" class="text-sm text-gray-500 hover:text-red-500 underline">
                     Réinitialiser
                   </button>
                 </div>
+              </div>
               </div>
 
               <div>
@@ -850,7 +852,7 @@
           const today = moment().format("YYYY-MM-DD");
 
           // Charger le compteur tasbih
-          const $count = $("#tasbih-value");
+          const $count = $("#tasbih-counter-display");
           if ($count) {
             const count = await api.storageGet("tasbihCount", 0);
             $count.textContent = count;
@@ -900,9 +902,9 @@
 
       function setupJournalEventListeners() {
         // Event listeners pour le tasbih avec garde-fous
-        const $tasbihBtn = $("#tasbih-btn");
-        const $tasbihReset = $("#tasbih-reset");
-        const $tasbihValue = $("#tasbih-value");
+        const $tasbihBtn = $("#tasbih-counter-btn");
+        const $tasbihReset = $("#tasbih-reset-btn");
+        const $tasbihValue = $("#tasbih-counter-display");
 
         if ($tasbihBtn) {
           $tasbihBtn.addEventListener("click", async () => {
