@@ -24,6 +24,22 @@
     });
   }
 </script>
+<script type="module">
+  import "./config.js";
+  import { storageGet, storageSet } from "./storage.js";
+
+  // Exemple tasbih: incrémenter et lire
+  async function initTasbihDemo() {
+    const count = await storageGet("tasbihCount", 0);
+    // si tu as un compteur à l’écran, remplace ces lignes par ton propre code d’affichage
+    console.log("Tasbih actuel =", count);
+
+    // Exemple d'écriture:
+    // await storageSet("tasbihCount", count + 1);
+  }
+
+  initTasbihDemo();
+</script>
 
         body {
             font-family: 'Lato', sans-serif;
