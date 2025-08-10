@@ -26,17 +26,28 @@
     <!-- CSS uniquement -->
     <style>
       :root {
-        --bg: #fdfaf6;
-        --card: #ffffff;
-        --ink: #3b2f2f;
-        --muted: #a58f86;
-        --brand: #ea5b3c;
-        --ring: #10b981;
+        --bg: linear-gradient(135deg, #fdfbf7 0%, #f7f3ed 100%);
+        --card: rgba(255, 255, 255, 0.95);
+        --card-hover: rgba(255, 255, 255, 0.98);
+        --ink: #2c1810;
+        --muted: #8b7355;
+        --brand: #d97706;
+        --ring: #059669;
+        --gold: #f59e0b;
+        --islamic-green: #00a86b;
+        --warm-white: #fefcf9;
+        --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.08);
+        --shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.15);
+        --gradient-islamic: linear-gradient(135deg, #00a86b 0%, #059669 100%);
+        --gradient-warm: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --border-soft: rgba(139, 115, 85, 0.2);
       }
+      
       html,
       body {
         height: 100%;
         background: var(--bg);
+        background-attachment: fixed;
         font-family:
           "Lato",
           system-ui,
@@ -48,63 +59,126 @@
           "Noto Sans",
           "Liberation Sans",
           sans-serif;
+        color: var(--ink);
       }
+      
       .title {
         font-family: "Amiri", serif;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
+      
       .clock {
         font-family: "Orbitron", monospace;
         letter-spacing: 0.06em;
+        background: var(--gradient-warm);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
+      
       .card {
         background: var(--card);
-        border-radius: 22px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-        padding: 1.25rem;
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--border-soft);
+        padding: 2rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
       }
+      
+      .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-islamic);
+        border-radius: 24px 24px 0 0;
+      }
+      
+      .card:hover {
+        background: var(--card-hover);
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-2px);
+      }
+      
+      .tab-btn {
+        position: relative;
+        padding: 0.75rem 1.5rem;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        color: var(--muted);
+        border: 1px solid transparent;
+      }
+      
       .tab-btn[aria-selected="true"] {
-        background: #fff;
-        color: #0f172a;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        background: var(--gradient-islamic);
+        color: white;
+        box-shadow: 0 8px 25px rgba(0, 168, 107, 0.3);
+        border-color: rgba(255, 255, 255, 0.2);
       }
+      
+      .tab-btn:hover:not([aria-selected="true"]) {
+        background: rgba(0, 168, 107, 0.1);
+        color: var(--islamic-green);
+        border-color: rgba(0, 168, 107, 0.2);
+      }
+      
       .badge {
-        background: #eef2ff;
-        color: #3730a3;
-        padding: 0.25rem 0.6rem;
+        background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+        color: #92400e;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
-        font-size: 0.8rem;
-        font-weight: 700;
+        font-size: 0.875rem;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        border: 1px solid rgba(251, 191, 36, 0.2);
       }
+      
       .qibla-rose {
-        width: 220px;
-        height: 220px;
+        width: 280px;
+        height: 280px;
         border-radius: 50%;
-        border: 8px solid #e5e7eb;
+        border: 12px solid var(--islamic-green);
+        background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(0,168,107,0.1) 100%);
         position: relative;
         margin: auto;
+        box-shadow: 0 20px 60px rgba(0, 168, 107, 0.2);
       }
+      
       .qibla-rose::after {
-        content: "N";
+        content: "الشمال";
         position: absolute;
-        top: -28px;
+        top: -40px;
         left: 50%;
         transform: translateX(-50%);
-        color: #6b7280;
+        color: var(--islamic-green);
         font-weight: 700;
+        font-family: "Amiri", serif;
+        font-size: 1.1rem;
       }
+      
       .qibla-arrow {
         position: absolute;
         width: 0;
         height: 0;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-bottom: 80px solid var(--ring);
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-bottom: 100px solid var(--islamic-green);
         left: 50%;
         top: 50%;
         transform-origin: 50% 90%;
         transform: translate(-50%, -80%) rotate(0deg);
-        filter: drop-shadow(0 6px 10px rgba(16, 185, 129, 0.35));
+        filter: drop-shadow(0 10px 20px rgba(0, 168, 107, 0.4));
       }
+      
       .sr-only {
         position: absolute;
         width: 1px;
@@ -117,138 +191,430 @@
         border: 0;
       }
       
-      /* Animations pour le Focus du jour */
-      @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
+      /* Animations spirituelles */
+      @keyframes breathe {
+        0%, 100% { transform: scale(1) translateY(0px); opacity: 0.9; }
+        50% { transform: scale(1.02) translateY(-3px); opacity: 1; }
       }
       
-      @keyframes glow {
-        0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
-        50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.5); }
+      @keyframes shimmer {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
       }
-
-      /* Amélioration des notifications spéciales */
+      
       .special-notification {
-        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 16px;
-        padding: 1rem 1.5rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 168, 107, 0.2);
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 15px 40px rgba(0, 168, 107, 0.1);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .special-notification::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 168, 107, 0.1), transparent);
+        animation: shimmer 3s infinite;
       }
 
       .special-notification:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+        transform: translateY(-3px);
+        box-shadow: 0 25px 60px rgba(0, 168, 107, 0.2);
+        border-color: rgba(0, 168, 107, 0.4);
       }
 
       .notification-icon {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 2rem;
-        height: 2rem;
+        width: 3rem;
+        height: 3rem;
         border-radius: 50%;
-        margin-right: 0.75rem;
-        font-size: 1rem;
+        margin-right: 1rem;
+        font-size: 1.25rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
       }
 
-      /* Styles pour le texte arabe */
+      /* Styles pour le texte arabe améliorés */
       .arabic-text {
-        font-family: "Amiri", serif;
-        font-size: 1.5rem;
-        line-height: 2.2;
+        font-family: "Amiri Quran", "Amiri", serif;
+        font-size: 1.75rem;
+        line-height: 2.5;
         direction: rtl;
         text-align: right;
         color: var(--ink);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       }
 
       .ayah-container {
-        background: #fafafa;
-        border-right: 4px solid var(--ring);
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        border-radius: 12px;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-right: 6px solid var(--islamic-green);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 168, 107, 0.1);
       }
 
       .ayah-number {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 2rem;
-        height: 2rem;
-        background: var(--ring);
+        width: 2.5rem;
+        height: 2.5rem;
+        background: var(--gradient-islamic);
         color: white;
         border-radius: 50%;
-        font-size: 0.875rem;
+        font-size: 1rem;
         font-weight: bold;
-        margin-left: 0.75rem;
-        margin-bottom: 0.5rem;
+        margin-left: 1rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 6px 20px rgba(0, 168, 107, 0.3);
       }
 
       .ayah-marker {
-        font-size: 0.9em;
-        margin: 0 0.25rem;
-        opacity: 0.8;
-        color: var(--ring);
+        font-size: 1rem;
+        margin: 0 0.5rem;
+        opacity: 0.9;
+        color: var(--islamic-green);
         font-weight: bold;
       }
 
-      .arabic-text {
-        direction: rtl;
-        text-align: right;
-        font-family: "Amiri Quran", "Amiri", serif;
-        line-height: 2;
+      /* Styles pour les cartes de prières modernisées */
+      .prayer-card {
+        background: var(--card);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border-soft);
+        border-radius: 20px;
+        padding: 1.5rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
       }
-
-      /* Styles spécifiques pour le nouveau Tasbih */
-      .tasbih-btn {
-        /* Couleurs et forme déjà définies inline pour la simplicité */
+      
+      .prayer-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--gradient-islamic);
+        border-radius: 20px 20px 0 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
-
-      /* Styles pour les cartes de prières */
+      
       .prayer-card.ring {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-        border-color: rgba(16, 185, 129, 0.3);
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
-        transform: translateY(-2px);
+        background: linear-gradient(135deg, rgba(0, 168, 107, 0.15) 0%, rgba(0, 168, 107, 0.05) 100%);
+        border-color: var(--islamic-green);
+        box-shadow: 0 0 30px rgba(0, 168, 107, 0.25);
+        transform: translateY(-3px) scale(1.02);
+        animation: breathe 3s infinite ease-in-out;
+      }
+      
+      .prayer-card.ring::before {
+        opacity: 1;
       }
 
       .prayer-card:hover {
-        transform: translateY(-1px);
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
       }
 
       .prayer-card.ring:hover {
-        transform: translateY(-3px);
+        transform: translateY(-4px) scale(1.02);
       }
 
-      /* Conteneur de lecture */
-      #surah-wrap{ max-width:62rem; margin-inline:auto; }
-
-      /* Titre et basmala */
-      #surah-title{ text-align:center; margin:.5rem 0 1rem; font-weight:700; color:#0e7490; }
-      .bismillah{ display:block; text-align:center; margin:.25rem 0 1.25rem; opacity:.95 }
-
-      /* Bloc de texte mushaf : un seul paragraphe */
-      .ayahs-block{
-        font-family:"Amiri Quran","Amiri",serif;
-        direction:rtl; text-align:justify; text-justify:inter-word;
-        font-size:1.35rem; line-height:2.6rem; color:#1f2937; word-break:break-word;
+      /* Conteneur de lecture modernisé */
+      #surah-wrap { 
+        max-width: 65rem; 
+        margin-inline: auto; 
+        background: var(--card);
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--border-soft);
       }
 
-      /* Pastille du numéro de verset (orange doux) */
-      .ayah-badge{
-        display:inline-block; min-width:1.45em; height:1.45em; line-height:1.45em;
-        margin:0 .35rem; border-radius:9999px; text-align:center;
-        font-size:.8rem; font-weight:700; color:#EB6841; background:#FFF3EE; outline:2px solid #F9D3C7;
-        vertical-align:middle; direction:ltr;
+      /* Titre et basmala modernisés */
+      #surah-title { 
+        text-align: center; 
+        margin: 1rem 0 2rem; 
+        font-weight: 700; 
+        font-size: 2.5rem;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-family: "Amiri", serif;
+      }
+      
+      .bismillah { 
+        display: block; 
+        text-align: center; 
+        margin: 1rem 0 2rem; 
+        font-size: 2rem;
+        color: var(--islamic-green);
+        text-shadow: 0 2px 8px rgba(0, 168, 107, 0.2);
       }
 
-      @media (max-width:480px){
-        .ayahs-block{ font-size:1.25rem; line-height:2.3rem; }
+      /* Bloc de texte mushaf modernisé */
+      .ayahs-block {
+        font-family: "Amiri Quran", "Amiri", serif;
+        direction: rtl; 
+        text-align: justify; 
+        text-justify: inter-word;
+        font-size: 1.5rem; 
+        line-height: 3rem; 
+        color: var(--ink); 
+        word-break: break-word;
+        background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(248,250,252,0.8) 100%);
+        padding: 2.5rem;
+        border-radius: 16px;
+        border: 1px solid var(--border-soft);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Pastille du numéro de verset modernisée */
+      .ayah-badge {
+        display: inline-block; 
+        min-width: 2em; 
+        height: 2em; 
+        line-height: 2em;
+        margin: 0 0.5rem; 
+        border-radius: 50%; 
+        text-align: center;
+        font-size: 0.9rem; 
+        font-weight: 700; 
+        color: white;
+        background: var(--gradient-warm);
+        box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+        vertical-align: middle; 
+        direction: ltr;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+      }
+
+      /* Styles spéciaux pour la page Journal */
+      .journal-section {
+        background: var(--card);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-soft);
+        box-shadow: var(--shadow-soft);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .journal-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-islamic);
+        border-radius: 24px 24px 0 0;
+      }
+      
+      .journal-section:hover {
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-2px);
+      }
+
+      .journal-title {
+        font-family: "Amiri", serif;
+        font-size: 2rem;
+        font-weight: 700;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+      }
+      
+      .journal-title::after {
+        content: '';
+        position: absolute;
+        bottom: -0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--gradient-warm);
+        border-radius: 2px;
+      }
+
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.9) 100%);
+        border-radius: 16px;
+        border: 1px solid var(--border-soft);
+        transition: all 0.3s ease;
+        margin-bottom: 0.75rem;
+      }
+      
+      .checkbox-container:hover {
+        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(0,168,107,0.02) 100%);
+        border-color: var(--islamic-green);
+        box-shadow: 0 8px 25px rgba(0, 168, 107, 0.1);
+      }
+      
+      .checkbox-container input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        accent-color: var(--islamic-green);
+        border-radius: 4px;
+      }
+      
+      .checkbox-container label {
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+        flex: 1;
+      }
+
+      .tasbih-section {
+        text-align: center;
+        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(245,158,11,0.05) 100%);
+        border-radius: 24px;
+        padding: 3rem;
+        border: 1px solid var(--border-soft);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .tasbih-section::before {
+        content: '﷽';
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        font-size: 1.5rem;
+        color: var(--islamic-green);
+        opacity: 0.3;
+      }
+
+      .tasbih-counter {
+        font-family: "Orbitron", monospace;
+        font-size: 6rem;
+        font-weight: 700;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 2rem 0;
+        text-shadow: 0 4px 20px rgba(0, 168, 107, 0.3);
+      }
+
+      .tasbih-button {
+        width: 12rem;
+        height: 12rem;
+        border-radius: 50%;
+        background: var(--gradient-islamic);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 20px 60px rgba(0, 168, 107, 0.3);
+        margin: 2rem auto;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .tasbih-button::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+        transform: scale(0);
+        transition: transform 0.6s ease;
+      }
+      
+      .tasbih-button:active::before {
+        transform: scale(1);
+      }
+      
+      .tasbih-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 30px 80px rgba(0, 168, 107, 0.4);
+      }
+      
+      .tasbih-button:active {
+        transform: scale(0.95);
+      }
+
+      .notes-textarea {
+        width: 100%;
+        min-height: 200px;
+        padding: 2rem;
+        border: 2px solid var(--border-soft);
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
+        font-family: "Lato", sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--ink);
+        resize: vertical;
+        transition: all 0.3s ease;
+      }
+      
+      .notes-textarea:focus {
+        outline: none;
+        border-color: var(--islamic-green);
+        box-shadow: 0 0 0 4px rgba(0, 168, 107, 0.1);
+        background: rgba(255, 255, 255, 0.98);
+      }
+      
+      .notes-textarea::placeholder {
+        color: var(--muted);
+        font-style: italic;
+      }
+
+      @media (max-width: 768px) {
+        .card {
+          padding: 1.5rem;
+        }
+        
+        .journal-section {
+          padding: 2rem;
+        }
+        
+        .tasbih-counter {
+          font-size: 4rem;
+        }
+        
+        .tasbih-button {
+          width: 10rem;
+          height: 10rem;
+          font-size: 1.25rem;
+        }
+        
+        .ayahs-block {
+          font-size: 1.25rem;
+          line-height: 2.3rem;
+          padding: 2rem;
+        }
       }
     </style>
   </head>
@@ -807,15 +1173,37 @@
       <!-- Journal -->
       <section data-page="journal" class="hidden">
         <div class="space-y-8" id="journal-container">
-          <!-- Export/Import des données -->
-          <div class="card bg-slate-50">
-            <h3 class="text-lg font-semibold mb-3">💾 Sauvegarde des données</h3>
-            <div class="flex flex-wrap gap-3">
+          
+          <!-- En-tête spirituel -->
+          <div class="text-center mb-8">
+            <h1 class="journal-title">مُذَكِّرَتِي الرُّوحِيَّة</h1>
+            <p class="text-lg text-muted font-medium">Mon Carnet Spirituel Quotidien</p>
+            <div class="mt-4 text-sm text-muted">
+              <span class="arabic-text text-base">﴿وَذَكِّرْ فَإِنَّ الذِّكْرَىٰ تَنفَعُ الْمُؤْمِنِينَ﴾</span>
+              <p class="mt-2 italic">"Et rappelle, car le rappel profite aux croyants"</p>
+            </div>
+          </div>
+
+          <!-- Export/Import des données modernisé -->
+          <div class="journal-section">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-slate-800">Sauvegarde des Données</h3>
+            </div>
+            
+            <div class="flex flex-wrap gap-4">
               <button
                 id="export-data"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl hover:from-blue-600 hover:to-cyan-600 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
-                📤 Exporter mes données
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                </svg>
+                Exporter mes données
               </button>
               <div class="flex items-center gap-2">
                 <input
@@ -826,60 +1214,156 @@
                 />
                 <button
                   id="import-data"
-                  class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+                  class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-xl hover:from-emerald-600 hover:to-green-600 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                 >
-                  📥 Importer des données
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                  </svg>
+                  Importer des données
                 </button>
               </div>
             </div>
-            <div id="import-status" class="mt-3 text-sm"></div>
+            <div id="import-status" class="mt-4 text-sm font-medium"></div>
           </div>
 
-          <div class="card">
-            <h2 class="title text-2xl mb-4">Journal quotidien</h2>
-            <div class="grid sm:grid-cols-2 gap-6">
+          <!-- Suivi des prières modernisé -->
+          <div class="journal-section">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-12 h-12 bg-gradient-islamic rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
               <div>
-                <h3 class="font-semibold mb-2">Prières</h3>
-                <div class="space-y-2">
-                  <label class="flex items-center gap-2">
-                    <input type="checkbox" class="jp" value="Fajr" /> Fajr
-                  </label>
-                  <label class="flex items-center gap-2">
-                    <input type="checkbox" class="jp" value="Dhuhr" /> Dhuhr
-                  </label>
-                  <label class="flex items-center gap-2">
-                    <input type="checkbox" class="jp" value="Asr" /> Asr
-                  </label>
-                  <label class="flex items-center gap-2">
-                    <input type="checkbox" class="jp" value="Maghrib" /> Maghrib
-                  </label>
-                  <label class="flex items-center gap-2">
-                    <input type="checkbox" class="jp" value="Isha" /> Isha
-                  </label>
-                </div>
+                <h3 class="text-xl font-bold text-slate-800">الصَّلَوَات الخَمس</h3>
+                <p class="text-muted">Les Cinq Prières Quotidiennes</p>
+              </div>
+            </div>
+            
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="checkbox-container">
+                <input type="checkbox" class="jp" value="Fajr" id="prayer-fajr" />
+                <label for="prayer-fajr">
+                  <div class="flex items-center justify-between w-full">
+                    <span class="font-semibold">الفجر - Fajr</span>
+                    <span class="text-sm text-muted">Aube</span>
+                  </div>
+                </label>
+              </div>
+              
+              <div class="checkbox-container">
+                <input type="checkbox" class="jp" value="Dhuhr" id="prayer-dhuhr" />
+                <label for="prayer-dhuhr">
+                  <div class="flex items-center justify-between w-full">
+                    <span class="font-semibold">الظهر - Dhuhr</span>
+                    <span class="text-sm text-muted">Midi</span>
+                  </div>
+                </label>
+              </div>
+              
+              <div class="checkbox-container">
+                <input type="checkbox" class="jp" value="Asr" id="prayer-asr" />
+                <label for="prayer-asr">
+                  <div class="flex items-center justify-between w-full">
+                    <span class="font-semibold">العصر - Asr</span>
+                    <span class="text-sm text-muted">Après-midi</span>
+                  </div>
+                </label>
+              </div>
+              
+              <div class="checkbox-container">
+                <input type="checkbox" class="jp" value="Maghrib" id="prayer-maghrib" />
+                <label for="prayer-maghrib">
+                  <div class="flex items-center justify-between w-full">
+                    <span class="font-semibold">المغرب - Maghrib</span>
+                    <span class="text-sm text-muted">Coucher</span>
+                  </div>
+                </label>
+              </div>
+              
+              <div class="checkbox-container">
+                <input type="checkbox" class="jp" value="Isha" id="prayer-isha" />
+                <label for="prayer-isha">
+                  <div class="flex items-center justify-between w-full">
+                    <span class="font-semibold">العشاء - Isha</span>
+                    <span class="text-sm text-muted">Nuit</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
 
-                <div>
-                <h3 class="text-2xl font-bold text-[#00A0B0] mb-4">Compteur Tasbih</h3>
+          <!-- Compteur Tasbih modernisé -->
+          <div class="journal-section">
+            <div class="tasbih-section">
+              <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-gradient-warm rounded-full flex items-center justify-center shadow-lg">
+                  <span class="text-2xl">📿</span>
+                </div>
                 <div class="text-center">
-                  <div id="tasbih-counter-display" class="text-8xl font-mono text-[#6A4A3C] mb-4">0</div>
-                  <button id="tasbih-counter-btn" class="bg-[#00A0B0] text-white rounded-full w-40 h-40 flex items-center justify-center text-2xl font-bold shadow-xl mx-auto mb-4 transition-transform duration-100 active:scale-95 hover:bg-[#007A8A]">
-                    Compter
-                  </button>
-                  <button id="tasbih-reset-btn" class="text-sm text-gray-500 hover:text-red-500 underline">
-                    Réinitialiser
-                  </button>
+                  <h3 class="text-xl font-bold text-slate-800">سُبْحَان اللّهِ</h3>
+                  <p class="text-muted">Compteur de Dhikr</p>
                 </div>
               </div>
-              </div>
+              
+              <div class="tasbih-counter" id="tasbih-counter-display">0</div>
+              
+              <button id="tasbih-counter-btn" class="tasbih-button">
+                <div class="text-center">
+                  <div class="text-2xl mb-2">اذْكُر</div>
+                  <div class="text-sm opacity-90">Invoquer</div>
+                </div>
+              </button>
+              
+              <button id="tasbih-reset-btn" class="text-muted hover:text-red-500 underline transition-colors duration-300 mt-4">
+                ↻ Réinitialiser
+              </button>
+            </div>
+          </div>
 
+          <!-- Notes personnelles modernisées -->
+          <div class="journal-section">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </div>
               <div>
-                <h3 class="font-semibold mb-2">Notes personnelles</h3>
-                <textarea
-                  id="note"
-                  rows="7"
-                  class="w-full rounded-lg border p-3"
-                  placeholder="Écris ici ce que ton cœur a retenu aujourd'hui…"
-                ></textarea>
+                <h3 class="text-xl font-bold text-slate-800">مُذَكِّرَاتِي</h3>
+                <p class="text-muted">Notes et Réflexions Personnelles</p>
+              </div>
+            </div>
+            
+            <div class="relative">
+              <textarea
+                id="note"
+                class="notes-textarea"
+                placeholder="Écris ici les pensées que ton cœur a retenues aujourd'hui... 
+
+« وَقُل رَّبِّ زِدْنِي عِلْمًا » - Et dis : « Ô mon Seigneur, accrois mes connaissances ! »
+
+✨ Moments de gratitude
+🤲 Prières exaucées  
+📚 Enseignements reçus
+💝 Actes de bonté accomplis"
+              ></textarea>
+              
+              <!-- Ornement décoratif -->
+              <div class="absolute top-4 right-4 text-2xl text-muted opacity-30">
+                ﴿۞﴾
+              </div>
+            </div>
+            
+            <div class="mt-4 flex items-center justify-between text-sm text-muted">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+                <span>Vos notes sont automatiquement sauvegardées</span>
+              </div>
+              <div class="arabic-text text-base opacity-60">
+                الحَمْدُ لِلّهِ
               </div>
             </div>
           </div>
