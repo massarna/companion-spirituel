@@ -592,43 +592,73 @@
       updateCountdown();
       setInterval(updateCountdown, 1000);
 
-      // Journal: tasbih + notes + cases
+      // Journal: persistance locale unifiée
+      let journalLoaded = false;
       async function loadJournal() {
         const api = window.storageAPI;
-        if (!api) return;
-        // tasbih
-        let tv = await api.storageGet("tasbihCount", 0);
-        $("#tasbih-val").textContent = tv;
-        $("#tasbih+").onclick = async () => {
-          tv = (tv | 0) + 1;
-          $("#tasbih-val").textContent = tv;
-          await api.storageSet("tasbihCount", tv);
-        };
-        $("#tasbih-").onclick = async () => {
-          tv = Math.max(0, (tv | 0) - 1);
-          $("#tasbih-val").textContent = tv;
-          await api.storageSet("tasbihCount", tv);
-        };
+        if (!api || journalLoaded) return;
 
-        // notes (par date)
-        const key = "note:" + moment().format("YYYY-MM-DD");
-        $("#note").value = (await api.storageGet(key, "")) || "";
-        $("#note").addEventListener("input", (e) =>
-          api.storageSet(key, e.target.value),
-        );
+        try {
+          // 1. Tasbih - charger et brancher les boutons
+          let tasbihValue = await api.storageGet("tasbihCount", 0);
+          $("#tasbih-val").textContent = tasbihValue;
 
-        // prières cochées (par date)
-        const k2 = "jp:" + moment().format("YYYY-MM-DD");
-        const saved = await api.storageGet(k2, {});
-        $$(".jp").forEach((chk) => {
-          chk.checked = Boolean(saved[chk.value]);
-          chk.addEventListener("change", async () => {
-            saved[chk.value] = chk.checked;
-            await api.storageSet(k2, saved);
+          // Nettoyer les anciens event listeners si ils existent
+          const btnPlus = $("#tasbih+");
+          const btnMinus = $("#tasbih-");
+          btnPlus.replaceWith(btnPlus.cloneNode(true));
+          btnMinus.replaceWith(btnMinus.cloneNode(true));
+
+          $("#tasbih+").addEventListener("click", async () => {
+            tasbihValue = (tasbihValue | 0) + 1;
+            $("#tasbih-val").textContent = tasbihValue;
+            await api.storageSet("tasbihCount", tasbihValue);
           });
-        });
+
+          $("#tasbih-").addEventListener("click", async () => {
+            tasbihValue = Math.max(0, (tasbihValue | 0) - 1);
+            $("#tasbih-val").textContent = tasbihValue;
+            await api.storageSet("tasbihCount", tasbihValue);
+          });
+
+          // 2. Note du jour - charger et brancher l'input
+          const today = moment().format("YYYY-MM-DD");
+          const noteKey = `note:${today}`;
+          const savedNote = await api.storageGet(noteKey, "");
+          const noteEl = $("#note");
+          noteEl.value = savedNote || "";
+
+          // Nettoyer l'ancien listener
+          noteEl.replaceWith(noteEl.cloneNode(true));
+          $("#note").addEventListener("input", async (e) => {
+            await api.storageSet(noteKey, e.target.value);
+          });
+
+          // 3. Cases à cocher prières - charger et brancher par date
+          const prayersKey = `jp:${today}`;
+          const savedPrayers = await api.storageGet(prayersKey, {});
+
+          $$(".jp").forEach((checkbox) => {
+            // Nettoyer l'ancien listener
+            checkbox.replaceWith(checkbox.cloneNode(true));
+          });
+
+          $$(".jp").forEach((checkbox) => {
+            checkbox.checked = Boolean(savedPrayers[checkbox.value]);
+            checkbox.addEventListener("change", async () => {
+              savedPrayers[checkbox.value] = checkbox.checked;
+              await api.storageSet(prayersKey, savedPrayers);
+            });
+          });
+
+          journalLoaded = true;
+          console.log('[Journal] Données chargées pour', today);
+        } catch (error) {
+          console.error('[Journal] Erreur lors du chargement:', error);
+        }
       }
-      // charge quand on ouvre l’onglet Journal
+
+      // Charger à l'ouverture de l'onglet Journal
       $$('[data-tab="journal"]')[0].addEventListener("click", loadJournal);
 
       // Qibla (Kaaba)
