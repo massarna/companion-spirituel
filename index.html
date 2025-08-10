@@ -482,30 +482,62 @@
       );
       show("accueil");
 
-      // Mode (badge) depuis storage
-      async function refreshMode() {
+      // Mode (badge) et retraite - logique complète
+      async function refreshRetreat() {
         const api = window.storageAPI;
         if (!api) return;
-        const start = await api.storageGet("retreatStart", null);
-        if (!start) {
+        
+        const startDate = await api.storageGet("retreatStart", null);
+        if (!startDate) {
           $("#mode-badge").textContent = "Planning Annuel";
+          $("#retreat-msg").textContent = "Aucune retraite configurée.";
           return;
         }
-        const d0 = moment(start),
-          diff = moment().diff(d0, "weeks");
-        $("#mode-badge").textContent =
-          `Mode Retraite – Semaine ${Math.min(diff + 1, 4)}`;
-      }
-      refreshMode();
 
-      // Retraite: set date
+        const start = moment(startDate);
+        const today = moment();
+        const diffWeeks = today.diff(start, "weeks");
+        const currentWeek = diffWeeks + 1;
+        const endDate = start.clone().add(28, "days");
+
+        // Mise à jour du badge
+        if (currentWeek > 4 || today.isAfter(endDate)) {
+          $("#mode-badge").textContent = "Planning Annuel";
+          $("#retreat-msg").textContent = `Retraite terminée (${start.format("DD/MM/YYYY")} → ${endDate.format("DD/MM/YYYY")})`;
+        } else {
+          $("#mode-badge").textContent = `Mode Retraite – Semaine ${Math.max(1, Math.min(currentWeek, 4))}`;
+          $("#retreat-msg").textContent = `Retraite en cours : ${start.format("DD/MM/YYYY")} → ${endDate.format("DD/MM/YYYY")} (Semaine ${Math.max(1, Math.min(currentWeek, 4))}/4)`;
+        }
+      }
+      
+      // Charger la date sauvegardée dans l'input
+      async function loadRetreatDate() {
+        const api = window.storageAPI;
+        if (!api) return;
+        
+        const savedDate = await api.storageGet("retreatStart", null);
+        if (savedDate) {
+          $("#retreat-start").value = savedDate;
+        }
+      }
+
+      // Initialiser la retraite
+      await refreshRetreat();
+      await loadRetreatDate();
+
+      // Retraite: sauvegarder date
       $("#retreat-save").addEventListener("click", async () => {
-        const v = $("#retreat-start").value;
-        if (!v) return;
-        await window.storageAPI?.storageSet("retreatStart", v);
-        $("#retreat-msg").textContent =
-          `Retraite enregistrée du ${moment(v).format("DD/MM/YYYY")} pour 4 semaines.`;
-        refreshMode();
+        const dateValue = $("#retreat-start").value;
+        if (!dateValue) {
+          $("#retreat-msg").textContent = "Veuillez sélectionner une date de début.";
+          return;
+        }
+
+        const api = window.storageAPI;
+        if (!api) return;
+
+        await api.storageSet("retreatStart", dateValue);
+        await refreshRetreat();
       });
 
       // Horaires de prière (Bobo-Dioulasso – placeholders statiques pour la démo)
