@@ -1211,18 +1211,6 @@
             </div>
           `;
         }
-      }rahData = await response.json();
-          renderSurahContent(surah.title);
-          console.log('[Lectures] Sourate chargée:', surah.title);
-        } catch (error) {
-          console.error('[Lectures] Erreur chargement sourate:', error);
-          $("#lect-content").innerHTML = `
-            <div class="text-red-600 p-4 rounded-lg bg-red-50 text-center">
-              <p><strong>خطأ في التحميل</strong></p>
-              <p>لا يمكن تحميل هذه السورة</p>
-            </div>
-          `;
-        }
       }
 
       // Rendre le contenu d'une sourate en arabe
@@ -1251,26 +1239,6 @@
           </div>
         `;
         
-        contentEl.innerHTML = html;
-        let html = `
-          <div class="mb-6 text-center">
-            <h3 class="text-3xl font-semibold mb-2 title arabic-text">${title}</h3>
-          </div>
-          <div class="space-y-4">
-        `;
-
-        currentSurahData.ayahs.forEach(ayah => {
-          html += `
-            <div class="ayah-container">
-              <div class="flex items-start justify-end gap-3">
-                <p class="arabic-text flex-1" dir="rtl" lang="ar">${ayah.ar}</p>
-                <span class="ayah-number">${ayah.n}</span>
-              </div>
-            </div>
-          `;
-        });
-
-        html += '</div>';
         contentEl.innerHTML = html;
       }
 
@@ -1383,6 +1351,7 @@
         
         // État initial : onglet arabe sélectionné
         $("#surah-selector").style.display = 'block';
+        console.log('[Lectures] loader ready');
       }
 
       // Module ZIKR avec les 4 zikrs personnalisés
