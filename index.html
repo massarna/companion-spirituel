@@ -158,6 +158,13 @@
         font-weight: bold;
       }
 
+      .arabic-text {
+        direction: rtl;
+        text-align: right;
+        font-family: "Amiri Quran", "Amiri", serif;
+        line-height: 2;
+      }
+
       /* Styles spécifiques pour le nouveau Tasbih */
       .tasbih-btn {
         /* Couleurs et forme déjà définies inline pour la simplicité */
@@ -350,31 +357,87 @@
 
       <!-- Programme -->
       <section data-page="programme" class="hidden">
-        <div class="space-y-8">
-          <!-- Programme Détaillé Jour par Jour -->
-          <div class="card">
-            <h2 class="title text-2xl mb-4">Programme Détaillé Jour par Jour</h2>
-            <div id="prog-week" class="grid md:grid-cols-2 gap-4">
-              <!-- Contenu généré dynamiquement -->
-            </div>
-          </div>
+        <section id="program-daily" class="mb-12">
+          <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Programme Détaillé Jour par Jour</h2>
+          <div id="program-daily-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+        </section>
 
-          <!-- Mes Zikrs Personnalisés -->
-          <div class="card">
-            <h2 class="title text-2xl mb-4">Mes Zikrs Personnalisés</h2>
-            <div id="prog-zikrs" class="grid sm:grid-cols-2 gap-4">
-              <!-- Contenu généré dynamiquement -->
-            </div>
-          </div>
+        <section id="personal-zikr" class="mb-12">
+          <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Mes Zikrs Personnalisés</h2>
+          <div id="personal-zikr-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6"></div>
+        </section>
 
-          <!-- Formules de Zikr à Réciter -->
-          <div class="card">
-            <h2 class="title text-2xl mb-4">Formules de Zikr à Réciter</h2>
-            <div id="prog-formules" class="space-y-6">
-              <!-- Contenu généré dynamiquement -->
+        <section id="zikr-formulas" class="mb-12">
+          <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Formules de Zikr à Réciter</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Carte 1: Tawḥīd -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Tawḥīd</h3>
+              <p class="text-gray-600 mb-4">Formule d'unicité divine</p>
+              <div class="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-500">
+                <p class="arabic-text text-lg text-blue-800">لا إله إلا الله وحده لا شريك له له الملك وله الحمد وهو على كل شيء قدير</p>
+              </div>
+              <p class="text-sm text-gray-500 mt-3">Il n'y a de divinité qu'Allah, Unique, sans associé. À Lui appartiennent la royauté et la louange, et Il est capable de toute chose.</p>
+            </div>
+
+            <!-- Carte 2: Formule du Jeudi Soir -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Formule du Jeudi Soir</h3>
+              <p class="text-gray-600 mb-4">Invocation spéciale du jeudi</p>
+              <div class="bg-yellow-50 p-4 rounded-xl border-l-4 border-yellow-500">
+                <p class="arabic-text text-lg text-yellow-800">اللهم أعني على ذكرك وشكرك وحسن عبادتك</p>
+              </div>
+              <p class="text-sm text-gray-500 mt-3">Ô Allah, aide-moi à T'invoquer, à Te remercier et à bien T'adorer.</p>
+            </div>
+
+            <!-- Carte 3: Formule du Vendredi -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Formule du Vendredi</h3>
+              <p class="text-gray-600 mb-4">Invocation bénie du vendredi</p>
+              <div class="bg-orange-50 p-4 rounded-xl border-l-4 border-orange-500">
+                <p class="arabic-text text-lg text-orange-800">اللهم صل وسلم وبارك على سيدنا محمد وعلى آله وصحبه أجمعين</p>
+              </div>
+              <p class="text-sm text-gray-500 mt-3">Ô Allah, prie, salue et bénis notre maître Muhammad ainsi que sa famille et tous ses compagnons.</p>
             </div>
           </div>
-        </div>
+        </section>
+
+        <section id="special-invocations" class="mb-12">
+          <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Pratique des Invocations Spéciales</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Carte 1: Litanie d'amour du Prophète ﷺ -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Litanie d'amour du Prophète ﷺ</h3>
+              <div class="space-y-4">
+                <p class="text-gray-700">Récitation recommandée :</p>
+                <ul class="list-disc list-inside space-y-2 text-sm text-gray-600">
+                  <li>Après la prière du Fajr</li>
+                  <li>Avant le coucher du soleil</li>
+                  <li>Durant les nuits bénies</li>
+                </ul>
+                <div class="bg-green-50 p-4 rounded-xl border-l-4 border-green-500">
+                  <p class="arabic-text text-lg text-green-800">اللهم صل على سيدنا محمد الفاتح لما أغلق والخاتم لما سبق ناصر الحق بالحق والهادي إلى صراطك المستقيم وعلى آله حق قدره ومقداره العظيم</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Carte 2: Invocation protectrice avant le sommeil -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Invocation protectrice avant le sommeil</h3>
+              <div class="space-y-4">
+                <p class="text-gray-700">Pratique quotidienne :</p>
+                <ul class="list-disc list-inside space-y-2 text-sm text-gray-600">
+                  <li>Réciter 3 fois chaque sourate</li>
+                  <li>Souffler dans les mains</li>
+                  <li>Passer les mains sur tout le corps</li>
+                </ul>
+                <div class="bg-purple-50 p-4 rounded-xl border-l-4 border-purple-500">
+                  <p class="arabic-text text-lg text-purple-800">قل هو الله أحد • قل أعوذ برب الفلق • قل أعوذ برب الناس</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </section>
 
       <!-- Lectures -->
@@ -1463,96 +1526,148 @@
         return items;
       }
 
+      // Données des zikrs personnalisés
+      const personalZikr = [
+        {
+          id: 'istighfar',
+          title: 'Istighfār Quotidien',
+          count: 1261,
+          periodicity: 'Tous les jours',
+          arabic: 'أستغفرُ الله',
+          condition: 'daily'
+        },
+        {
+          id: 'salat-prophet',
+          title: 'Ṣalāt sur le Prophète (ﷺ)',
+          count: 313,
+          periodicity: 'Chaque vendredi',
+          arabic: 'اللهم صلِّ على سيدِنا محمدٍ وعلى آله وصحبه وسلم',
+          condition: 'friday'
+        },
+        {
+          id: 'hasbunallah',
+          title: 'Hasbunallah',
+          count: 450,
+          periodicity: 'Chaque mercredi (nuit)',
+          arabic: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',
+          condition: 'wednesday'
+        },
+        {
+          id: 'dua-defunts',
+          title: 'Duʿā pour les défunts',
+          periodicity: 'Après chaque prière du vendredi',
+          arabic: 'اللَّهُمَّ اغْفِرْ لِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ الأَحْيَاءِ مِنْهُمْ وَالأَمْوَاتِ',
+          condition: 'friday-every-prayer'
+        }
+      ];
+
+      // Programme quotidien détaillé
+      const dailyProgram = [
+        {
+          day: 'Dimanche',
+          night: '4 rakʿat (1 Fātiḥa + 3 Ikhlāṣ) | Zikr : 70 Istighfār.',
+          day_content: '4 rakʿat (1 Fātiḥa + 1 Kāfirūn) | Zikr : 10 Ikhlāṣ.'
+        },
+        {
+          day: 'Lundi',
+          night: '2 rakʿat (1 Fātiḥa + 15 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās).',
+          day_content: '2 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 10 Istighfār + 10 Ṣalāt.'
+        },
+        {
+          day: 'Mardi',
+          night: '6 rakʿat (1 Fātiḥa + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 70 Tawḥīd.',
+          day_content: '10 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ).'
+        },
+        {
+          day: 'Mercredi',
+          night: '4 rakʿat (1 Fātiḥa + 40 Ikhlāṣ) | Zikr : 70 Istighfār.',
+          day_content: '4 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ + 1 Falaq + 1 Nās).'
+        },
+        {
+          day: 'Jeudi',
+          night: '8 rakʿat (1 Fātiḥa + 10 Ikhlāṣ) | Zikr : 100 Formule du Jeudi.',
+          day_content: '4 rakʿat (1 Fātiḥa + 5 Naṣr + 50 Kawthar) | Zikr : 10 Istighfār.'
+        },
+        {
+          day: 'Vendredi',
+          night: '4 rakʿat (1 Fātiḥa + 50 Zalzalah).',
+          day_content: '2 rakʿat (1ʳᵉ : 1 Fātiḥa + 1 Āyat al-Kursī + 25 Falaq ; 2ᵉ : 1 Fātiḥa + 1 Ikhlāṣ + 25 Nās) | Zikr : 50 Formule du Vendredi.'
+        },
+        {
+          day: 'Samedi',
+          night: '6 rakʿat (1 Fātiḥa + 3 Ikhlāṣ).',
+          day_content: '4 rakʿat (1 Fātiḥa + 3 Kāfirūn) | Zikr : 3 Āyat al-Kursī.'
+        }
+      ];
+
       // Fonction de rendu du programme détaillé
       let programmeLoaded = false;
       async function renderProgramme() {
         if (programmeLoaded) return;
 
-        try {
-          const response = await fetch('./data/programme.json');
-          if (!response.ok) throw new Error(`Erreur ${response.status}`);
-
-          const data = await response.json();
-
-          // 1. Programme semaine (jour par jour)
-          const weekContainer = $("#prog-week");
-          if (weekContainer) {
-            let weekHtml = '';
-
-            const jours = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-            const joursNoms = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-
-            jours.forEach((jour, index) => {
-              const jourData = data.semaine[jour];
-              if (jourData) {
-                weekHtml += `
-                  <div class="border rounded-lg p-4">
-                    <h3 class="font-semibold mb-3 text-lg">${joursNoms[index]}</h3>
-                    <div class="space-y-3">
-                      <div>
-                        <h4 class="font-medium text-slate-700 mb-1">🌙 Nuit</h4>
-                        <p class="text-sm text-slate-600">${jourData.nuit}</p>
-                      </div>
-                      <div>
-                        <h4 class="font-medium text-slate-700 mb-1">☀️ Jour</h4>
-                        <p class="text-sm text-slate-600">${jourData.jour}</p>
-                      </div>
-                    </div>
-                  </div>
-                `;
-              }
-            });
-            weekContainer.innerHTML = weekHtml;
-          }
-
-          // 2. Zikrs personnels
-          const zikrsContainer = $("#prog-zikrs");
-          if (zikrsContainer && data.zikrPersonnels) {
-            let zikrsHtml = '';
-
-            data.zikrPersonnels.forEach(zikr => {
-              zikrsHtml += `
-                <div class="border rounded-lg p-4">
-                  <h3 class="font-semibold mb-2">${zikr.nom}</h3>
-                  <div class="text-sm text-slate-600">
-                    <p><strong>Fréquence :</strong> ${zikr.frequence}</p>
-                    <p><strong>Répétitions :</strong> ${zikr.repetitions}×</p>
-                  </div>
+        // 1. Programme quotidien
+        const dailyGrid = $("#program-daily-grid");
+        if (dailyGrid) {
+          dailyGrid.innerHTML = '';
+          dailyProgram.forEach(program => {
+            const cardHtml = `
+              <div class="bg-white rounded-2xl shadow-lg p-6 space-y-3">
+                <h3 class="text-2xl font-bold text-[#6A4A3C]">${program.day}</h3>
+                <div>
+                  <h4 class="font-semibold text-gray-700 mb-1">🌙 Nuit</h4>
+                  <p class="text-sm text-gray-600">${program.night}</p>
                 </div>
-              `;
-            });
-            zikrsContainer.innerHTML = zikrsHtml;
-          }
-
-          // 3. Formules
-          const formulesContainer = $("#prog-formules");
-          if (formulesContainer && data.formules) {
-            let formulesHtml = '';
-
-            Object.values(data.formules).forEach(formule => {
-              formulesHtml += `
-                <div class="border-l-4 border-emerald-200 pl-6 py-4">
-                  <h3 class="font-semibold mb-2">${formule.titre}</h3>
-                  <p class="text-sm text-slate-600 mb-3">${formule.contexte}</p>
-                  <div class="text-right text-xl leading-loose font-arabic bg-slate-50 p-4 rounded-lg" style="font-family: 'Amiri', serif;">
-                    ${formule.ar}
-                  </div>
+                <div>
+                  <h4 class="font-semibold text-gray-700 mb-1">☀️ Jour</h4>
+                  <p class="text-sm text-gray-600">${program.day_content}</p>
                 </div>
-              `;
-            });
-            formulesContainer.innerHTML = formulesHtml;
-          }
-
-          programmeLoaded = true;
-          console.log('[Programme] Contenu chargé avec succès');
-
-        } catch (error) {
-          console.error('[Programme] Erreur de chargement:', error);
-          const weekContainer = $("#prog-week");
-          if (weekContainer) {
-            weekContainer.innerHTML = '<p class="text-red-600">Erreur de chargement du programme</p>';
-          }
+              </div>
+            `;
+            dailyGrid.insertAdjacentHTML('beforeend', cardHtml);
+          });
         }
+
+        // 2. Zikrs personnalisés
+        const zikrGrid = $("#personal-zikr-grid");
+        if (zikrGrid) {
+          zikrGrid.innerHTML = '';
+          const currentDay = moment().day(); // 0=dimanche, 1=lundi, ..., 5=vendredi, 6=samedi
+
+          personalZikr.forEach(zikr => {
+            let badge = '';
+            
+            // Générer le badge conditionnel
+            if (zikr.condition === 'daily') {
+              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Quotidien</span>';
+            } else if (zikr.condition === 'friday' && currentDay === 5) {
+              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Aujourd\'hui</span>';
+            } else if (zikr.condition === 'wednesday' && currentDay === 3) {
+              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Ce soir</span>';
+            } else if (zikr.condition === 'friday-every-prayer' && currentDay === 5) {
+              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">À chaque ṣalāt</span>';
+            }
+
+            const countDisplay = zikr.count ? `<div class="text-3xl font-bold text-[#6A4A3C]">${zikr.count}×</div>` : '';
+
+            const cardHtml = `
+              <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-start justify-between mb-3">
+                    <h3 class="text-lg font-bold text-[#6A4A3C]">${zikr.title}</h3>
+                    ${badge}
+                  </div>
+                  ${countDisplay}
+                  <p class="text-sm text-gray-500 mb-3">${zikr.periodicity}</p>
+                  <p class="arabic-text text-lg mt-2">${zikr.arabic}</p>
+                </div>
+              </div>
+            `;
+            zikrGrid.insertAdjacentHTML('beforeend', cardHtml);
+          });
+        }
+
+        programmeLoaded = true;
+        console.log('[Programme] Contenu chargé avec succès');
       }
 
       // Fonction de rendu de la retraite
