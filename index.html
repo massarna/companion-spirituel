@@ -353,15 +353,15 @@
         </div>
 
         <!-- Focus du jour -->
-        <div class="mt-6 card relative">
+        <section id="daily-focus-section" class="mt-6 card relative">
           <div id="focus-mode-badge" class="mode-badge">
             <span class="inline-block rounded-full bg-emerald-100 text-emerald-700 px-3 py-1 text-xs font-semibold"></span>
           </div>
-          <h3 class="text-lg font-semibold mb-3">Focus du jour</h3>
-          <div id="focus-list" class="space-y-2">
-            <!-- Contenu généré dynamiquement -->
-          </div>
-        </div>
+          <h2 class="text-3xl font-bold text-center mb-2 text-[#00A0B0]">Focus du Jour</h2>
+          <p id="daily-focus-time" class="text-center text-gray-500 mb-4"></p>
+          <div id="daily-focus-content" class="text-center text-lg text-gray-700 leading-relaxed"></div>
+          <div id="weekly-special-focus" class="mt-6"></div>
+        </section>
       </section>
 
       <!-- Programme -->
@@ -775,12 +775,7 @@
         }
       }
 
-      // Focus du jour - mise à jour dynamique (maintenant géré par renderFocus)
-      async function updateFocusDuJour() {
-        // Cette fonction est maintenant remplacée par renderFocus
-        // On garde la signature pour éviter les erreurs
-        return;
-      }
+      
 
       // Charger la date sauvegardée dans l'input
       async function loadRetreatDate() {
@@ -895,164 +890,67 @@
       // Initialiser les graphiques après un court délai
       setTimeout(initCharts, 100);
 
-      // === NOUVEAU SYSTÈME FOCUS DU JOUR ===
-      
-      const DAILY_SLOTS = [
-        { start: "03:00", end: "04:30",  name: "Dernier tiers de la nuit",  acts: ["Tahajjud (2–8 rakʿāt)", "Duʿā' sincère", "Dhikr profond"] },
-        { start: "04:30", end: "05:00",  name: "Prière du Fajr",            acts: ["Ṣalāt al-Faǧr", "Recueillement"] },
-        { start: "05:00", end: "07:00",  name: "Après al-faǧr",             acts: ["Adhkār du matin", "Lecture/mémorisation du Coran", "Méditation"] },
-        { start: "08:00", end: "10:00",  name: "Milieu de la matinée",      acts: ["Ṣalāt ad-Ḍuḥā (2–8 rakʿāt)", "Étude du Coran ou des ḥadiths"] },
-        { start: "10:00", end: "12:30",  name: "Journée",                    acts: ["Travaux personnels", "Œuvres caritatives / service"] },
-        { start: "12:30", end: "13:30",  name: "Prière du Dhuhr",           acts: ["Ṣalāt aẓ-Ẓuhr", "Dhikr", "Relecture"] },
-        { start: "14:00", end: "15:30",  name: "Après-midi",                acts: ["Lecture spirituelle", "Étude des maîtres soufis", "Repos"] },
-        { start: "15:30", end: "16:30",  name: "Prière de l'Asr",           acts: ["Ṣalāt al-ʿAṣr", "Dhikr", "Marche méditative"] },
-        { start: "17:00", end: "19:00",  name: "Après al-Maghrib",          acts: ["Ṣalāt al-Maghrib", "Dhikr", "Salawat sur le Prophète"] },
-        { start: "20:00", end: "21:30",  name: "Après al-ʿIshāʾ",           acts: ["Ṣalāt al-ʿIshāʾ", "Dhikr collectif", "Litanies"] },
-        { start: "21:30", end: "03:00",  name: "Soir & nuit",               acts: ["Étude (tafsīr, fiqh, ḥikam)", "Repos", "Protection nocturne (Āyat al-Kursī, sourates protectrices)"] },
+      // Focus du jour - système basé sur l'ancienne version
+      const dailySchedule = [
+        { start: "03:00", end: "04:30", name: "Dernier tiers de la nuit", activities: "Tahajjud (2–8 rakʿāt), duʿā' sincère, dhikr profond." },
+        { start: "04:30", end: "05:00", name: "Prière du Fajr", activities: "Ṣalāt al‑Faǧr et recueillement." },
+        { start: "05:00", end: "07:00", name: "Après al-faǧr", activities: "Adhkār du matin, lecture/mémorisation du Coran, méditation." },
+        { start: "08:00", end: "10:00", name: "Milieu de la matinée", activities: "Ṣalāt ad‑Ḍuḥā (2–8 rakʿāt), étude du Coran ou des ḥadiths." },
+        { start: "10:00", end: "12:30", name: "Journée", activities: "Travaux personnels, œuvres caritatives, service." },
+        { start: "12:30", end: "13:30", name: "Prière du Dhuhr", activities: "Ṣalāt aẓ‑Ẓuhr, dhikr et relecture." },
+        { start: "14:00", end: "15:30", name: "Après-midi", activities: "Lecture spirituelle, étude des maîtres soufis, repos." },
+        { start: "15:30", end: "16:30", name: "Prière de l'Asr", activities: "Ṣalāt al‑ʿAṣr, dhikr, marche méditative." },
+        { start: "17:00", end: "19:00", name: "Après al-maghrib", activities: "Ṣalāt al‑Maghrib, dhikr, salawat sur le Prophète." },
+        { start: "20:00", end: "21:30", name: "Après al-'isha'", activities: "Ṣalāt al‑ʿIshāʾ, dhikr collectif, litanies." },
+        { start: "21:30", end: "03:00", name: "Soir et Nuit", activities: "Étude, repos, protection nocturne (Āyat al‑Kursī, etc.)." }
       ];
 
-      const RETREAT_THEMES = {
-        1: { title: "Semaine 1 : Purification & discipline",    extra: ["Repentir sincère (istighfār réfléchi)", "Jeûne (lundi/jeudi)", "Journal de progrès"] },
-        2: { title: "Semaine 2 : Connaissance & dhikr",         extra: ["Tafsīr / ḥadīths / ḥikam", "Dhikr collectif (apprentissage des litanies)", "Abondance de salawāt"] },
-        3: { title: "Semaine 3 : Service & morale",             extra: ["Œuvres caritatives", "Jeûne des jours blancs (13–15)", "Patience & gratitude"] },
-        4: { title: "Semaine 4 : Consolidation & protection",   extra: ["Prière de minuit prolongée", "Ruqyah / protections", "Retraite intérieure (khalwa)"] },
-      };
+      function updateDailyFocus() {
+        const currentTime = moment();
+        const currentTimeStr = currentTime.format("HH:mm");
+        let currentSlot = dailySchedule.find(slot => {
+          const start = slot.start;
+          const end = slot.end;
+          if (start > end) { // Overnight slot
+            return (currentTimeStr >= start && currentTimeStr <= "23:59") || (currentTimeStr >= "00:00" && currentTimeStr < end);
+          }
+          return currentTimeStr >= start && currentTimeStr < end;
+        });
 
-      function inOvernightWindow(nowHHmm, a, b){
-        return (a > b) ? (nowHHmm >= a || nowHHmm < b) : (nowHHmm >= a && nowHHmm < b);
-      }
-
-      function getCurrentSlot(now, slots){
-        const hhmm = now.format("HH:mm");
-        for(const s of slots){
-          if (inOvernightWindow(hhmm, s.start, s.end)) return s;
+        if (currentSlot) {
+          $("#daily-focus-time").textContent = `Maintenant (${currentSlot.name})`;
+          $("#daily-focus-content").innerHTML = `<p>${currentSlot.activities}</p>`;
+        } else {
+          $("#daily-focus-time").textContent = "Repos";
+          $("#daily-focus-content").innerHTML = `<p>C'est un moment de transition entre les activités planifiées.</p>`;
         }
-        return slots[0]; // fallback
-      }
 
-      function isRetreatActive(now){
-        const start = localStorage.getItem("retreat_start");
-        if(!start) return {active:false};
-        const s = moment(start, "YYYY-MM-DD");
-        const diff = now.diff(s, "days");
-        if (diff >= 0 && diff < 28){
-          const week = Math.floor(diff / 7) + 1;
-          return {active:true, week, theme: RETREAT_THEMES[week]};
-        }
-        return {active:false};
-      }
-
-      function weeklyFlags(now, prayerSchedule){
-        const d = now.day(); // 0=dim..5=ven..3=mer
-        const hijriDay = now.iDate();
-        const flags = { fasting:false, friday:false, whiteDays:false, wedNight:false };
+        // Ajouter les zikrs personnalisés
+        const dayOfWeek = currentTime.day(); // 0=Sunday, 1=Monday...
+        const hijriDay = currentTime.iDate();
+        const weeklyFocusContainer = $("#weekly-special-focus");
+        let weeklyHTML = '';
         
-        // lundi(1) ou jeudi(4)
-        if (d === 1 || d === 4) flags.fasting = true;
-        if (d === 5) flags.friday = true;
-
-        if (hijriDay >= 13 && hijriDay <= 15) flags.whiteDays = true;
-
-        // Mercredi nuit → de Maghrib(mer) à Fajr(jeu)
-        const hhmm = now.format("HH:mm");
-        if (d === 3){ // mercredi après Maghrib
-          const maghrib = "19:00"; // fallback si pas d'API
-          if (hhmm >= maghrib) flags.wedNight = true;
+        // Toujours afficher l'istighfar quotidien
+        weeklyHTML += `<div class="bg-gray-50 border-l-4 border-gray-400 text-gray-700 p-4 rounded-r-lg mb-4"><p class="font-bold">Zikr quotidien :</p><p>1261× Istighfār</p></div>`;
+        
+        if (dayOfWeek === 1 || dayOfWeek === 4) { // Monday or Thursday
+          weeklyHTML += `<div class="bg-blue-50 border-l-4 border-blue-400 text-blue-700 p-4 rounded-r-lg mb-4"><p class="font-bold">Rappel du jour :</p><p>C'est lundi/jeudi, un jour propice au jeûne surérogatoire.</p></div>`;
         }
-        if (d === 4){ // jeudi avant Fajr
-          const fajr = "04:30"; // fallback si pas d'API
-          if (hhmm < fajr) flags.wedNight = true;
+        if (dayOfWeek === 5) { // Friday
+          weeklyHTML += `<div class="bg-green-50 border-l-4 border-green-400 text-green-700 p-4 rounded-r-lg mb-4"><p class="font-bold">Rappel du Vendredi :</p><p>313× Ṣalāt sur le Prophète + Duʿāʾ pour les défunts après chaque prière</p></div>`;
         }
-        return flags;
-      }
-
-      let focusInterval = null;
-
-      async function renderFocus(prayerSchedule = null){
-        const now = moment();
-        const slot = getCurrentSlot(now, DAILY_SLOTS);
-        const {active, week, theme} = isRetreatActive(now);
-        const flags = weeklyFlags(now, prayerSchedule);
-
-        // Mise à jour de la ligne "Maintenant"
-        const focusTimeEl = $("#focus-list")?.parentElement?.querySelector('h3');
-        if (focusTimeEl) {
-          focusTimeEl.textContent = `Maintenant (${slot.name})`;
+        if (hijriDay >= 13 && hijriDay <= 15) {
+          weeklyHTML += `<div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 p-4 rounded-r-lg mb-4"><p class="font-bold">Jours Blancs :</p><p>Nous sommes dans la période des jours blancs (${hijriDay}e jour), propice au jeûne.</p></div>`;
         }
-
-        // Badge de mode
-        let badgeText = active ? `Mode Retraite — Semaine ${week}` : 'Planning Annuel';
-        const modeBadge = $("#mode-badge");
-        if (modeBadge) {
-          modeBadge.textContent = badgeText;
+        
+        // Nuit du mercredi (Hasbunallah)
+        const isWednesdayNight = (dayOfWeek === 3 && currentTimeStr >= "19:00") || (dayOfWeek === 4 && currentTimeStr < "04:30");
+        if (isWednesdayNight) {
+          weeklyHTML += `<div class="bg-purple-50 border-l-4 border-purple-400 text-purple-700 p-4 rounded-r-lg mb-4"><p class="font-bold">Nuit du mercredi :</p><p>450× Ḥasbunallāh wa niʿmal-wakīl</p></div>`;
         }
-
-        // Bullets du panneau principal
-        const bullets = [];
-        slot.acts.forEach(a => bullets.push(a));
-
-        if(active && theme){
-          bullets.push(`— ${theme.title}`);
-          theme.extra.forEach(x => bullets.push(x));
-        }
-
-        // Zikrs persos & rappels (toujours en AJOUT)
-        bullets.push("1261× Istighfār (quotidien)");
-
-        if(flags.wedNight){
-          bullets.push("450× Ḥasbunallāh wa niʿmal-wakīl (nuit du mercredi)");
-        }
-        if(flags.friday){
-          bullets.push("313× Ṣalāt sur le Prophète (vendredi)");
-          bullets.push("Duʿāʾ pour les défunts après chaque prière du vendredi");
-        }
-        if(flags.whiteDays){
-          bullets.push("Jeûne recommandé : jours blancs (13–15 hijri)");
-        }
-
-        // Mise à jour du contenu Focus
-        const focusContainer = $("#focus-list");
-        if (focusContainer) {
-          let html = '';
-          bullets.forEach(bullet => {
-            html += `
-              <div class="flex items-center gap-3 p-2 rounded-lg">
-                <div class="flex-1">
-                  <div class="font-medium text-sm">${bullet}</div>
-                </div>
-              </div>
-            `;
-          });
-
-          // Encarts "du jour"
-          const cards = [];
-          if(flags.fasting){
-            cards.push({color:'blue', title:"Rappel du jour", body:"Lundi/Jeudi : jour propice au jeûne surérogatoire."});
-          }
-          if(flags.friday){
-            cards.push({color:'green', title:"Rappel du Vendredi", body:"Lire la sourate Al-Kahf, multiplier les salawāt, et faire le duʿāʾ pour les défunts après chaque prière."});
-          }
-          if(flags.whiteDays){
-            cards.push({color:'yellow', title:"Jours Blancs", body:`Nous sommes dans les jours blancs (hijri ${now.iDate()}) : jeûne recommandé.`});
-          }
-
-          cards.forEach(c => {
-            html += `
-              <div class="mt-4 rounded-lg border-l-4 p-4 bg-${c.color}-50 border-${c.color}-400 text-${c.color}-700">
-                <p class="font-bold text-sm">${c.title}</p>
-                <p class="text-sm">${c.body}</p>
-              </div>
-            `;
-          });
-
-          focusContainer.innerHTML = html;
-        }
-      }
-
-      function startFocus(prayerSchedule = null){
-        if (focusInterval) clearInterval(focusInterval);
-        renderFocus(prayerSchedule);
-        focusInterval = setInterval(() => renderFocus(prayerSchedule), 60000);
+        
+        weeklyFocusContainer.innerHTML = weeklyHTML;
       }
 
       // Helper pour créer une date "aujourd'hui" à partir de HH:mm
@@ -2026,12 +1924,9 @@
       setInterval(tick, 1000);
       tick();
 
-      // Initialisation du nouveau système Focus au chargement
-      document.addEventListener("DOMContentLoaded", () => {
-        setTimeout(() => {
-          startFocus(); // Démarrer le nouveau système Focus
-        }, 500);
-      });
+      // Initialisation du Focus du jour
+      updateDailyFocus();
+      setInterval(updateDailyFocus, 60000); // Update focus every minute
 
     </script>
   </body>
