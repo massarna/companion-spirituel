@@ -1,0 +1,90 @@
+Objectif
+- Donner à l’onglet Lectures un rendu “mushaf” identique à la capture : 
+  * police naskh élégante (Amiri Quran),
+  * texte en UN SEUL bloc justifié (pas de cartes par verset),
+  * basmala centrée,
+  * pastille de numéro en orange (chiffres arabo-indiens),
+  * titre de sourate centré,
+  * rien d’autre ne change (offline inchangé, manifest/JSON inchangés).
+
+À faire
+
+1) Dans index.html (HEAD), ajouter la police :
+<link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+2) Toujours dans index.html (HEAD), ajouter ce style (ou fusionner s’il existe déjà) :
+
+<style>
+  /* Conteneur de lecture */
+  #surah-wrap{ max-width:62rem; margin-inline:auto; }
+
+  /* Titre et basmala */
+  #surah-title{ text-align:center; margin:.5rem 0 1rem; font-weight:700; color:#0e7490; }
+  .bismillah{ display:block; text-align:center; margin:.25rem 0 1.25rem; opacity:.95 }
+
+  /* Bloc de texte mushaf : un seul paragraphe */
+  .ayahs-block{
+    font-family:"Amiri Quran","Amiri",serif;
+    direction:rtl; text-align:justify; text-justify:inter-word;
+    font-size:1.35rem; line-height:2.6rem; color:#1f2937; word-break:break-word;
+  }
+
+  /* Pastille du numéro de verset (orange doux) */
+  .ayah-badge{
+    display:inline-block; min-width:1.45em; height:1.45em; line-height:1.45em;
+    margin:0 .35rem; border-radius:9999px; text-align:center;
+    font-size:.8rem; font-weight:700; color:#EB6841; background:#FFF3EE; outline:2px solid #F9D3C7;
+    vertical-align:middle; direction:ltr;
+  }
+
+  @media (max-width:480px){
+    .ayahs-block{ font-size:1.25rem; line-height:2.3rem; }
+  }
+</style>
+
+3) Dans le code Lectures (le script qui, après fetch du JSON, injecte la sourate dans le DOM) :
+- Détecter le conteneur qui reçoit actuellement le contenu (ex: #lect-content / #lectures-content). 
+- Remplacer le rendu “par verset” par un rendu bloc. 
+- Ajouter ces utilitaires + fonction de rendu, puis utiliser-la au lieu de la boucle actuelle.
+
+<script>
+  // Convertit 123 -> ١٢٣
+  function toArabicDigits(n){
+    return String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  }
+
+  // Rendu mushaf : titre + basmala + bloc justifié avec pastilles
+  function renderSurahMushaf(container, data){
+    if(!container || !data || !Array.isArray(data.ayahs)) return;
+
+    const title = data.name_ar || 'السورة';
+    const showBasmala = (data.surah !== 9); // pas de basmala en 9
+
+    const htmlAyahs = data.ayahs
+      .map(a => `${a.ar}<span class="ayah-badge">${toArabicDigits(a.n || a.numberInSurah || a.number || 0)}</span>`)
+      .join(' ');
+
+    container.innerHTML = `
+      <div id="surah-wrap">
+        <div id="surah-title">${title}</div>
+        ${showBasmala ? '<span class="bismillah">﷽</span>' : ''}
+        <p class="ayahs-block" dir="rtl" lang="ar">${htmlAyahs}</p>
+      </div>
+    `;
+  }
+
+  // IMPORTANT : remplacer l’appel de l’ancien rendu par celui-ci, après le fetch JSON :
+  // const host = document.getElementById('lect-content') || document.getElementById('lectures-content');
+  // const res = await fetch('data/lectures/<file>.json?v='+Date.now());
+  // const json = await res.json();
+  // renderSurahMushaf(host, json);
+</script>
+
+4) Ne rien changer au chargement offline (manifest.json, sw.js, data/lectures). 
+   Juste s’assurer que le code n’injecte plus de “cartes/versets” mais bien un seul paragraphe via renderSurahMushaf(...).
+
+5) Idempotence : avant d’injecter, on remplace innerHTML du conteneur (aucune duplication).
+
+Livrables
+- index.html : ajout police + styles + fonctions + appel à renderSurahMushaf.
+- (si séparé) le fichier JS du loader Lectures, modifié pour appeler renderSurahMushaf au lieu du rendu par verset.
