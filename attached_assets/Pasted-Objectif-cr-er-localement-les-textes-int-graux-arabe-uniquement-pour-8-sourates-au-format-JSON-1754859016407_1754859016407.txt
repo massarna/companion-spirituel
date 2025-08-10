@@ -1,0 +1,64 @@
+Objectif : créer localement les textes intégraux (arabe uniquement) pour 8 sourates,
+au format JSON, puis les servir hors-ligne.
+
+Sourates à générer (numéro → slug fichier) :
+1  -> surah-1-al-fatiha.ar.json
+18 -> surah-18-al-kahf.ar.json
+36 -> surah-36-yasin.ar.json
+44 -> surah-44-dukhan.ar.json
+56 -> surah-56-waqiah.ar.json
+67 -> surah-67-mulk.ar.json
+76 -> surah-76-insan.ar.json
+85 -> surah-85-buruj.ar.json
+
+Texte : édition arabe Uthmânî (ex: API AlQuranCloud, edition=ar.uthmani).
+
+Tâches :
+
+1) Créer un script Node `scripts/fetch_surahs.js` qui :
+   - utilise `node:fs/promises` et `node:https` (ou `node-fetch` si tu préfères) ;
+   - pour chaque sourate de la liste, récupère :
+     GET https://api.alquran.cloud/v1/surah/{num}/ar.uthmani
+     (structure attendue: data.ayahs = [{numberInSurah,text}, ...])
+   - écrit un fichier JSON `/data/lectures/surah-<num>-<slug>.ar.json` au format :
+     {
+       "surah": <num>,
+       "name_ar": "<nom_arabe>",
+       "ayahs": [ { "n": 1, "ar": "..." }, { "n": 2, "ar": "..." } ... ]
+     }
+   - idempotent : si un fichier existe, sauter (sauf si option --force).
+   - créer le dossier `/data/lectures` s’il n’existe pas.
+
+2) Créer/mettre à jour `/data/lectures/manifest.json` avec :
+{
+  "fatiha": {"title":"سورة الفاتحة","file":"surah-1-al-fatiha.ar.json"},
+  "kahf":   {"title":"سورة الكهف","file":"surah-18-al-kahf.ar.json"},
+  "yasin":  {"title":"سورة يس","file":"surah-36-yasin.ar.json"},
+  "dukhan": {"title":"سورة الدخان","file":"surah-44-dukhan.ar.json"},
+  "waqiah": {"title":"سورة الواقعة","file":"surah-56-waqiah.ar.json"},
+  "mulk":   {"title":"سورة الملك","file":"surah-67-mulk.ar.json"},
+  "insan":  {"title":"سورة الإنسان","file":"surah-76-insan.ar.json"},
+  "buruj":  {"title":"سورة البروج","file":"surah-85-buruj.ar.json"}
+}
+
+3) Adapter le loader de l’onglet Lectures pour :
+   - lire `manifest.json`,
+   - charger le fichier JSON choisi via `fetch('data/lectures/<file>?v='+Date.now())`,
+   - rendre chaque āyah dans `<p dir="rtl" lang="ar" class="leading-loose text-[20px] md:text-[22px]">`,
+   - afficher un état “Chargement…” puis une erreur propre si besoin (sans bloquer le reste).
+
+4) Service Worker `sw.js` :
+   - incrémenter `CACHE_NAME` (ex. 'compagnon-spirituel-v13'),
+   - ajouter au precache les 8 fichiers JSON + `manifest.json`.
+
+5) Ajouter un script npm dans `package.json` :
+   "scripts": {
+     "fetch:surahs": "node scripts/fetch_surahs.js"
+   }
+
+6) Après création du script :
+   - exécuter : `npm run fetch:surahs`
+   - vérifier que `/data/lectures/*.json` existent,
+   - Run/Rebuild l’app.
+
+7) Ne rien modifier d’autre (Firebase, autres onglets). Lister précisément les fichiers créés/modifiés.
