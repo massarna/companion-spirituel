@@ -116,7 +116,7 @@
         white-space: nowrap;
         border: 0;
       }
-      
+
       /* Styles pour le texte arabe */
       .arabic-text {
         font-family: "Amiri", serif;
@@ -126,7 +126,7 @@
         text-align: right;
         color: var(--ink);
       }
-      
+
       .ayah-container {
         background: #fafafa;
         border-right: 4px solid var(--ring);
@@ -134,7 +134,7 @@
         margin-bottom: 1rem;
         border-radius: 12px;
       }
-      
+
       .ayah-number {
         display: inline-flex;
         align-items: center;
@@ -354,14 +354,14 @@
               القراءة الخاصة اليومية
             </button>
           </div>
-          
+
           <!-- Sélection des sourates (affiché quand onglet arabe est actif) -->
           <div id="surah-selector" class="mb-4">
             <select id="surah-select" class="border rounded-lg px-3 py-2 text-lg">
               <option value="">اختر سورة...</option>
             </select>
           </div>
-          
+
           <div id="lect-content" class="max-w-none">
             <p class="text-center text-slate-500">اختر قراءة</p>
           </div>
@@ -449,45 +449,41 @@
           </div>
 
           <div class="card">
-            <h2 class="title text-2xl mb-4">Journal quotidien</h2></div>
-        </div>
-      </section>
+            <h2 class="title text-2xl mb-4">Journal quotidien</h2>
             <div class="grid sm:grid-cols-2 gap-6">
               <div>
                 <h3 class="font-semibold mb-2">Prières</h3>
                 <div class="space-y-2">
-                  <label class="flex items-center gap-2"
-                    ><input type="checkbox" class="jp" value="Fajr" /> Fajr</label
-                  >
-                  <label class="flex items-center gap-2"
-                    ><input type="checkbox" class="jp" value="Dhuhr" />
-                    Dhuhr</label
-                  >
-                  <label class="flex items-center gap-2"
-                    ><input type="checkbox" class="jp" value="Asr" /> Asr</label
-                  >
-                  <label class="flex items-center gap-2"
-                    ><input type="checkbox" class="jp" value="Maghrib" />
-                    Maghrib</label
-                  >
-                  <label class="flex items-center gap-2"
-                    ><input type="checkbox" class="jp" value="Isha" /> Isha</label
-                  >
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="jp" value="Fajr" /> Fajr
+                  </label>
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="jp" value="Dhuhr" /> Dhuhr
+                  </label>
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="jp" value="Asr" /> Asr
+                  </label>
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="jp" value="Maghrib" /> Maghrib
+                  </label>
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="jp" value="Isha" /> Isha
+                  </label>
                 </div>
 
                 <h3 class="font-semibold mt-6 mb-2">Tasbih</h3>
                 <div class="flex items-center gap-3">
-                  <button id="tasbih-minus" class="px-3 py-2 rounded-lg border">
+                  <button id="tasbih-dec" class="px-3 py-2 rounded-lg border bg-red-50 hover:bg-red-100">
                     -1
                   </button>
-                  <div
-                    id="tasbih-count"
-                    class="min-w-[3ch] text-center font-semibold"
-                  >
+                  <div id="tasbih-value" class="min-w-[4ch] text-center font-semibold text-xl px-3 py-2 bg-slate-100 rounded-lg">
                     0
                   </div>
-                  <button id="tasbih-plus" class="px-3 py-2 rounded-lg border">
+                  <button id="tasbih-inc" class="px-3 py-2 rounded-lg border bg-green-50 hover:bg-green-100">
                     +1
+                  </button>
+                  <button id="tasbih-reset" class="px-3 py-2 rounded-lg border bg-slate-50 hover:bg-slate-100 text-sm">
+                    Reset
                   </button>
                 </div>
               </div>
@@ -498,7 +494,7 @@
                   id="note"
                   rows="7"
                   class="w-full rounded-lg border p-3"
-                  placeholder="Écris ici ce que ton cœur a retenu aujourd’hui…"
+                  placeholder="Écris ici ce que ton cœur a retenu aujourd'hui…"
                 ></textarea>
               </div>
             </div>
@@ -805,7 +801,6 @@
       setInterval(updateCountdown, 1000);
 
       // Journal - fonctions utilitaires et d'initialisation
-      let count = 0;
       let journalInitialized = false;
 
       async function loadJournalData() {
@@ -816,9 +811,9 @@
           const today = moment().format("YYYY-MM-DD");
 
           // Charger le compteur tasbih
-          const $count = $("#tasbih-count");
+          const $count = $("#tasbih-value");
           if ($count) {
-            count = await api.storageGet("tasbihCount", 0);
+            const count = await api.storageGet("tasbihCount", 0);
             $count.textContent = count;
           }
 
@@ -856,7 +851,7 @@
 
         const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
         for (const prayer of prayers) {
-          const checkbox = $(`#mayyit-${prayer.toLowerCase()}`);
+          const checkbox = $(`#mayyit-${prayer}`);
           if (checkbox) {
             const isChecked = await api.storageGet(`zikrDone:${today}:mayyit${prayer}`, false);
             checkbox.checked = isChecked;
@@ -866,25 +861,36 @@
 
       function setupJournalEventListeners() {
         // Event listeners pour le tasbih avec garde-fous
-        const $plus = $("#tasbih-plus");
-        const $minus = $("#tasbih-minus");
-        const $count = $("#tasbih-count");
+        const $plus = $("#tasbih-inc");
+        const $minus = $("#tasbih-dec");
+        const $reset = $("#tasbih-reset");
+        const $count = $("#tasbih-value");
 
         if ($plus) {
           $plus.addEventListener("click", async () => {
-            count++;
-            if ($count) $count.textContent = count;
+            let currentCount = parseInt($count.textContent || '0', 10);
+            currentCount++;
+            $count.textContent = currentCount;
             const api = window.storageAPI;
-            if (api) await api.storageSet("tasbihCount", count);
+            if (api) await api.storageSet("tasbihCount", currentCount);
           });
         }
 
         if ($minus) {
           $minus.addEventListener("click", async () => {
-            if (count > 0) count--;
-            if ($count) $count.textContent = count;
+            let currentCount = parseInt($count.textContent || '0', 10);
+            if (currentCount > 0) currentCount--;
+            $count.textContent = currentCount;
             const api = window.storageAPI;
-            if (api) await api.storageSet("tasbihCount", count);
+            if (api) await api.storageSet("tasbihCount", currentCount);
+          });
+        }
+
+        if ($reset) {
+          $reset.addEventListener("click", async () => {
+            $count.textContent = '0';
+            const api = window.storageAPI;
+            if (api) await api.storageSet("tasbihCount", 0);
           });
         }
 
@@ -924,8 +930,7 @@
               const api = window.storageAPI;
               if (api) {
                 const today = moment().format("YYYY-MM-DD");
-                const prayerCap = prayer.charAt(0).toUpperCase() + prayer.slice(1);
-                await api.storageSet(`zikrDone:${today}:mayyit${prayerCap}`, checkbox.checked);
+                await api.storageSet(`zikrDone:${today}:mayyit${prayer}`, checkbox.checked);
               }
             });
           }
@@ -1025,14 +1030,14 @@
           // Créer et télécharger le fichier
           const dataStr = JSON.stringify(exportData, null, 2);
           const dataBlob = new Blob([dataStr], { type: 'application/json' });
-          
+
           const link = document.createElement('a');
           link.href = URL.createObjectURL(dataBlob);
           link.download = `compagnon-spirituel-${moment().format('YYYY-MM-DD-HHmm')}.json`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
-          
+
           showImportStatus(`✅ ${exportCount} entrées exportées avec succès`, "success");
         } catch (error) {
           console.error('[Export] Erreur:', error);
@@ -1050,7 +1055,7 @@
         try {
           const text = await file.text();
           const importData = JSON.parse(text);
-          
+
           if (typeof importData !== 'object' || importData === null) {
             throw new Error('Format de fichier invalide');
           }
@@ -1075,7 +1080,7 @@
           }
 
           showImportStatus(`✅ ${importCount} entrées importées${skippedCount > 0 ? `, ${skippedCount} ignorées` : ''}`, "success");
-          
+
           // Recharger la page après un court délai pour appliquer les changements
           setTimeout(() => {
             window.location.reload();
@@ -1097,7 +1102,7 @@
 
         statusEl.textContent = message;
         statusEl.className = `mt-3 text-sm ${type === 'error' ? 'text-red-600' : 'text-green-600'}`;
-        
+
         // Effacer le message après 5 secondes
         setTimeout(() => {
           statusEl.textContent = '';
@@ -1134,7 +1139,7 @@
       }
 
 
-      
+
 
 
       // Système de lectures arabes avec drop-in files
@@ -1143,13 +1148,13 @@
       ============================================
       1. Créer un fichier JSON dans data/lectures/ avec le nom : surah-XX-name.ar.json
          Format: { "ayahs": [{"n":1,"ar":"نص الآية"}, {"n":2,"ar":"نص الآية"}] }
-      
+
       2. Ajouter une entrée dans data/lectures/manifest.json :
          "cle": { "title":"اسم السورة", "file":"surah-XX-name.ar.json" }
-      
+
       3. L'application détectera automatiquement la nouvelle sourate
       */
-      
+
       let availableSurahs = {};
       let currentSurahData = null;
 
@@ -1158,7 +1163,7 @@
         try {
           const response = await fetch('./data/lectures/manifest.json');
           if (!response.ok) throw new Error(`Erreur ${response.status}`);
-          
+
           availableSurahs = await response.json();
           populateSurahSelector();
           console.log('[Lectures] Manifeste chargé:', Object.keys(availableSurahs).length, 'sourates');
@@ -1172,18 +1177,18 @@
       function populateSurahSelector() {
         const select = $("#surah-select");
         let html = '<option value="">اختر سورة...</option>';
-        
+
         Object.entries(availableSurahs).forEach(([key, surah]) => {
           html += `<option value="${key}">${surah.title}</option>`;
         });
-        
+
         select.innerHTML = html;
       }
 
       // Charger une sourate spécifique
       async function loadSurah(surahKey) {
         const contentEl = $("#lect-content");
-        
+
         try {
           // Affichage du chargement
           contentEl.innerHTML = `
@@ -1192,7 +1197,7 @@
               <p class="text-slate-600">جاري التحميل...</p>
             </div>
           `;
-          
+
           const surah = availableSurahs[surahKey];
           if (!surah) throw new Error('Sourate non trouvée');
 
@@ -1218,13 +1223,13 @@
         if (!currentSurahData || !currentSurahData.ayahs) return;
 
         const contentEl = $("#lect-content");
-        
+
         let html = `
           <div class="mb-6">
             <h2 class="text-2xl font-bold text-center mb-6" style="font-family: 'Amiri', serif;">${title}</h2>
             <div class="space-y-4">
         `;
-        
+
         currentSurahData.ayahs.forEach(ayah => {
           html += `
             <div class="ayah-container">
@@ -1233,12 +1238,12 @@
             </div>
           `;
         });
-        
+
         html += `
             </div>
           </div>
         `;
-        
+
         contentEl.innerHTML = html;
       }
 
@@ -1264,7 +1269,7 @@
       // Rendre le contenu spécial quotidien
       function renderSpecialContent(data) {
         const contentEl = $("#lect-content");
-        
+
         let html = `
           <div class="mb-6">
             <h3 class="text-2xl font-semibold mb-2 title">Lecture Spirituelle Quotidienne</h3>
@@ -1314,7 +1319,7 @@
       // Gestion des onglets de lectures
       function setupLecturesTabs() {
         const surahSelector = $("#surah-selector");
-        
+
         $$('[data-lect]').forEach(btn => {
           btn.addEventListener('click', () => {
             // Mise à jour visuelle des boutons
@@ -1322,7 +1327,7 @@
             btn.setAttribute('aria-pressed', 'true');
 
             const lectureType = btn.dataset.lect;
-            
+
             if (lectureType === 'arabic') {
               surahSelector.style.display = 'block';
               $("#lect-content").innerHTML = '<p class="text-center text-slate-500">اختر سورة من القائمة أعلاه</p>';
@@ -1348,7 +1353,7 @@
       async function initLectures() {
         await loadSurahManifest();
         setupLecturesTabs();
-        
+
         // État initial : onglet arabe sélectionné
         $("#surah-selector").style.display = 'block';
         console.log('[Lectures] loader ready');
@@ -1629,7 +1634,7 @@
           // Afficher l'alerte si jour spécial
           const alerteEl = $("#jour-alerte");
           const alerteContentEl = $("#jour-alerte-content");
-          
+
           if (specialDay) {
             alerteEl.classList.remove("hidden");
             alerteContentEl.innerHTML = `
@@ -1660,7 +1665,7 @@
               <div class="grid md:grid-cols-2 gap-6">
                 <div class="border rounded-lg p-4">
                   <h4 class="font-semibold mb-3 text-emerald-600">✨ Jours clés ce mois-ci</h4>
-                  ${currentMonth.cles.length > 0 
+                  ${currentMonth.cles.length > 0
                     ? `<ul class="space-y-2">${currentMonth.cles.map(c => `<li class="text-sm">• ${c}</li>`).join('')}</ul>`
                     : '<p class="text-sm text-slate-500">Aucun jour particulier ce mois-ci</p>'
                   }
