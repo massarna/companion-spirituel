@@ -1,0 +1,133 @@
+Objectif : ajouter mes contenus de base (programme détaillé + retraite 4 semaines) en fichiers JSON, et rendre ces contenus dans l’onglet Programme et l’onglet Retraite de l’app, sans casser le design actuel.
+
+A) Données (créer /data + 2 fichiers)
+1) Crée le dossier /data s’il n’existe pas.
+
+2) Crée /data/programme.json avec ce contenu EXACT :
+{
+  "semaine": {
+    "dimanche": {
+      "nuit": "4 rakʿât (1 Fātiḥa + 3 Ikhlāṣ) | Zikr : 70 Istighfār",
+      "jour":  "4 rakʿât (1 Fātiḥa + 1 Kāfirūn) | Zikr : 10 Ikhlāṣ"
+    },
+    "lundi": {
+      "nuit": "2 rakʿât (1 Fātiḥa + 15 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās)",
+      "jour":  "2 rakʿât (1 Fātiḥa + 1 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 10 Istighfār + 10 Ṣalāt"
+    },
+    "mardi": {
+      "nuit": "6 rakʿât (1 Fātiḥa + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 70 Tawḥīd",
+      "jour":  "10 rakʿât (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ)"
+    },
+    "mercredi": {
+      "nuit": "4 rakʿât (1 Fātiḥa + 40 Ikhlāṣ) | Zikr : 70 Istighfār",
+      "jour":  "4 rakʿât (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ + 1 Falaq + 1 Nās)"
+    },
+    "jeudi": {
+      "nuit": "8 rakʿât (1 Fātiḥa + 10 Ikhlāṣ) | Zikr : 100 Formule du jeudi",
+      "jour":  "4 rakʿât (1 Fātiḥa + 5 Naṣr + 50 Kawthar) | Zikr : 10 Istighfār"
+    },
+    "vendredi": {
+      "nuit": "4 rakʿât (1 Fātiḥa + 50 Zalzalah)",
+      "jour":  "2 rakʿât — 1ʳᵉ : 1 Fātiḥa + 1 Āyat al-Kursī + 25 Falaq ; 2ᵉ : 1 Fātiḥa + 1 Ikhlāṣ + 25 Nās | Zikr : 50 Formule du vendredi"
+    },
+    "samedi": {
+      "nuit": "6 rakʿât (1 Fātiḥa + 3 Ikhlāṣ)",
+      "jour":  "4 rakʿât (1 Fātiḥa + 3 Kāfirūn) | Zikr : 3 Āyat al-Kursī"
+    }
+  },
+  "zikrPersonnels": [
+    { "nom": "Istighfār", "frequence": "quotidien", "repetitions": 100 },
+    { "nom": "Ṣalāt ʿala n-Nabī", "frequence": "quotidien", "repetitions": 100 },
+    { "nom": "Tasbīḥ", "frequence": "quotidien", "repetitions": 100 },
+    { "nom": "Tawḥīd", "frequence": "mardi nuit", "repetitions": 70 }
+  ],
+  "formules": {
+    "tawhid": {
+      "titre": "Formule de Tawḥīd",
+      "contexte": "Après la prière de la nuit du mardi – 70×",
+      "ar": "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ، وَهُوَ حَيٌّ لَا يَمُوتُ، ذُو الْجَلَالِ وَالْإِكْرَامِ، بِيَدِهِ الْخَيْرُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ."
+    },
+    "jeudi": {
+      "titre": "Formule du jeudi soir",
+      "contexte": "Réciter 100×",
+      "ar": "لَا إِلَٰهَ إِلَّا اللَّهُ الْمَلِكُ الْحَقُّ الْمُبِينُ."
+    },
+    "vendredi": {
+      "titre": "Formule du vendredi",
+      "contexte": "Entre Ẓuhr et ʿAṣr – 50×",
+      "ar": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ."
+    }
+  }
+}
+
+3) Crée /data/retraite.json avec ce contenu EXACT :
+{
+  "themes": {
+    "1": "Pardon (Istighfār)",
+    "2": "Salutations du Prophète (Ṣalawāt)",
+    "3": "Glorification d’Allah (Tasbīḥ & Tahlīl)",
+    "4": "Supplications (Duʿā’)"
+  },
+  "grilleQuotidienne": [
+    { "creneau": "03:00–04:30", "constant": "Tahajjud, duʿā’, dhikr profond" },
+    { "creneau": "04:30–05:00", "constant": "Ṣalāt al-Faǧr" },
+    { "creneau": "05:00–07:00", "constant": "Adhkār du matin, Coran, méditation" },
+    { "creneau": "08:00–10:00", "constant": "Ṣalāt ad-Ḍuḥā, étude" },
+    { "creneau": "10:00–12:30", "constant": "Service communautaire / œuvres" },
+    { "creneau": "12:30–13:30", "constant": "Ẓuhr, dhikr" },
+    { "creneau": "14:00–15:30", "constant": "Lecture spirituelle / repos" },
+    { "creneau": "15:30–16:30", "constant": "ʿAṣr, dhikr, marche méditative" },
+    { "creneau": "17:00–19:00", "constant": "Maghrib, dhikr, ṣalawāt" },
+    { "creneau": "20:00–21:30", "constant": "ʿIshāʾ, litanies / dhikr collectif" },
+    { "creneau": "21:30–03:00", "constant": "Étude, repos, protections nocturnes" }
+  ],
+  "accentsHebdo": {
+    "1": {
+      "notes": ["Jeûne lundi/jeudi", "Repentir, miséricorde"],
+      "exemples": ["100× Astaghfirullāh à plusieurs moments", "Sourates du pardon (ex. 39:53)"]
+    },
+    "2": {
+      "notes": ["Ṣalawāt abondantes", "Lecture Sīra / Dalā’il al-Khayrāt"],
+      "exemples": ["100× Ṣalawāt après certaines prières", "Lecture/chant Mawlid"]
+    },
+    "3": {
+      "notes": ["Tasbīḥ & Tahlīl", "Contemplation de la création"],
+      "exemples": ["Subḥānallāh wa bi-ḥamdih matin/soir", "Étude des Noms divins"]
+    },
+    "4": {
+      "notes": ["Duʿā’ prolongés", "Ruqyah et protections"],
+      "exemples": ["Séance de duʿā’ en groupe", "Āyat al-Kursī + sourates protectrices"]
+    }
+  },
+  "annuelAllege": {
+    "semaine": {
+      "matin": "Fajr, 10 min Coran & adhkār, 10 min thème hebdo",
+      "midi": "Ẓuhr si possible + 5 min dhikr du thème",
+      "soir": "ʿAṣr/Maghrib/ʿIshāʾ, 1 page Coran, 10 min dhikr du thème"
+    },
+    "avantSommeil": "Āyat al-Kursī + 3 dernières sourates ; 10 min duʿā’ (thème S4)"
+  }
+}
+
+B) Rendu (brancher ces données dans l’UI)
+4) Dans index.html (script App Controller), ajoute deux fonctions :
+   - renderProgramme(): charge /data/programme.json et injecte :
+     * Les cartes jour par jour sous la section « Programme Détaillé Jour par Jour »
+     * Le bloc « Mes Zikrs Personnalisés » (nom + fréquence + répétitions)
+     * Le bloc « Formules de Zikr à Réciter » (titre, contexte, texte arabe)
+   - renderRetraite(): charge /data/retraite.json et :
+     * Affiche la grille quotidienne (table simple)
+     * Affiche les “accents” de chaque semaine (4 colonnes : Semaine 1→4, avec notes & exemples)
+     * Affiche le “planning annuel allégé” en carte(s)
+   Les deux fonctions doivent être idempotentes (ré-appel sans doublons) et ne pas casser le style actuel.
+
+5) Appeler renderProgramme() à l’ouverture de l’onglet Programme et renderRetraite() à l’ouverture de l’onglet Retraite (ou au chargement initial si plus simple).
+
+6) Si des conteneurs manquent, crée sobrement des <div> avec des IDs parlants :
+   - #prog-week, #prog-zikrs, #prog-formules
+   - #retreat-grid, #retreat-weeks, #retreat-annual
+   Respecter la mise en page existante (titres, espacements), pas de styles exotiques.
+
+7) Bump le CACHE_NAME dans sw.js (ex.: 'compagnon-spirituel-v10') pour invalider l’ancien cache.
+
+8) Me lister précisément : fichiers créés et fichiers modifiés.
