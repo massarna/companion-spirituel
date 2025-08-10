@@ -334,20 +334,126 @@
             </div>
           </div>
 
-          <!-- Graphiques -->
+          <!-- Tableau de Bord Spirituel -->
           <div class="card">
-            <h2 class="title text-2xl mb-3">Suivi hebdomadaire</h2>
-            <div class="grid grid-cols-1 gap-6">
-              <canvas
-                id="chart-rakaa"
-                height="150"
-                class="bg-white rounded-xl"
-              ></canvas>
-              <canvas
-                id="chart-zikr"
-                height="150"
-                class="bg-white rounded-xl"
-              ></canvas>
+            <h2 class="title text-2xl mb-4">Tableau de Bord Spirituel</h2>
+            
+            <!-- Statistiques aujourd'hui -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div class="text-center p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl">
+                <div class="text-2xl font-bold text-emerald-700" id="prayers-today">0</div>
+                <div class="text-sm text-emerald-600">Prières</div>
+                <div class="text-xs text-emerald-500">aujourd'hui</div>
+              </div>
+              
+              <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
+                <div class="text-2xl font-bold text-blue-700" id="dhikr-count">0</div>
+                <div class="text-sm text-blue-600">Dhikr</div>
+                <div class="text-xs text-blue-500">comptés</div>
+              </div>
+              
+              <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
+                <div class="text-2xl font-bold text-purple-700" id="streak-days">0</div>
+                <div class="text-sm text-purple-600">Jours</div>
+                <div class="text-xs text-purple-500">consécutifs</div>
+              </div>
+              
+              <div class="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl">
+                <div class="text-2xl font-bold text-orange-700" id="weekly-progress">0%</div>
+                <div class="text-sm text-orange-600">Semaine</div>
+                <div class="text-xs text-orange-500">accomplie</div>
+              </div>
+            </div>
+
+            <!-- Progression des objectifs -->
+            <div class="space-y-3">
+              <h3 class="font-semibold text-slate-700 mb-2">Progression du Jour</h3>
+              
+              <!-- Prières obligatoires -->
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <span class="text-emerald-600 text-sm">🤲</span>
+                  </div>
+                  <span class="text-sm font-medium">Prières obligatoires</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="prayer-progress" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%"></div>
+                  </div>
+                  <span class="text-xs text-slate-600" id="prayer-fraction">0/5</span>
+                </div>
+              </div>
+
+              <!-- Dhikr quotidien -->
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span class="text-blue-600 text-sm">📿</span>
+                  </div>
+                  <span class="text-sm font-medium">Dhikr quotidien</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="dhikr-progress" class="h-full bg-blue-500 transition-all duration-300" style="width: 0%"></div>
+                  </div>
+                  <span class="text-xs text-slate-600" id="dhikr-fraction">0/100</span>
+                </div>
+              </div>
+
+              <!-- Lecture Coran -->
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                    <span class="text-purple-600 text-sm">📖</span>
+                  </div>
+                  <span class="text-sm font-medium">Lecture du Coran</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="quran-progress" class="h-full bg-purple-500 transition-all duration-300" style="width: 0%"></div>
+                  </div>
+                  <span class="text-xs text-slate-600" id="quran-status">En attente</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tendance de la semaine -->
+            <div class="mt-6 p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl">
+              <h3 class="font-semibold text-slate-700 mb-3">Tendance de la Semaine</h3>
+              <div class="flex justify-between items-end h-16">
+                <div class="flex flex-col items-center">
+                  <div id="day-1" class="w-6 bg-emerald-400 rounded-t mb-1" style="height: 20px;"></div>
+                  <span class="text-xs text-slate-500">L</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-2" class="w-6 bg-emerald-400 rounded-t mb-1" style="height: 35px;"></div>
+                  <span class="text-xs text-slate-500">M</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-3" class="w-6 bg-emerald-400 rounded-t mb-1" style="height: 45px;"></div>
+                  <span class="text-xs text-slate-500">M</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-4" class="w-6 bg-emerald-400 rounded-t mb-1" style="height: 60px;"></div>
+                  <span class="text-xs text-slate-500">J</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-5" class="w-6 bg-emerald-500 rounded-t mb-1" style="height: 55px;"></div>
+                  <span class="text-xs text-slate-500">V</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-6" class="w-6 bg-emerald-300 rounded-t mb-1" style="height: 30px;"></div>
+                  <span class="text-xs text-slate-500">S</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-7" class="w-6 bg-emerald-600 rounded-t mb-1" style="height: 64px;"></div>
+                  <span class="text-xs text-slate-500">D</span>
+                </div>
+              </div>
+              <div class="text-center mt-2">
+                <span class="text-xs text-slate-600">Régularité spirituelle (7 derniers jours)</span>
+              </div>
             </div>
           </div>
         </div>
@@ -825,70 +931,125 @@
       for (const p of PRAYERS) {
         $("#t-" + p.name).textContent = p.time;
       }
-      console.log('Chart version:', window.Chart?.version);
+      // Tableau de bord spirituel - Mise à jour des métriques
+      async function updateDashboard() {
+        const api = window.storageAPI;
+        if (!api) return;
 
-      // Charts - créés UNE seule fois avec protection contre la duplication
-      let chartsInitialized = false;
-      function initCharts() {
-        if (chartsInitialized) return;
+        const today = moment().format("YYYY-MM-DD");
+        
+        try {
+          // 1. Compter les prières accomplies aujourd'hui
+          const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+          let prayersToday = 0;
+          
+          for (const prayer of prayers) {
+            const isDone = await api.storageGet(`jp:${today}:${prayer}`, false);
+            if (isDone) prayersToday++;
+          }
+          
+          $("#prayers-today").textContent = prayersToday;
+          $("#prayer-fraction").textContent = `${prayersToday}/5`;
+          
+          const prayerProgress = (prayersToday / 5) * 100;
+          $("#prayer-progress").style.width = `${prayerProgress}%`;
 
-        const ctxRakaa = document.getElementById("chart-rakaa")?.getContext("2d");
-        const ctxZikr = document.getElementById("chart-zikr")?.getContext("2d");
+          // 2. Récupérer le compteur de dhikr
+          const dhikrCount = await api.storageGet("tasbihCount", 0);
+          $("#dhikr-count").textContent = dhikrCount;
+          
+          const dhikrTarget = 100; // Objectif quotidien
+          const dhikrProgress = Math.min((dhikrCount / dhikrTarget) * 100, 100);
+          $("#dhikr-progress").style.width = `${dhikrProgress}%`;
+          $("#dhikr-fraction").textContent = `${dhikrCount}/${dhikrTarget}`;
 
-        if (window.Chart && ctxRakaa && ctxZikr) {
-          new Chart(ctxRakaa, {
-            type: "bar",
-            data: {
-              labels: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
-              datasets: [
-                {
-                  label: "Rakʿât (jour+nuit)",
-                  data: [6, 8, 10, 4, 12, 8, 6],
-                  backgroundColor: "rgba(16, 185, 129, 0.8)"
-                },
-              ],
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  display: true,
-                  position: 'top'
-                }
-              }
-            },
-          });
+          // 3. Calculer la série de jours consécutifs
+          let streakDays = await calculateStreak();
+          $("#streak-days").textContent = streakDays;
 
-          new Chart(ctxZikr, {
-            type: "doughnut",
-            data: {
-              labels: ["Tawhid", "Istighfar", "Salât ʿala n-Nabî", "Autres"],
-              datasets: [{
-                data: [40, 30, 20, 10],
-                backgroundColor: [
-                  "rgba(16, 185, 129, 0.8)",
-                  "rgba(59, 130, 246, 0.8)",
-                  "rgba(245, 158, 11, 0.8)",
-                  "rgba(156, 163, 175, 0.8)"
-                ]
-              }],
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              cutout: "60%",
-            },
-          });
-          chartsInitialized = true;
-          console.log('[Charts] Initialisés avec succès');
-        } else {
-          console.warn("Chart.js non chargé ou canvas introuvable.");
+          // 4. Calculer le pourcentage d'accomplissement de la semaine
+          let weeklyProgress = await calculateWeeklyProgress();
+          $("#weekly-progress").textContent = `${weeklyProgress}%`;
+
+          // 5. Mettre à jour la progression Coran (simulation)
+          const hasReadQuran = Math.random() > 0.3; // Simulation
+          if (hasReadQuran) {
+            $("#quran-progress").style.width = "100%";
+            $("#quran-status").textContent = "Accomplie ✓";
+          } else {
+            $("#quran-progress").style.width = "0%";
+            $("#quran-status").textContent = "En attente";
+          }
+
+          console.log('[Dashboard] Métriques mises à jour');
+        } catch (error) {
+          console.error('[Dashboard] Erreur:', error);
         }
       }
 
-      // Initialiser les graphiques après un court délai
-      setTimeout(initCharts, 100);
+      // Calculer la série de jours consécutifs
+      async function calculateStreak() {
+        const api = window.storageAPI;
+        if (!api) return 0;
+
+        let streak = 0;
+        let currentDate = moment();
+        
+        // Vérifier les 30 derniers jours maximum
+        for (let i = 0; i < 30; i++) {
+          const dateStr = currentDate.format("YYYY-MM-DD");
+          let dayScore = 0;
+          
+          // Vérifier les prières de ce jour
+          const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+          for (const prayer of prayers) {
+            const isDone = await api.storageGet(`jp:${dateStr}:${prayer}`, false);
+            if (isDone) dayScore++;
+          }
+          
+          // Un jour est considéré "réussi" si au moins 3 prières sont faites
+          if (dayScore >= 3) {
+            streak++;
+          } else {
+            break; // Arrêter la série
+          }
+          
+          currentDate.subtract(1, 'day');
+        }
+        
+        return streak;
+      }
+
+      // Calculer le pourcentage d'accomplissement de la semaine
+      async function calculateWeeklyProgress() {
+        const api = window.storageAPI;
+        if (!api) return 0;
+
+        const startOfWeek = moment().startOf('isoWeek');
+        const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+        let totalPossible = 0;
+        let totalAccomplished = 0;
+        
+        for (let i = 0; i < 7; i++) {
+          const date = startOfWeek.clone().add(i, 'days');
+          const dateStr = date.format("YYYY-MM-DD");
+          
+          // Ne compter que les jours déjà passés
+          if (date.isSameOrBefore(moment(), 'day')) {
+            for (const prayer of prayers) {
+              totalPossible++;
+              const isDone = await api.storageGet(`jp:${dateStr}:${prayer}`, false);
+              if (isDone) totalAccomplished++;
+            }
+          }
+        }
+        
+        return totalPossible > 0 ? Math.round((totalAccomplished / totalPossible) * 100) : 0;
+      }
+
+      // Initialiser et mettre à jour le tableau de bord
+      updateDashboard();
+      setInterval(updateDashboard, 30000); // Mise à jour toutes les 30 secondes
 
       // Focus du jour - système basé sur l'ancienne version
       const dailySchedule = [
