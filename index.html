@@ -149,6 +149,14 @@
         margin-left: 0.75rem;
         margin-bottom: 0.5rem;
       }
+
+      .ayah-marker {
+        font-size: 0.9em;
+        margin: 0 0.25rem;
+        opacity: 0.8;
+        color: var(--ring);
+        font-weight: bold;
+      }
     </style>
   </head>
 
@@ -1223,23 +1231,17 @@
         if (!currentSurahData || !currentSurahData.ayahs) return;
 
         const contentEl = $("#lect-content");
+        
+        // Créer le texte continu avec marqueurs de versets
+        const continuousText = currentSurahData.ayahs.map(ayah => 
+          `${ayah.ar} <span class="ayah-marker">﴿${ayah.n}﴾</span>`
+        ).join(' ');
 
         let html = `
           <div class="mb-6">
             <h2 class="text-2xl font-bold text-center mb-6" style="font-family: 'Amiri', serif;">${title}</h2>
-            <div class="space-y-4">
-        `;
-
-        currentSurahData.ayahs.forEach(ayah => {
-          html += `
-            <div class="ayah-container">
-              <div class="ayah-number">${ayah.n}</div>
-              <p class="arabic-text" dir="rtl" lang="ar">${ayah.ar}</p>
-            </div>
-          `;
-        });
-
-        html += `
+            <div id="surah-text" dir="rtl" lang="ar" class="text-[22px] leading-9 text-justify" style="font-family: 'Amiri', serif;">
+              ${continuousText}
             </div>
           </div>
         `;
