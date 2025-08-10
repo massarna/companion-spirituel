@@ -1,9 +1,17 @@
-const CACHE_NAME = "compagnon-spirituel-v11";
+
+const CACHE_NAME = "compagnon-spirituel-v13";
 const urlsToCache = [
   "/",
   "/index.html",
   "/data/lectures/manifest.json",
+  "/data/lectures/surah-1-al-fatiha.ar.json",
   "/data/lectures/surah-18-al-kahf.ar.json",
+  "/data/lectures/surah-36-yasin.ar.json",
+  "/data/lectures/surah-44-dukhan.ar.json",
+  "/data/lectures/surah-56-waqiah.ar.json",
+  "/data/lectures/surah-67-mulk.ar.json",
+  "/data/lectures/surah-76-insan.ar.json",
+  "/data/lectures/surah-85-buruj.ar.json",
   "https://cdn.tailwindcss.com",
   "https://cdn.jsdelivr.net/npm/chart.js",
   "https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js",
