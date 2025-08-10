@@ -420,8 +420,38 @@
       <!-- Journal -->
       <section data-page="journal" class="hidden">
         <div class="space-y-8" id="journal-container">
+          <!-- Export/Import des données -->
+          <div class="card bg-slate-50">
+            <h3 class="text-lg font-semibold mb-3">💾 Sauvegarde des données</h3>
+            <div class="flex flex-wrap gap-3">
+              <button
+                id="export-data"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+              >
+                📤 Exporter mes données
+              </button>
+              <div class="flex items-center gap-2">
+                <input
+                  type="file"
+                  id="import-file"
+                  accept=".json"
+                  class="hidden"
+                />
+                <button
+                  id="import-data"
+                  class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+                >
+                  📥 Importer des données
+                </button>
+              </div>
+            </div>
+            <div id="import-status" class="mt-3 text-sm"></div>
+          </div>
+
           <div class="card">
-            <h2 class="title text-2xl mb-4">Journal quotidien</h2>
+            <h2 class="title text-2xl mb-4">Journal quotidien</h2></div>
+        </div>
+      </section>
             <div class="grid sm:grid-cols-2 gap-6">
               <div>
                 <h3 class="font-semibold mb-2">Prières</h3>
@@ -918,6 +948,7 @@
         }
 
         setupJournalEventListeners();
+        setupExportImportListeners();
         await loadJournalData();
         journalInitialized = true;
       }
@@ -959,6 +990,145 @@
 
       // Initialisation au chargement de la page et à l'ouverture de l'onglet
       document.addEventListener("DOMContentLoaded", initJournal);
+
+      // Fonctions Export/Import des données
+      async function exportUserData() {
+        const api = window.storageAPI;
+        if (!api) {
+          showImportStatus("Erreur : API de stockage non disponible", "error");
+          return;
+        }
+
+        try {
+          const prefixes = ['tasbihCount', 'retreatStart', 'jp:', 'note:', 'zikrDone:', 'mayyit:'];
+          const exportData = {};
+          let exportCount = 0;
+
+          // Parcourir localStorage pour trouver les clés correspondantes
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && prefixes.some(prefix => key.startsWith(prefix))) {
+              try {
+                const value = JSON.parse(localStorage.getItem(key));
+                exportData[key] = value;
+                exportCount++;
+              } catch (e) {
+                // Ignorer les valeurs qui ne sont pas du JSON valide
+                console.warn(`Impossible d'exporter la clé ${key}:`, e);
+              }
+            }
+          }
+
+          // Créer et télécharger le fichier
+          const dataStr = JSON.stringify(exportData, null, 2);
+          const dataBlob = new Blob([dataStr], { type: 'application/json' });
+          
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(dataBlob);
+          link.download = `compagnon-spirituel-${moment().format('YYYY-MM-DD-HHmm')}.json`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          showImportStatus(`✅ ${exportCount} entrées exportées avec succès`, "success");
+        } catch (error) {
+          console.error('[Export] Erreur:', error);
+          showImportStatus("❌ Erreur lors de l'export", "error");
+        }
+      }
+
+      async function importUserData(file) {
+        const api = window.storageAPI;
+        if (!api) {
+          showImportStatus("Erreur : API de stockage non disponible", "error");
+          return;
+        }
+
+        try {
+          const text = await file.text();
+          const importData = JSON.parse(text);
+          
+          if (typeof importData !== 'object' || importData === null) {
+            throw new Error('Format de fichier invalide');
+          }
+
+          const prefixes = ['tasbihCount', 'retreatStart', 'jp:', 'note:', 'zikrDone:', 'mayyit:'];
+          let importCount = 0;
+          let skippedCount = 0;
+
+          for (const [key, value] of Object.entries(importData)) {
+            // Vérifier que la clé correspond aux préfixes autorisés
+            if (prefixes.some(prefix => key.startsWith(prefix))) {
+              try {
+                await api.storageSet(key, value);
+                importCount++;
+              } catch (e) {
+                console.warn(`Impossible d'importer la clé ${key}:`, e);
+                skippedCount++;
+              }
+            } else {
+              skippedCount++;
+            }
+          }
+
+          showImportStatus(`✅ ${importCount} entrées importées${skippedCount > 0 ? `, ${skippedCount} ignorées` : ''}`, "success");
+          
+          // Recharger la page après un court délai pour appliquer les changements
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+
+        } catch (error) {
+          console.error('[Import] Erreur:', error);
+          if (error.name === 'SyntaxError') {
+            showImportStatus("❌ Fichier JSON invalide", "error");
+          } else {
+            showImportStatus("❌ Erreur lors de l'import", "error");
+          }
+        }
+      }
+
+      function showImportStatus(message, type) {
+        const statusEl = $("#import-status");
+        if (!statusEl) return;
+
+        statusEl.textContent = message;
+        statusEl.className = `mt-3 text-sm ${type === 'error' ? 'text-red-600' : 'text-green-600'}`;
+        
+        // Effacer le message après 5 secondes
+        setTimeout(() => {
+          statusEl.textContent = '';
+          statusEl.className = 'mt-3 text-sm';
+        }, 5000);
+      }
+
+      // Event listeners pour Export/Import
+      function setupExportImportListeners() {
+        const exportBtn = $("#export-data");
+        const importBtn = $("#import-data");
+        const importFile = $("#import-file");
+
+        if (exportBtn) {
+          exportBtn.addEventListener("click", exportUserData);
+        }
+
+        if (importBtn) {
+          importBtn.addEventListener("click", () => {
+            if (importFile) importFile.click();
+          });
+        }
+
+        if (importFile) {
+          importFile.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              importUserData(file);
+              // Réinitialiser l'input pour permettre la sélection du même fichier
+              e.target.value = '';
+            }
+          });
+        }
+      }
 
 
       // Fonctions pour le Focus du jour (Zikrs personnalisés)
