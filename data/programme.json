@@ -1,0 +1,56 @@
+
+{
+  "semaine": {
+    "dimanche": {
+      "nuit": "4 rakʿât (1 Fātiḥa + 3 Ikhlāṣ) | Zikr : 70 Istighfār",
+      "jour":  "4 rakʿât (1 Fātiḥa + 1 Kāfirūn) | Zikr : 10 Ikhlāṣ"
+    },
+    "lundi": {
+      "nuit": "2 rakʿât (1 Fātiḥa + 15 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās)",
+      "jour":  "2 rakʿât (1 Fātiḥa + 1 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 10 Istighfār + 10 Ṣalāt"
+    },
+    "mardi": {
+      "nuit": "6 rakʿât (1 Fātiḥa + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 70 Tawḥīd",
+      "jour":  "10 rakʿât (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ)"
+    },
+    "mercredi": {
+      "nuit": "4 rakʿât (1 Fātiḥa + 40 Ikhlāṣ) | Zikr : 70 Istighfār",
+      "jour":  "4 rakʿât (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ + 1 Falaq + 1 Nās)"
+    },
+    "jeudi": {
+      "nuit": "8 rakʿât (1 Fātiḥa + 10 Ikhlāṣ) | Zikr : 100 Formule du jeudi",
+      "jour":  "4 rakʿât (1 Fātiḥa + 5 Naṣr + 50 Kawthar) | Zikr : 10 Istighfār"
+    },
+    "vendredi": {
+      "nuit": "4 rakʿât (1 Fātiḥa + 50 Zalzalah)",
+      "jour":  "2 rakʿât — 1ʳᵉ : 1 Fātiḥa + 1 Āyat al-Kursī + 25 Falaq ; 2ᵉ : 1 Fātiḥa + 1 Ikhlāṣ + 25 Nās | Zikr : 50 Formule du vendredi"
+    },
+    "samedi": {
+      "nuit": "6 rakʿât (1 Fātiḥa + 3 Ikhlāṣ)",
+      "jour":  "4 rakʿât (1 Fātiḥa + 3 Kāfirūn) | Zikr : 3 Āyat al-Kursī"
+    }
+  },
+  "zikrPersonnels": [
+    { "nom": "Istighfār", "frequence": "quotidien", "repetitions": 100 },
+    { "nom": "Ṣalāt ʿala n-Nabī", "frequence": "quotidien", "repetitions": 100 },
+    { "nom": "Tasbīḥ", "frequence": "quotidien", "repetitions": 100 },
+    { "nom": "Tawḥīd", "frequence": "mardi nuit", "repetitions": 70 }
+  ],
+  "formules": {
+    "tawhid": {
+      "titre": "Formule de Tawḥīd",
+      "contexte": "Après la prière de la nuit du mardi – 70×",
+      "ar": "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ، وَهُوَ حَيٌّ لَا يَمُوتُ، ذُو الْجَلَالِ وَالْإِكْرَامِ، بِيَدِهِ الْخَيْرُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ."
+    },
+    "jeudi": {
+      "titre": "Formule du jeudi soir",
+      "contexte": "Réciter 100×",
+      "ar": "لَا إِلَٰهَ إِلَّا اللَّهُ الْمَلِكُ الْحَقُّ الْمُبِينُ."
+    },
+    "vendredi": {
+      "titre": "Formule du vendredi",
+      "contexte": "Entre Ẓuhr et ʿAṣr – 50×",
+      "ar": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ."
+    }
+  }
+}

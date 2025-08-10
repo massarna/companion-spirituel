@@ -1,0 +1,48 @@
+
+{
+  "themes": {
+    "1": "Pardon (Istighfār)",
+    "2": "Salutations du Prophète (Ṣalawāt)",
+    "3": "Glorification d'Allah (Tasbīḥ & Tahlīl)",
+    "4": "Supplications (Duʿā')"
+  },
+  "grilleQuotidienne": [
+    { "creneau": "03:00–04:30", "constant": "Tahajjud, duʿā', dhikr profond" },
+    { "creneau": "04:30–05:00", "constant": "Ṣalāt al-Faǧr" },
+    { "creneau": "05:00–07:00", "constant": "Adhkār du matin, Coran, méditation" },
+    { "creneau": "08:00–10:00", "constant": "Ṣalāt ad-Ḍuḥā, étude" },
+    { "creneau": "10:00–12:30", "constant": "Service communautaire / œuvres" },
+    { "creneau": "12:30–13:30", "constant": "Ẓuhr, dhikr" },
+    { "creneau": "14:00–15:30", "constant": "Lecture spirituelle / repos" },
+    { "creneau": "15:30–16:30", "constant": "ʿAṣr, dhikr, marche méditative" },
+    { "creneau": "17:00–19:00", "constant": "Maghrib, dhikr, ṣalawāt" },
+    { "creneau": "20:00–21:30", "constant": "ʿIshāʾ, litanies / dhikr collectif" },
+    { "creneau": "21:30–03:00", "constant": "Étude, repos, protections nocturnes" }
+  ],
+  "accentsHebdo": {
+    "1": {
+      "notes": ["Jeûne lundi/jeudi", "Repentir, miséricorde"],
+      "exemples": ["100× Astaghfirullāh à plusieurs moments", "Sourates du pardon (ex. 39:53)"]
+    },
+    "2": {
+      "notes": ["Ṣalawāt abondantes", "Lecture Sīra / Dalā'il al-Khayrāt"],
+      "exemples": ["100× Ṣalawāt après certaines prières", "Lecture/chant Mawlid"]
+    },
+    "3": {
+      "notes": ["Tasbīḥ & Tahlīl", "Contemplation de la création"],
+      "exemples": ["Subḥānallāh wa bi-ḥamdih matin/soir", "Étude des Noms divins"]
+    },
+    "4": {
+      "notes": ["Duʿā' prolongés", "Ruqyah et protections"],
+      "exemples": ["Séance de duʿā' en groupe", "Āyat al-Kursī + sourates protectrices"]
+    }
+  },
+  "annuelAllege": {
+    "semaine": {
+      "matin": "Fajr, 10 min Coran & adhkār, 10 min thème hebdo",
+      "midi": "Ẓuhr si possible + 5 min dhikr du thème",
+      "soir": "ʿAṣr/Maghrib/ʿIshāʾ, 1 page Coran, 10 min dhikr du thème"
+    },
+    "avantSommeil": "Āyat al-Kursī + 3 dernières sourates ; 10 min duʿā' (thème S4)"
+  }
+}
