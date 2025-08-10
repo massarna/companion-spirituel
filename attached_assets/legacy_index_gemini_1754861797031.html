@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compagnon Spirituel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/fr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #fdfaf6;
+        }
+        h1, h2, h3, .font-amiri {
+            font-family: 'Amiri', serif;
+        }
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.25rem;
+            line-height: 2.5rem;
+            direction: rtl;
+            text-align: right;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 50vh;
+        }
+        .donut-chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 50vh;
+        }
+        .tab-button.active {
+            border-color: #EB6841;
+            background-color: #EB6841;
+            color: white;
+        }
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        #monthly-content ul, #retreat-content ul {
+            list-style-type: disc;
+            list-style-position: inside;
+            margin-left: 1rem;
+        }
+        .prayer-time-card.next-prayer {
+            background-color: #e3f2fd;
+            border-color: #00A0B0;
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .tasbih-btn {
+            transition: transform 0.1s ease-in-out;
+        }
+        .tasbih-btn:active {
+            transform: scale(0.95);
+        }
+        #journal-calendar .day.selected {
+            background-color: #EB6841;
+            color: white;
+            border-radius: 50%;
+        }
+        #journal-calendar .day {
+            cursor: pointer;
+            position: relative;
+        }
+        #journal-calendar .dot {
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #compass-dial {
+            transition: transform 0.5s ease-out;
+        }
+        #qibla-arrow > div {
+             transition: transform 0.5s ease-out;
+             background-image: linear-gradient(to top, #CC333F, #ff6b6b);
+             box-shadow: 0 4px 15px rgba(204, 51, 63, 0.4);
+        }
+        .retreat-section {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8">
+
+        <header class="text-center my-8 md:my-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#6A4A3C]">Compagnon Spirituel</h1>
+            <p class="text-lg md:text-xl text-[#EB6841] mt-2">Votre guide spirituel quotidien</p>
+            <div id="date-container" class="mt-6 text-lg bg-white/50 rounded-lg p-4 max-w-md mx-auto shadow-sm">
+                <p id="gregorian-date" class="font-semibold text-[#00A0B0]"></p>
+                <p id="hijri-date" class="font-semibold text-[#6A4A3C]"></p>
+            </div>
+        </header>
+
+        <div class="mb-8 border-b border-gray-200">
+            <nav class="flex flex-wrap justify-center -mb-px" aria-label="Tabs">
+                 <button id="tab-btn-home" class="tab-button whitespace-nowrap py-4 px-6 border-b-2 font-medium text-lg rounded-t-lg transition-colors duration-200">
+                    Accueil
+                </button>
+                 <button id="tab-btn-program" class="tab-button whitespace-nowrap py-4 px-6 border-b-2 font-medium text-lg rounded-t-lg transition-colors duration-200">
+                    Programme Détaillé
+                </button>
+                 <button id="tab-btn-retreat" class="tab-button whitespace-nowrap py-4 px-6 border-b-2 font-medium text-lg rounded-t-lg transition-colors duration-200">
+                    Ma Retraite
+                </button>
+                <button id="tab-btn-journal" class="tab-button whitespace-nowrap py-4 px-6 border-b-2 font-medium text-lg rounded-t-lg transition-colors duration-200">
+                    Mon Journal
+                </button>
+                <button id="tab-btn-monthly" class="tab-button whitespace-nowrap py-4 px-6 border-b-2 font-medium text-lg rounded-t-lg transition-colors duration-200">
+                    Événements du Mois
+                </button>
+                 <button id="tab-btn-qibla" class="tab-button whitespace-nowrap py-4 px-6 border-b-2 font-medium text-lg rounded-t-lg transition-colors duration-200">
+                    Qibla
+                </button>
+            </nav>
+        </div>
+
+        <main>
+            <div id="tab-panel-home" class="tab-panel space-y-12">
+                <section id="daily-focus-section" class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-center mb-2 text-[#00A0B0]">Focus du Jour</h2>
+                    <p id="daily-focus-time" class="text-center text-gray-500 mb-4"></p>
+                    <div id="daily-focus-content" class="text-center text-lg text-gray-700 leading-relaxed"></div>
+                    <div id="weekly-special-focus" class="mt-6"></div>
+                </section>
+                <section id="prayer-times-section">
+                    <h2 class="text-3xl font-bold text-center mb-6 text-[#00A0B0]">Horaires de Prière (Bobo-Dioulasso)</h2>
+                    <div id="prayer-times-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-center"></div>
+                    <div id="next-prayer-countdown" class="mt-6 text-center text-xl font-semibold text-[#CC333F]"></div>
+                </section>
+                <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-center mb-2 text-[#00A0B0]">Vue d'Ensemble des Prières</h2>
+                    <p class="text-center text-gray-600 mb-6 max-w-3xl mx-auto">Ce graphique illustre le nombre total de rak'at à accomplir chaque jour.</p>
+                    <div class="chart-container">
+                        <canvas id="rakatsChart"></canvas>
+                    </div>
+                </section>
+                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <section class="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                        <h2 class="text-3xl font-bold text-center mb-2 text-[#00A0B0]">Répartition des Zikrs</h2>
+                        <p class="text-center text-gray-600 mb-6 max-w-2xl mx-auto">Visualisation de la proportion des différentes formules de zikr.</p>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center mt-8">
+                            <div class="bg-blue-50 p-4 rounded-lg"><p class="text-sm text-blue-600">Istighfār</p><p class="text-3xl font-bold text-blue-800">160</p></div>
+                            <div class="bg-red-50 p-4 rounded-lg"><p class="text-sm text-red-600">Tawḥīd</p><p class="text-3xl font-bold text-red-800">70</p></div>
+                            <div class="bg-yellow-50 p-4 rounded-lg"><p class="text-sm text-yellow-600">Formule du Jeudi</p><p class="text-3xl font-bold text-yellow-800">100</p></div>
+                            <div class="bg-orange-50 p-4 rounded-lg"><p class="text-sm text-orange-600">Formule du Vendredi</p><p class="text-3xl font-bold text-orange-800">50</p></div>
+                        </div>
+                    </section>
+                    <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 flex flex-col justify-center">
+                         <div class="donut-chart-container"><canvas id="zikrsChart"></canvas></div>
+                    </section>
+                </div>
+            </div>
+
+            <div id="tab-panel-program" class="tab-panel space-y-12">
+                 <section>
+                    <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Programme Détaillé Jour par Jour</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4"><h3 class="text-2xl font-bold text-[#6A4A3C]">Dimanche</h3><p><strong>Nuit:</strong> 4 rak'at (1 Fātiḥa + 3 Ikhlāṣ) | Zikr: 70 Istighfār.</p><p><strong>Jour:</strong> 4 rak'at (1 Fātiḥa + 1 Kāfirūn) | Zikr: 10 Ikhlāṣ.</p></div>
+                        <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4"><h3 class="text-2xl font-bold text-[#6A4A3C]">Lundi</h3><p><strong>Nuit:</strong> 2 rak'at (1 Fātiḥa + 15 Âyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās).</p><p><strong>Jour:</strong> 2 rak'at (1 Fātiḥa + 1 Âyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr: 10 Istighfār + 10 Ṣalāt.</p></div>
+                        <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4"><h3 class="text-2xl font-bold text-[#6A4A3C]">Mardi</h3><p><strong>Nuit:</strong> 6 rak'at (1 Fātiḥa + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr: 70 Tawḥīd.</p><p><strong>Jour:</strong> 10 rak'at (1 Fātiḥa + 1 Âyat al-Kursī + 3 Ikhlāṣ).</p></div>
+                        <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4"><h3 class="text-2xl font-bold text-[#6A4A3C]">Mercredi</h3><p><strong>Nuit:</strong> 4 rak'at (1 Fātiḥa + 40 Ikhlāṣ) | Zikr: 70 Istighfār.</p><p><strong>Jour:</strong> 4 rak'at (1 Fātiḥa + 1 Âyat al-Kursī + 3 Ikhlāṣ + 1 Falaq + 1 Nās).</p></div>
+                        <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4"><h3 class="text-2xl font-bold text-[#6A4A3C]">Jeudi</h3><p><strong>Nuit:</strong> 8 rak'at (1 Fātiḥa + 10 Ikhlāṣ) | Zikr: 100 Formule du Jeudi.</p><p><strong>Jour:</strong> 4 rak'at (1 Fātiḥa + 5 Naṣr + 50 Kawthar) | Zikr: 10 Istighfār.</p></div>
+                        <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4"><h3 class="text-2xl font-bold text-[#6A4A3C]">Vendredi</h3><p><strong>Nuit:</strong> 4 rak'at (1 Fātiḥa + 50 Zalzalah).</p><p><strong>Jour:</strong> 2 rak'at (1ère: 1 Fātiḥa + 1 Âyat al-Kursī + 25 Falaq; 2ème: 1 Fātiḥa + 1 Ikhlāṣ + 25 Nās) | Zikr: 50 Formule du Vendredi.</p></div>
+                        <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4 md:col-span-2 xl:col-span-1"><h3 class="text-2xl font-bold text-[#6A4A3C]">Samedi</h3><p><strong>Nuit:</strong> 6 rak'at (1 Fātiḥa + 3 Ikhlāṣ).</p><p><strong>Jour:</strong> 4 rak'at (1 Fātiḥa + 3 Kāfirūn) | Zikr: 3 Âyat al-Kursī.</p></div>
+                    </div>
+                </section>
+                <section>
+                    <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Formules de Zikr à Réciter</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col"><h3 class="text-xl font-bold text-[#6A4A3C] mb-2">Formule de Tawḥīd</h3><p class="text-sm text-gray-500 mb-3">Après la prière de la nuit du mardi – 70 fois</p><p class="arabic-text text-[#00A0B0] flex-grow">لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ، وَهُوَ حَيٌّ لَا يَمُوتُ، ذُو الْجَلَالِ وَالْإِكْرَامِ، بِيَدِهِ الْخَيْرُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ.</p><p class="text-gray-600 mt-4 text-sm pt-4 border-t border-gray-200">Proclame l’unicité de Dieu, sa souveraineté et Sa puissance absolue.</p></div>
+                        <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col"><h3 class="text-xl font-bold text-[#6A4A3C] mb-2">Formule du Jeudi Soir</h3><p class="text-sm text-gray-500 mb-3">Réciter 100 fois</p><p class="arabic-text text-[#EDC951] flex-grow">لَا إِلَٰهَ إِلَّا اللَّهُ الْمَلِكُ الْحَقُّ الْمُبِينُ.</p><p class="text-gray-600 mt-4 text-sm pt-4 border-t border-gray-200">« Il n’y a de divinité que Dieu, le Roi, le Juste, le Manifeste ».</p></div>
+                        <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col"><h3 class="text-xl font-bold text-[#6A4A3C] mb-2">Formule du Vendredi</h3><p class="text-sm text-gray-500 mb-3">Après la prière entre Dhuhr et ʿAsr – 50 fois</p><p class="arabic-text text-[#EB6841] flex-grow">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ.</p><p class="text-gray-600 mt-4 text-sm pt-4 border-t border-gray-200">« Il n’y a de puissance ni de force qu’en Dieu, le Très-Haut, l’Immense ».</p></div>
+                    </div>
+                </section>
+                <section>
+                    <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Pratique des Invocations Spéciales</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8"><h3 class="text-2xl font-bold text-[#6A4A3C] mb-4">Litanie d'amour du Prophète (ﷺ)</h3><p class="text-gray-600 mb-4">Pratiquée quotidiennement entre 2h et 4h du matin.</p><ol class="list-decimal list-inside text-gray-600 space-y-2 mb-4"><li>Réciter 12 fois la <strong>Ṣalāt al-Fātiḥ</strong>.</li><li>Répéter 12 fois l'invocation ci-dessous.</li></ol><p class="arabic-text text-[#CC333F]">اللَّهُمَّ إِنِّي أَسْأَلُكَ وَأَتَوَجَّهُ إِلَيْكَ بِحَبِيبِكَ وَرَسُولِكَ وَרَفِيعِ الْقَدْرِ عِنْدَكَ، سَيِّدِنَا مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ، ارْزُقْنِي مَحَبَّةً خَاصَّةً خَالِصَةً فِيكَ وَفِي حَبِيبِكَ سَيِّدِنَا مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ، وَاجْعَلْنِي فِي الدُّنْيَا وَالْآخِرَةِ مِنْ أَهْلِ الْوِلَايَةِ الْخَاصَّةِ كَامِلَةِ الْمَعْرِفَةِ الَّتِي لَا شَائِبَةَ فِيهَا لِغَيْرِكَ، إِنَّكَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ.</p></div>
+                        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8"><h3 class="text-2xl font-bold text-[#6A4A3C] mb-4">Invocation protectrice avant le sommeil</h3><p class="text-gray-600 mb-4">Oraison protectrice et punitive contre les adversaires.</p><ol class="list-decimal list-inside text-gray-600 space-y-2 mb-4"><li>Réciter 10 ou 11 fois le <strong>Ta'awwudh</strong> (أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ).</li><li>Commencer la sourate <strong>Al-Fātiḥa</strong> jusqu'à "iyyāka na'budu wa iyyāka nasta'īn".</li><li>Prononcer une <strong>Ṣalāt al-Fātiḥ</strong>.</li><li>Placer la main sur les yeux et réciter 11 fois l'invocation ci-dessous.</li><li>Terminer la récitation de la sourate <strong>Al-Fātiḥa</strong>.</li></ol><p class="arabic-text text-[#CC333F]">اللَّهُمَّ إِنِّي أَعُوذُ بِكَ رَبِّي وَرَبُّكُمْ مِنْ شَرِّ كُلِّ مُتَكَبِّرٍ لَا يُؤْمِنُ بِيَوْمِ الْحِسَابِ.</p></div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="tab-panel-retreat" class="tab-panel">
+                <section class="text-center mb-12">
+                    <h2 class="text-4xl font-amiri font-bold text-[#00A0B0]">Guide de Retraite Spirituelle</h2>
+                    <p class="text-lg text-gray-600 mt-2">Un cadre pour approfondir votre pratique et votre connexion.</p>
+                </section>
+
+                <div id="retreat-content">
+                    <section id="retreat-dashboard" class="retreat-section">
+                        <h3 class="text-2xl font-bold text-[#6A4A3C] mb-4">Tableau de Bord Quotidien</h3>
+                        <p class="mb-6 text-gray-700">Voici un chronogramme synthétique qui structure la journée et indique les activités particulières de la semaine. Veillez à adapter les horaires à vos obligations personnelles.</p>
+                        <div class="overflow-x-auto mb-8">
+                            <table class="min-w-full bg-white border text-left">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="py-3 px-4 border-b font-bold text-[#6A4A3C]">Créneau horaire</th>
+                                        <th class="py-3 px-4 border-b font-bold text-[#6A4A3C]">Activités principales (résumé)</th>
+                                        <th class="py-3 px-4 border-b font-bold text-[#6A4A3C]">Observations</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-700">
+                                    <tr class="border-b"><td class="py-3 px-4">03h00 – 04h30</td><td class="py-3 px-4">Tahajjud (2–8 rakʿāt), duʿā’ sincère, dhikr profond</td><td class="py-3 px-4">La prière nocturne est très méritoire ; le Prophète encourage à prier à cette heure.</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">04h30 – 05h00</td><td class="py-3 px-4">Ṣalāt al‑Faǧr</td><td class="py-3 px-4">Prière obligatoire ; rester en état de recueillement.</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">05h00 – 07h00</td><td class="py-3 px-4">Adhkār du matin, lecture/mémorisation du Coran, méditation</td><td class="py-3 px-4">Lire quelques pages du Coran, méditer et planifier la journée.</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">08h00 – 10h00</td><td class="py-3 px-4">Ṣalāt ad‑Ḍuḥā (2–8 rakʿāt), étude du Coran ou des ḥadiths</td><td class="py-3 px-4">Mémorisation, tafsīr, étude des sciences islamiques.</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">10h00 – 12h30</td><td class="py-3 px-4">Travaux personnels, œuvres caritatives, service</td><td class="py-3 px-4">Servir la communauté (distribution de repas, visites, etc.).</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">12h30 – 13h30</td><td class="py-3 px-4">Ṣalāt aẓ‑Ẓuhr, dhikr</td><td class="py-3 px-4">Relecture ou réflexion spirituelle.</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">14h00 – 15h30</td><td class="py-3 px-4">Lecture spirituelle, étude des maîtres soufis, repos</td><td class="py-3 px-4">Lire des ouvrages spirituels ; repos si nécessaire.</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">15h30 – 16h30</td><td class="py-3 px-4">Ṣalāt al‑ʿAṣr, dhikr, marche méditative</td><td class="py-3 px-4">Continuer le dhikr et la réflexion.</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">17h00 – 19h00</td><td class="py-3 px-4">Ṣalāt al‑Maghrib, dhikr, salawat sur le Prophète</td><td class="py-3 px-4">Envoyer des prières sur le Prophète – pratique très bénéfique.</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">20h00 – 21h30</td><td class="py-3 px-4">Ṣalāt al‑ʿIshāʾ, dhikr collectif, litanies (par ex. ṣalāt al‑fātiḥ)</td><td class="py-3 px-4">Partager une séance de dhikr en groupe ; méditation.</td></tr>
+                                    <tr><td class="py-3 px-4">21h30 – 03h00</td><td class="py-3 px-4">Étude (tafsīr, fiqh, hikam), repos, protection nocturne</td><td class="py-3 px-4">Avant de dormir, réciter Āyat al‑Kursī et les sourates protectrices.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h4 class="text-xl font-bold text-[#00A0B0] mt-6 mb-3">Particularités hebdomadaires</h4>
+                        <ul class="space-y-2 pl-5 text-gray-700">
+                            <li><strong>Lundi et jeudi :</strong> Jeûne surérogatoire. Intensifiez les duʿā’ et donnez une aumône.</li>
+                            <li><strong>Vendredi :</strong> Lire Sourate al‑Kahf, faire beaucoup de salawat, assister au sermon si possible.</li>
+                            <li><strong>Jours « blancs » (13ᵉ-15ᵉ jour du mois lunaire) :</strong> Jeûne recommandé.</li>
+                            <li><strong>Week-end (samedi/dimanche) :</strong> Dévouer plus de temps au service communautaire, visites fraternelles.</li>
+                        </ul>
+                    </section>
+                    <hr class="my-12 border-gray-300">
+                    <section id="retreat-principles" class="retreat-section">
+                        <h3 class="text-2xl font-bold text-[#6A4A3C] mb-4">Guide Détaillé : Principes Généraux</h3>
+                        <div class="space-y-4 text-gray-700 leading-relaxed">
+                            <p>Pour une retraite de plusieurs semaines, l’idéal est de structurer les journées et les semaines autour d’un équilibre entre actes obligatoires, pratiques surérogatoires, étude, service et introspection.</p>
+                            <ul class="space-y-3 pl-5">
+                                <li><strong>Respect des cinq prières obligatoires :</strong> Prier à l’heure et en groupe si possible. La prière est l’acte le plus important.</li>
+                                <li><strong>Dhikr et méditation :</strong> Multiplier les formules de glorification (subḥānAllāh, al‑ḥamdu lillāh, etc.). Le dhikr purifie le cœur.</li>
+                                <li><strong>Lecture et méditation du Coran :</strong> Se fixer un objectif (par exemple un juzʾ par jour).</li>
+                                <li><strong>Duʿā’ et salawat :</strong> Consacrer des moments pour invoquer Allah et envoyer des prières sur le Prophète (ṣalawāt).</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section id="retreat-structure" class="retreat-section">
+                        <h3 class="text-2xl font-bold text-[#6A4A3C] mb-4">Guide Détaillé : Structure Quotidienne</h3>
+                        <div class="space-y-4 text-gray-700 leading-relaxed">
+                            <div class="grid md:grid-cols-3 gap-x-6 gap-y-4 py-4 border-b"><div class="md:col-span-1 font-bold text-[#EB6841]">Dernier tiers de la nuit</div><div class="md:col-span-2">Tahajjud, Coran et duʿā’.</div></div>
+                            <div class="grid md:grid-cols-3 gap-x-6 gap-y-4 py-4 border-b"><div class="md:col-span-1 font-bold text-[#EB6841]">Après al‑faǧr</div><div class="md:col-span-2">Adhkār du matin, Coran, méditation.</div></div>
+                            <div class="grid md:grid-cols-3 gap-x-6 gap-y-4 py-4 border-b"><div class="md:col-span-1 font-bold text-[#EB6841]">Milieu de la matinée</div><div class="md:col-span-2">Ṣalāt ad‑ḍuḥā, étude ou repos.</div></div>
+                            <div class="grid md:grid-cols-3 gap-x-6 gap-y-4 py-4 border-b"><div class="md:col-span-1 font-bold text-[#EB6841]">Journée</div><div class="md:col-span-2">Activités personnelles, service communautaire, dhikr continu.</div></div>
+                            <div class="grid md:grid-cols-3 gap-x-6 gap-y-4 py-4 border-b"><div class="md:col-span-1 font-bold text-[#EB6841]">Fin d’après‑midi</div><div class="md:col-span-2">Révision du Coran, prière surérogatoire, marche méditative.</div></div>
+                            <div class="grid md:grid-cols-3 gap-x-6 gap-y-4 py-4 border-b"><div class="md:col-span-1 font-bold text-[#EB6841]">Après al‑maghrib</div><div class="md:col-span-2">Lecture sur les prophètes, adhkār du soir, salawat.</div></div>
+                            <div class="grid md:grid-cols-3 gap-x-6 gap-y-4 py-4"><div class="md:col-span-1 font-bold text-[#EB6841]">Après al‑ʿishāʾ</div><div class="md:col-span-2">Prière du soir, lecture spirituelle, dhikr collectif, protection nocturne.</div></div>
+                        </div>
+                    </section>
+                    <section id="retreat-themes" class="retreat-section">
+                        <h3 class="text-2xl font-bold text-[#6A4A3C] mb-4">Guide Détaillé : Thématiques Hebdomadaires</h3>
+                        <div class="space-y-6">
+                            <div><h4 class="text-xl font-bold text-[#00A0B0] mb-2">Semaine 1 : Purification et discipline</h4><ul class="space-y-2 pl-5 text-gray-700"><li><strong>Jeûne les lundi et jeudi.</li><li><strong>Réforme du cœur :</strong> Repentir sincère.</li><li><strong>Journaling :</strong> Suivi des progrès.</li></ul></div>
+                            <div><h4 class="text-xl font-bold text-[#00A0B0] mb-2">Semaine 2 : Connaissance et dhikr</h4><ul class="space-y-2 pl-5 text-gray-700"><li><strong>Étude intensive :</strong> Tafsīr, ḥadiths, œuvres de sagesse.</li><li><strong>Dhikr collectif :</strong> Apprentissage de litanies.</li><li><strong>Envoi abondant de salawat.</li></ul></div>
+                            <div><h4 class="text-xl font-bold text-[#00A0B0] mb-2">Semaine 3 : Service et morale</h4><ul class="space-y-2 pl-5 text-gray-700"><li><strong>Œuvres caritatives :</strong> Aider les autres.</li><li><strong>Siyām des « jours blancs ».</li><li><strong>Correction des défauts :</strong> Patience et gratitude.</li></ul></div>
+                            <div><h4 class="text-xl font-bold text-[#00A0B0] mb-2">Semaine 4 : Consolidation et pratiques soufies</h4><ul class="space-y-2 pl-5 text-gray-700"><li><strong>Retraite intérieure (khalwa).</li><li><strong>Prière de minuit prolongée.</li><li><strong>Ruqyah et protection.</li><li><strong>Pratiques traditionnelles (avec discernement).</li></ul></div>
+                        </div>
+                    </section>
+                    <section id="retreat-advice" class="retreat-section">
+                        <h3 class="text-2xl font-bold text-[#6A4A3C] mb-4">Guide Détaillé : Conseils Supplémentaires</h3>
+                        <div class="space-y-4 text-gray-700 leading-relaxed">
+                             <ul class="space-y-3 pl-5">
+                                <li><strong>Aligner le cœur et la langue :</strong> Le dhikr doit être réfléchi et conscient.</li>
+                                <li><strong>Équilibre :</strong> La spiritualité inclut la justice, la bonne conduite, et la bienveillance.</li>
+                                <li><strong>Ouverture aux différentes traditions :</strong> Découvrir les maîtres des diverses écoles peut enrichir la compréhension.</li>
+                                <li><strong>Précaution envers les superstitions :</strong> Toujours privilégier les protections enseignées par le Prophète.</li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            
+            <div id="tab-panel-monthly" class="tab-panel">
+                <div id="monthly-event-alert" class="hidden"></div>
+                <div id="monthly-content" class="bg-white rounded-2xl shadow-lg p-6 md:p-8"></div>
+            </div>
+
+            <div id="tab-panel-journal" class="tab-panel space-y-12">
+                <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-center mb-6 text-[#00A0B0]">Calendrier de Suivi</h2>
+                    <div id="journal-calendar-nav" class="flex justify-between items-center mb-4">
+                        <button id="prev-month-btn" class="px-4 py-2 bg-gray-200 rounded-lg">&lt;</button>
+                        <h3 id="calendar-month-year" class="text-2xl font-bold text-[#6A4A3C]"></h3>
+                        <button id="next-month-btn" class="px-4 py-2 bg-gray-200 rounded-lg">&gt;</button>
+                    </div>
+                    <div id="journal-calendar" class="grid grid-cols-7 gap-2 text-center"></div>
+                </section>
+                <section id="journal-daily-view" class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-center mb-6 text-[#00A0B0]">Suivi du <span id="selected-date-display"></span></h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-[#6A4A3C] mb-4">Prières du Jour</h3>
+                            <div id="journal-prayers" class="space-y-3"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-[#6A4A3C] mb-4">Tâches de la Retraite</h3>
+                            <div id="journal-retreat-tasks" class="space-y-3"></div>
+                        </div>
+                    </div>
+                </section>
+                <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-center mb-6 text-[#00A0B0]">Compteur Tasbih</h2>
+                    <div class="text-center">
+                        <div id="tasbih-display" class="text-8xl font-mono text-[#6A4A3C] mb-4">0</div>
+                        <button id="tasbih-btn" class="tasbih-btn bg-[#00A0B0] text-white rounded-full w-40 h-40 flex items-center justify-center text-2xl font-bold shadow-xl mx-auto">Compter</button>
+                        <button id="tasbih-reset-btn" class="mt-4 text-sm text-gray-500 hover:text-red-500">Réinitialiser</button>
+                    </div>
+                </section>
+                <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-center mb-6 text-[#00A0B0]">Notes Personnelles du Jour</h2>
+                    <textarea id="journal-notes" class="w-full h-40 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#EB6841] focus:border-transparent" placeholder="Écrivez vos réflexions pour la date sélectionnée..."></textarea>
+                    <p id="journal-save-status" class="text-sm text-gray-500 mt-2 text-right"></p>
+                </section>
+            </div>
+
+            <div id="tab-panel-qibla" class="tab-panel">
+                 <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 text-center">
+                    <h2 class="text-3xl font-bold text-center mb-6 text-[#00A0B0]">Boussole de la Qibla</h2>
+                    <div id="qibla-container" class="relative w-64 h-64 mx-auto">
+                        <div id="compass-dial" class="w-full h-full bg-gray-100 rounded-full flex items-center justify-center text-gray-500 border-4 border-gray-300">
+                            <div class="absolute top-0 font-bold">N</div>
+                            <div class="absolute bottom-0 font-bold">S</div>
+                            <div class="absolute left-2 font-bold">O</div>
+                            <div class="absolute right-2 font-bold">E</div>
+                        </div>
+                        <div id="qibla-arrow" class="absolute inset-0 flex items-center justify-center" style="transform: rotate(0deg);">
+                            <div class="w-2 h-24 origin-bottom" style="transform: translateY(-50%) rotate(0deg);"></div>
+                        </div>
+                    </div>
+                    <p id="qibla-message" class="mt-6 text-lg text-gray-700">Calcul de la direction...</p>
+                     <div id="qibla-user-location" class="mt-4">
+                        <button id="qibla-user-location-btn" class="bg-[#EB6841] text-white px-4 py-2 rounded-lg">Utiliser ma position pour plus de précision</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="text-center text-gray-500 mt-12 pb-4">
+            <p>Compagnon spirituel pour faciliter la pratique quotidienne.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- DATA ---
+            const dailySchedule = [
+                { start: "03:00", end: "04:30", name: "Dernier tiers de la nuit", activities: "Tahajjud (2–8 rakʿāt), duʿā’ sincère, dhikr profond." },
+                { start: "04:30", end: "05:00", name: "Prière du Fajr", activities: "Ṣalāt al‑Faǧr et recueillement." },
+                { start: "05:00", end: "07:00", name: "Après al-faǧr", activities: "Adhkār du matin, lecture/mémorisation du Coran, méditation." },
+                { start: "08:00", end: "10:00", name: "Milieu de la matinée", activities: "Ṣalāt ad‑Ḍuḥā (2–8 rakʿāt), étude du Coran ou des ḥadiths." },
+                { start: "10:00", end: "12:30", name: "Journée", activities: "Travaux personnels, œuvres caritatives, service." },
+                { start: "12:30", end: "13:30", name: "Prière du Dhuhr", activities: "Ṣalāt aẓ‑Ẓuhr, dhikr et relecture." },
+                { start: "14:00", end: "15:30", name: "Après-midi", activities: "Lecture spirituelle, étude des maîtres soufis, repos." },
+                { start: "15:30", end: "16:30", name: "Prière de l'Asr", activities: "Ṣalāt al‑ʿAṣr, dhikr, marche méditative." },
+                { start: "17:00", end: "19:00", name: "Après al-maghrib", activities: "Ṣalāt al‑Maghrib, dhikr, salawat sur le Prophète." },
+                { start: "20:00", end: "21:30", name: "Après al-'isha'", activities: "Ṣalāt al‑ʿIshāʾ, dhikr collectif, litanies." },
+                { start: "21:30", end: "03:00", name: "Soir et Nuit", activities: "Étude, repos, protection nocturne (Āyat al‑Kursī, etc.)." }
+            ];
+            const monthlyData = {
+                 1: { name: "Muharram", significance: "Premier mois sacré, début de l'année hégirienne.", events: [{ day: 10, name: "Achoura", details: `<h4 class="text-lg font-bold text-[#6A4A3C] mt-2">Signification</h4><p>Commémore le salut du prophète Moïse (Musa). C'est un jour de gratitude et de patience.</p><ul><li><strong>Jeûne :</strong> Recommandé le 10ème jour, et de préférence le 9ème ou le 11ème avec.</li><li><strong>Générosité :</strong> Être généreux envers sa famille.</li></ul>`}]},
+                 2: { name: "Safar", significance: "Mois de transition, de patience et de confiance en Dieu.", events: [{ day: 'all', name: "Protection", details: `<p>Pour repousser tout mal, des pratiques pieuses sont encouragées :</p><ul><li><strong>Aumône (Sadaqa)</li><li><strong>Invocations et lecture du Coran</li></ul>`}]},
+                 3: { name: "Rabī' al-Awwal", significance: "Mois de joie célébrant la naissance (Mawlid) du Prophète Muhammad (ﷺ).", events: [{ day: 12, name: "Mawlid an-Nabawi", details: `<h4 class="text-lg font-bold text-[#6A4A3C] mt-2">Célébration</h4><ul><li><strong>Étude de la Sīra (biographie du Prophète).</li><li><strong>Actes de bonté et charité.</li><li><strong>Réunions spirituelles.</li></ul>`}]},
+                 4: { name: "Rabī' al-Thānī", significance: "Période de constance pour poursuivre les efforts spirituels.", events: [] },
+                 5: { name: "Jumādā al-Ūlā", significance: "Mois de persévérance dans l'adoration.", events: [] },
+                 6: { name: "Jumādā al-Thāniyah", significance: "Mois de réflexion sur la famille.", events: [] },
+                 7: { name: "Rajab", significance: "Mois sacré, 'le mois d'Allah', une préparation intense avant Ramadan.", events: [{ day: 27, name: "Al-Isrā' wal-Mi'rāj", details: `<h4 class="text-lg font-bold text-[#6A4A3C] mt-2">Voyage Nocturne et Ascension</h4><p>Commémore le voyage miraculeux du Prophète (ﷺ).</p><ul><li><strong>Jeûne surérogatoire</li><li><strong>Dhikr et Pardon</li></ul>`}]},
+                 8: { name: "Sha'bān", significance: "Pont vers le Ramadan, un mois où les actions de l'année sont élevées vers Dieu.", events: [{ day: 15, name: "Nuit de la mi-Sha'bān", details: `<h4 class="text-lg font-bold text-[#6A4A3C] mt-2">Nuit du Pardon</h4><ul><li><strong>Prières nocturnes (Qiyām).</li><li><strong>Jeûne.</li><li><strong>Réconciliation.</li></ul>`}]},
+                 9: { name: "Ramadan", significance: "Mois le plus sacré, mois du jeûne et de la révélation du Coran.", events: [{ day: 'all', name: "Pratiques du Ramadan", details: `<ul><li><strong>Jeûne obligatoire (Sawm).</li><li><strong>Prières de Tarāwīh.</li><li><strong>Lecture du Coran.</li></ul>`}, { day: 'last_10_odd', name: "Laylat al-Qadr (Nuit du Destin)", details: `<p>Nuit meilleure que mille mois, à chercher dans les dernières nuits impaires.</p>`}]},
+                 10: { name: "Shawwāl", significance: "Mois de la gratitude, débutant avec l'Aïd al-Fitr.", events: [{ day: 1, name: "Aïd al-Fitr", details: "Jour de fête célébrant la fin du jeûne." }, { day: 'all', name: "Jeûne des six jours", details: `<p>Jeûner six jours durant ce mois équivaut à une année de jeûne en récompense.</p>`}]},
+                 11: { name: "Dhū al-Qi'dah", significance: "Mois sacré de la 'trêve', préparation au pèlerinage (Hajj).", events: [] },
+                 12: { name: "Dhū al-Hijjah", significance: "Sommet spirituel de l'année, le mois du pèlerinage (Hajj).", events: [{ dayRange: [1, 10], name: "Les 10 premiers jours", details: `<p>Considérés comme les jours les plus vertueux de l'année.</p><ul><li><strong>Dhikr intensif.</li><li><strong>Jeûne les 9 premiers jours.</li></ul>`}, { day: 9, name: "Jour d'Arafat", details: "Le jeûne de ce jour expie les péchés de deux années." }, { day: 10, name: "Aïd al-Adhā", details: "Fête du sacrifice." }]}
+            };
+            
+            // --- GLOBAL VARS ---
+            moment.locale('fr');
+            const now = moment();
+            const gregorianDateElem = document.getElementById('gregorian-date');
+            const hijriDateElem = document.getElementById('hijri-date');
+            const currentHijriMonth = now.iMonth() + 1;
+            const currentHijriDay = now.iDate();
+            let countdownInterval = null;
+            let journalState = {
+                currentDate: now.clone(),
+                selectedDateKey: now.format('YYYY-MM-DD')
+            };
+
+            // --- TABS ---
+            const tabs = {
+                home: { btn: document.getElementById('tab-btn-home'), panel: document.getElementById('tab-panel-home') },
+                program: { btn: document.getElementById('tab-btn-program'), panel: document.getElementById('tab-panel-program') },
+                retreat: { btn: document.getElementById('tab-btn-retreat'), panel: document.getElementById('tab-panel-retreat') },
+                monthly: { btn: document.getElementById('tab-btn-monthly'), panel: document.getElementById('tab-panel-monthly') },
+                journal: { btn: document.getElementById('tab-btn-journal'), panel: document.getElementById('tab-panel-journal') },
+                qibla: { btn: document.getElementById('tab-btn-qibla'), panel: document.getElementById('tab-panel-qibla') }
+            };
+
+            function switchTab(tabKey) {
+                Object.values(tabs).forEach(tab => {
+                    if (tab.btn) tab.btn.classList.remove('active');
+                    if (tab.panel) tab.panel.classList.remove('active');
+                });
+                if (tabs[tabKey].btn) tabs[tabKey].btn.classList.add('active');
+                if (tabs[tabKey].panel) tabs[tabKey].panel.classList.add('active');
+                
+                if (tabKey === 'qibla') {
+                    initializeQibla();
+                }
+            }
+
+            Object.keys(tabs).forEach(key => {
+                if (tabs[key].btn) {
+                    tabs[key].btn.addEventListener('click', () => switchTab(key));
+                }
+            });
+
+            // --- PRAYER TIMES ---
+            async function fetchAndDisplayPrayerTimes() {
+                try {
+                    const dateStr = moment().format('DD-MM-YYYY');
+                    const city = 'Bobo-Dioulasso';
+                    const country = 'Burkina Faso';
+                    const method = 2; // ISNA
+                    const url = `https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=${city}&country=${country}&method=${method}`;
+                    
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error('Network response was not ok.');
+                    const data = await response.json();
+                    const times = data.data.timings;
+
+                    const prayerNames = { Fajr: 'Fajr', Sunrise: 'Shuruq', Dhuhr: 'Dhuhr', Asr: 'Asr', Maghrib: 'Maghrib', Isha: 'Isha' };
+                    const prayerTimesGrid = document.getElementById('prayer-times-grid');
+                    prayerTimesGrid.innerHTML = '';
+                    
+                    let prayerSchedule = [];
+                    for (const key in prayerNames) {
+                        prayerSchedule.push({ id: key.toLowerCase(), name: prayerNames[key], time: times[key] });
+                    }
+                    
+                    prayerSchedule.forEach((prayer) => {
+                        const card = document.createElement('div');
+                        card.id = `prayer-card-${prayer.id}`;
+                        card.className = 'prayer-time-card bg-white rounded-lg p-4 shadow-md border-2 border-transparent transition-all duration-300';
+                        card.innerHTML = `<p class="font-bold text-lg text-[#6A4A3C]">${prayer.name}</p><p class="text-2xl font-mono text-[#00A0B0]">${prayer.time}</p>`;
+                        prayerTimesGrid.appendChild(card);
+                    });
+
+                    if(countdownInterval) clearInterval(countdownInterval);
+                    countdownInterval = setInterval(() => updateCountdown(prayerSchedule), 1000);
+                    updateCountdown(prayerSchedule);
+
+                } catch (error) {
+                    document.getElementById('prayer-times-grid').innerHTML = `<p class="col-span-full text-red-500">Impossible de charger les horaires de prière.</p>`;
+                    console.error("Error fetching prayer times:", error);
+                }
+            }
+
+            function updateCountdown(prayerSchedule) {
+                let nextPrayerTime, nextPrayerName, nextPrayerId;
+                const currentTime = moment();
+                let foundNext = false;
+                for (let i = 0; i < prayerSchedule.length; i++) {
+                    let prayerTime = moment(prayerSchedule[i].time, 'HH:mm');
+                    if (prayerTime.isAfter(currentTime)) {
+                        nextPrayerTime = prayerTime;
+                        nextPrayerName = prayerSchedule[i].name;
+                        nextPrayerId = prayerSchedule[i].id;
+                        foundNext = true;
+                        break;
+                    }
+                }
+                if (!foundNext) {
+                    nextPrayerTime = moment(prayerSchedule[0].time, 'HH:mm').add(1, 'day');
+                    nextPrayerName = `${prayerSchedule[0].name} (demain)`;
+                    nextPrayerId = prayerSchedule[0].id;
+                }
+                document.querySelectorAll('.prayer-time-card').forEach(c => c.classList.remove('next-prayer'));
+                const nextPrayerCard = document.getElementById(`prayer-card-${nextPrayerId}`);
+                if(nextPrayerCard) nextPrayerCard.classList.add('next-prayer');
+                if (nextPrayerTime) {
+                    const duration = moment.duration(nextPrayerTime.diff(currentTime));
+                    if (duration.asMilliseconds() < 0) { setTimeout(fetchAndDisplayPrayerTimes, 1000); return; }
+                    const hours = Math.floor(duration.asHours());
+                    const minutes = duration.minutes();
+                    const seconds = duration.seconds();
+                    document.getElementById('next-prayer-countdown').textContent = `Prochaine prière (${nextPrayerName}) dans : ${hours}h ${minutes}m ${seconds}s`;
+                }
+            }
+            
+            // --- DYNAMIC HOME ---
+            function updateDailyFocus() {
+                const currentTime = moment();
+                const currentTimeStr = currentTime.format("HH:mm");
+                let currentSlot = dailySchedule.find(slot => {
+                    const start = slot.start;
+                    const end = slot.end;
+                    if (start > end) { // Overnight slot
+                        return (currentTimeStr >= start && currentTimeStr <= "23:59") || (currentTimeStr >= "00:00" && currentTimeStr < end);
+                    }
+                    return currentTimeStr >= start && currentTimeStr < end;
+                });
+
+                if (currentSlot) {
+                    document.getElementById('daily-focus-time').textContent = `Maintenant (${currentSlot.name})`;
+                    document.getElementById('daily-focus-content').innerHTML = `<p>${currentSlot.activities}</p>`;
+                } else {
+                    document.getElementById('daily-focus-time').textContent = "Repos";
+                    document.getElementById('daily-focus-content').innerHTML = `<p>C'est un moment de transition entre les activités planifiées.</p>`;
+                }
+
+                const dayOfWeek = currentTime.day(); // 0=Sunday, 1=Monday...
+                const hijriDay = currentTime.iDate();
+                const weeklyFocusContainer = document.getElementById('weekly-special-focus');
+                let weeklyHTML = '';
+                if (dayOfWeek === 1 || dayOfWeek === 4) { // Monday or Thursday
+                    weeklyHTML += `<div class="bg-blue-50 border-l-4 border-blue-400 text-blue-700 p-4 rounded-r-lg"><p class="font-bold">Rappel du jour :</p><p>C'est lundi/jeudi, un jour propice au jeûne surérogatoire.</p></div>`;
+                }
+                if (dayOfWeek === 5) { // Friday
+                     weeklyHTML += `<div class="bg-green-50 border-l-4 border-green-400 text-green-700 p-4 rounded-r-lg mt-4"><p class="font-bold">Rappel du Vendredi :</p><p>N'oubliez pas de lire la sourate Al-Kahf et de multiplier les prières sur le Prophète (ﷺ).</p></div>`;
+                }
+                if (hijriDay >= 13 && hijriDay <= 15) {
+                     weeklyHTML += `<div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 p-4 rounded-r-lg mt-4"><p class="font-bold">Jours Blancs :</p><p>Nous sommes dans la période des jours blancs (${hijriDay}e jour), propice au jeûne.</p></div>`;
+                }
+                weeklyFocusContainer.innerHTML = weeklyHTML;
+            }
+
+
+            // --- JOURNAL ---
+            function initializeJournal() {
+                const calendarContainer = document.getElementById('journal-calendar');
+                const monthYearDisplay = document.getElementById('calendar-month-year');
+                document.getElementById('prev-month-btn').addEventListener('click', () => { journalState.currentDate.subtract(1, 'month'); renderCalendar(); });
+                document.getElementById('next-month-btn').addEventListener('click', () => { journalState.currentDate.add(1, 'month'); renderCalendar(); });
+
+                function getJournalStatus(dateKey) {
+                    const data = JSON.parse(localStorage.getItem(`journal_${dateKey}`)) || {};
+                    const notes = localStorage.getItem(`journal_notes_${dateKey}`) || '';
+                    if (Object.keys(data).length === 0 && !notes) return '';
+                    return 'bg-slate-400';
+                }
+
+                function renderCalendar() {
+                    calendarContainer.innerHTML = '';
+                    monthYearDisplay.textContent = journalState.currentDate.format('MMMM YYYY');
+                    const startOfMonth = journalState.currentDate.clone().startOf('month');
+                    const endOfMonth = journalState.currentDate.clone().endOf('month');
+                    const startDay = startOfMonth.day();
+                    ['D', 'L', 'M', 'M', 'J', 'V', 'S'].forEach(day => { calendarContainer.innerHTML += `<div class="font-bold text-gray-500">${day}</div>`; });
+                    for (let i = 0; i < startDay; i++) { calendarContainer.innerHTML += `<div></div>`; }
+                    for (let date = startOfMonth.clone(); date.isSameOrBefore(endOfMonth); date.add(1, 'day')) {
+                        const dateKey = date.format('YYYY-MM-DD');
+                        const dayEl = document.createElement('div');
+                        dayEl.className = 'day h-10 w-10 flex items-center justify-center';
+                        dayEl.textContent = date.date();
+                        dayEl.dataset.dateKey = dateKey;
+                        const dotColor = getJournalStatus(dateKey);
+                        if(dotColor){ const dot = document.createElement('div'); dot.className = `dot ${dotColor}`; dayEl.appendChild(dot); }
+                        if (dateKey === journalState.selectedDateKey) { dayEl.classList.add('selected'); }
+                        calendarContainer.appendChild(dayEl);
+                    }
+                    calendarContainer.querySelectorAll('.day[data-date-key]').forEach(day => {
+                        day.addEventListener('click', (e) => {
+                            journalState.selectedDateKey = e.currentTarget.dataset.dateKey;
+                            renderCalendar();
+                            renderDailyChecklist();
+                        });
+                    });
+                }
+
+                function renderDailyChecklist() {
+                    const dateKey = journalState.selectedDateKey;
+                    const date = moment(dateKey);
+                    document.getElementById('selected-date-display').textContent = date.format('D MMMM YYYY');
+                    const journalPrayersContainer = document.getElementById('journal-prayers');
+                    const journalRetreatContainer = document.getElementById('journal-retreat-tasks');
+                    const notesTextarea = document.getElementById('journal-notes');
+                    let journalData = JSON.parse(localStorage.getItem(`journal_${dateKey}`)) || {};
+                    
+                    const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+                    journalPrayersContainer.innerHTML = prayers.map(p => `<label class="flex items-center space-x-3"><input type="checkbox" data-task-id="prayer_${p.toLowerCase()}" class="form-checkbox h-5 w-5 text-[#00A0B0] rounded" ${journalData[`prayer_${p.toLowerCase()}`] ? 'checked' : ''}><span>${p}</span></label>`).join('');
+                    
+                    let retreatTasks = [
+                        {id: 'task_tahajjud', label: 'Prière de Tahajjud'},
+                        {id: 'task_quran', label: 'Lecture du Coran'},
+                        {id: 'task_adhkar', label: 'Adhkar du matin/soir'},
+                        {id: 'task_study', label: 'Étude spirituelle'}
+                    ];
+                    const dayOfWeek = date.day();
+                    const hijriDay = date.iDate();
+                    if (dayOfWeek === 1 || dayOfWeek === 4) retreatTasks.push({id: 'task_fasting', label: 'Jeûne du Lundi/Jeudi'});
+                    if (dayOfWeek === 5) retreatTasks.push({id: 'task_kahf', label: 'Lecture Sourate Al-Kahf'});
+                    if (hijriDay >= 13 && hijriDay <= 15) retreatTasks.push({id: 'task_white_days', label: 'Jeûne des Jours Blancs'});
+                    if (dayOfWeek === 0 || dayOfWeek === 6) retreatTasks.push({id: 'task_community', label: 'Service communautaire'});
+                    
+                    journalRetreatContainer.innerHTML = retreatTasks.map(t => `<label class="flex items-center space-x-3"><input type="checkbox" data-task-id="${t.id}" class="form-checkbox h-5 w-5 text-[#00A0B0] rounded" ${journalData[t.id] ? 'checked' : ''}><span>${t.label}</span></label>`).join('');
+
+
+                    notesTextarea.value = localStorage.getItem(`journal_notes_${dateKey}`) || '';
+                    document.getElementById('journal-save-status').textContent = '';
+                }
+
+                function saveJournalData() {
+                    const dateKey = journalState.selectedDateKey;
+                    let journalData = {};
+                    document.querySelectorAll('#journal-prayers input, #journal-retreat-tasks input').forEach(input => { journalData[input.dataset.taskId] = input.checked; });
+                    localStorage.setItem(`journal_${dateKey}`, JSON.stringify(journalData));
+                    const saveStatus = document.getElementById('journal-save-status');
+                    saveStatus.textContent = 'Enregistré !';
+                    setTimeout(() => saveStatus.textContent = '', 2000);
+                    renderCalendar();
+                }
+                
+                function saveNotes() {
+                    const dateKey = journalState.selectedDateKey;
+                    localStorage.setItem(`journal_notes_${dateKey}`, document.getElementById('journal-notes').value);
+                    const saveStatus = document.getElementById('journal-save-status');
+                    saveStatus.textContent = 'Enregistré !';
+                    setTimeout(() => saveStatus.textContent = '', 2000);
+                    renderCalendar();
+                }
+
+                document.getElementById('journal-daily-view').addEventListener('change', saveJournalData);
+                document.getElementById('journal-notes').addEventListener('input', saveNotes);
+                const tasbihDisplay = document.getElementById('tasbih-display');
+                const tasbihBtn = document.getElementById('tasbih-btn');
+                const tasbihResetBtn = document.getElementById('tasbih-reset-btn');
+                let tasbihCount = parseInt(localStorage.getItem('tasbih_count')) || 0;
+                tasbihDisplay.textContent = tasbihCount;
+                tasbihBtn.addEventListener('click', () => { tasbihCount++; tasbihDisplay.textContent = tasbihCount; localStorage.setItem('tasbih_count', tasbihCount); });
+                tasbihResetBtn.addEventListener('click', () => { tasbihCount = 0; tasbihDisplay.textContent = tasbihCount; localStorage.setItem('tasbih_count', tasbihCount); });
+                
+                renderCalendar();
+                renderDailyChecklist();
+            }
+
+            // --- MONTHLY CONTENT ---
+            function renderMonthlyContent() {
+                const data = monthlyData[currentHijriMonth];
+                const contentDiv = document.getElementById('monthly-content');
+                const alertDiv = document.getElementById('monthly-event-alert');
+                let alertHTML = '';
+                let eventsHTML = data.events.map(event => {
+                    let isEventActive = false;
+                    let eventDayText = '';
+                    if (event.dayRange) {
+                        if (currentHijriDay >= event.dayRange[0] && currentHijriDay <= event.dayRange[1]) { isEventActive = true; }
+                        eventDayText = `Du ${event.dayRange[0]} au ${event.dayRange[1]}`;
+                    } else if (event.day === 'last_10_odd') {
+                        if (currentHijriDay >= 20 && currentHijriDay % 2 !== 0) { isEventActive = true; }
+                        eventDayText = 'Dernières nuits impaires';
+                    } else if (event.day === 'all') {
+                        isEventActive = true;
+                        eventDayText = 'Tout le mois';
+                    } else {
+                        if (currentHijriDay === event.day) { isEventActive = true; }
+                        eventDayText = `Le ${event.day}`;
+                    }
+                    const eventDetails = event.details.replace(/<ul>/g, '<ul class="list-disc list-inside ml-4 space-y-1 mt-2">');
+                    if (isEventActive) { alertHTML += `<div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-8 rounded-r-lg" role="alert"><p class="font-bold">Alerte Événement : ${event.name}</p><div class="text-sm">${eventDetails}</div></div>`; }
+                    return `<div class="border-l-4 border-[#EB6841] pl-4 mb-6"><h4 class="text-xl font-bold text-[#6A4A3C]">${event.name} <span class="text-base font-normal text-gray-500">(${eventDayText})</span></h4><div class="text-gray-700">${eventDetails}</div></div>`;
+                }).join('');
+                contentDiv.innerHTML = `<h2 class="text-4xl font-amiri font-bold text-center mb-4 text-[#00A0B0]">${data.name}</h2><p class="text-center text-gray-600 mb-8 italic">"${data.significance}"</p>${eventsHTML.length > 0 ? `<div><h3 class="text-2xl font-bold text-[#6A4A3C] mb-6">Événements et pratiques clés :</h3>${eventsHTML}</div>` : '<p class="text-center text-gray-500">Ce mois est une occasion de persévérer dans les bonnes actions.</p>'}`;
+                if(alertHTML) { alertDiv.innerHTML = alertHTML; alertDiv.classList.remove('hidden'); }
+            }
+
+            // --- CHARTS ---
+            function initializeCharts() {
+                const tooltipTitleCallback = (tooltipItems) => { let label = tooltipItems[0].chart.data.labels[tooltipItems[0].dataIndex]; return Array.isArray(label) ? label.join(' ') : label; };
+                const wrapLabel = (label, maxWidth = 16) => {
+                    if (label.length <= maxWidth) return label;
+                    const words = label.split(' '); const lines = []; let currentLine = '';
+                    for (const word of words) { if ((currentLine + ' ' + word).trim().length > maxWidth) { lines.push(currentLine.trim()); currentLine = word; } else { currentLine = (currentLine + ' ' + word).trim(); } }
+                    if (currentLine) lines.push(currentLine.trim()); return lines;
+                };
+                
+                const rakatsCanvas = document.getElementById('rakatsChart');
+                if (rakatsCanvas) {
+                    const rakatsCtx = rakatsCanvas.getContext('2d');
+                    new Chart(rakatsCtx, { type: 'bar', data: { labels: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'], datasets: [{ label: 'Rak\'at de Nuit', data: [4, 2, 6, 4, 8, 4, 6], backgroundColor: '#00A0B0' }, { label: 'Rak\'at de Jour', data: [4, 2, 10, 4, 4, 2, 4], backgroundColor: '#EDC951' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { callbacks: { title: tooltipTitleCallback } } }, scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Nombre de Rak\'at' } } } } });
+                }
+
+                const zikrsCanvas = document.getElementById('zikrsChart');
+                if (zikrsCanvas) {
+                    const zikrsCtx = zikrsCanvas.getContext('2d');
+                    const zikrLabels = ['Istighfār', 'Tawḥīd', 'Formule du Jeudi', 'Formule du Vendredi'];
+                    new Chart(zikrsCtx, { type: 'doughnut', data: { labels: zikrLabels.map(label => wrapLabel(label)), datasets: [{ label: 'Nombre de Récitations', data: [160, 70, 100, 50], backgroundColor: ['#00A0B0', '#CC333F', '#EDC951', '#EB6841'], hoverOffset: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { title: tooltipTitleCallback } } } } });
+                }
+            }
+
+            // --- QIBLA ---
+            let orientationHandler = null;
+            function calculateQibla(lat, lon) {
+                const kaabaLat = 21.4225 * (Math.PI / 180); const kaabaLon = 39.8262 * (Math.PI / 180);
+                const userLat = lat * (Math.PI / 180); const userLon = lon * (Math.PI / 180);
+                const lonDiff = kaabaLon - userLon;
+                const y = Math.sin(lonDiff) * Math.cos(kaabaLat);
+                const x = Math.cos(userLat) * Math.sin(kaabaLat) - Math.sin(userLat) * Math.cos(kaabaLat) * Math.cos(lonDiff);
+                return (Math.atan2(y, x) * (180 / Math.PI) + 360) % 360;
+            }
+            function initializeQibla() {
+                const qiblaMessage = document.getElementById('qibla-message');
+                const compassContainer = document.getElementById('qibla-arrow');
+                const compassDial = document.getElementById('compass-dial');
+                const boboCoords = { latitude: 11.1772, longitude: -4.2907 };
+                if (orientationHandler && 'ondeviceorientation' in window) { window.removeEventListener('deviceorientation', orientationHandler); }
+                function displayQibla(latitude, longitude, locationName) {
+                    const qiblaDirection = calculateQibla(latitude, longitude);
+                    qiblaMessage.textContent = `Direction de la Qibla pour ${locationName}: ${qiblaDirection.toFixed(2)}°`;
+                    orientationHandler = (event) => {
+                        let compassHeading = event.webkitCompassHeading || (360 - event.alpha);
+                        compassDial.style.transform = `rotate(${-compassHeading}deg)`;
+                        compassContainer.style.transform = `rotate(${qiblaDirection - compassHeading}deg)`;
+                    };
+                    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                        DeviceOrientationEvent.requestPermission().then(state => {
+                            if (state === 'granted') { window.addEventListener('deviceorientation', orientationHandler); } 
+                            else { qiblaMessage.textContent += " L'orientation est refusée. La flèche pointe vers la Qibla par rapport au Nord (N)."; compassContainer.style.transform = `rotate(${qiblaDirection}deg)`; }
+                        }).catch(err => { console.error(err); compassContainer.style.transform = `rotate(${qiblaDirection}deg)`; });
+                    } else if ('ondeviceorientation' in window) { window.addEventListener('deviceorientation', orientationHandler); } 
+                    else { qiblaMessage.textContent += " L'orientation n'est pas supportée. La flèche pointe vers la Qibla par rapport au Nord (N)."; compassContainer.style.transform = `rotate(${qiblaDirection}deg)`; }
+                }
+                displayQibla(boboCoords.latitude, boboCoords.longitude, "Bobo-Dioulasso");
+                document.getElementById('qibla-user-location-btn').onclick = () => {
+                    if (navigator.geolocation) {
+                        qiblaMessage.textContent = "Demande de votre position...";
+                        navigator.geolocation.getCurrentPosition(
+                            (pos) => displayQibla(pos.coords.latitude, pos.coords.longitude, "votre position"),
+                            (err) => { qiblaMessage.textContent = "Impossible d'obtenir la position."; console.error(err); },
+                            { enableHighAccuracy: true }
+                        );
+                    } else { qiblaMessage.textContent = "La géolocalisation n'est pas supportée."; }
+                };
+            }
+
+            // --- INITIALIZATION ---
+            gregorianDateElem.textContent = now.format('dddd D MMMM YYYY');
+            hijriDateElem.textContent = now.format('iD iMMMM iYYYY');
+            switchTab('home');
+            fetchAndDisplayPrayerTimes();
+            initializeCharts();
+            renderMonthlyContent();
+            initializeJournal();
+            updateDailyFocus();
+            setInterval(updateDailyFocus, 60000); // Update focus every minute
+        });
+    </script>
+</body>
+</html>
