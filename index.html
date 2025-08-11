@@ -2866,7 +2866,7 @@
         const now = moment();
         $("#clock").textContent = now.format("HH:mm:ss");
         $("#date-greg").textContent = now.format("dddd D MMMM YYYY");
-        $("#date-hijri").textContent = now.format("iYYYY/iMM/iDD");
+        // Ne pas écraser la date hijri ici, elle est gérée par tickClock()
 
         const next = nextPrayer();
         $("#next-prayer-name").textContent = next.p.name;
