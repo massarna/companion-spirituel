@@ -1768,6 +1768,92 @@
               </div>
             </div>
           </div>
+
+          <!-- Historique et Progression -->
+          <div class="journal-section">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-slate-800">التَّارِيخ وَالتَّقَدُّم</h3>
+                <p class="text-muted">Historique et Progression Spirituelle</p>
+              </div>
+            </div>
+
+            <!-- Navigation par date -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+              <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-4">
+                <h4 class="font-semibold text-slate-800 mb-3">Navigation par Date</h4>
+                <div class="space-y-3">
+                  <div class="flex items-center gap-2">
+                    <label for="journal-date-picker" class="text-sm font-medium text-slate-700">Consulter le :</label>
+                    <input 
+                      type="date" 
+                      id="journal-date-picker" 
+                      class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-islamic-green focus:border-islamic-green"
+                    />
+                  </div>
+                  <button 
+                    id="journal-load-date-btn" 
+                    class="w-full bg-gradient-islamic text-white py-2 px-4 rounded-lg hover:shadow-lg transition-all duration-300"
+                  >
+                    Charger cette date
+                  </button>
+                </div>
+              </div>
+
+              <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4">
+                <h4 class="font-semibold text-slate-800 mb-3">Statistiques Rapides</h4>
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-slate-600">Jours avec notes :</span>
+                    <span class="font-bold text-emerald-700" id="stats-notes-count">0</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-slate-600">Série actuelle :</span>
+                    <span class="font-bold text-emerald-700" id="stats-current-streak">0 jours</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-slate-600">Dhikr total :</span>
+                    <span class="font-bold text-emerald-700" id="stats-total-dhikr">0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Historique des 7 derniers jours -->
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6">
+              <h4 class="font-semibold text-slate-800 mb-4">Historique des 7 Derniers Jours</h4>
+              <div id="journal-history-grid" class="space-y-4">
+                <!-- Contenu généré dynamiquement -->
+              </div>
+            </div>
+
+            <!-- Recherche dans les notes -->
+            <div class="mt-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6">
+              <h4 class="font-semibold text-slate-800 mb-4">Recherche dans les Notes</h4>
+              <div class="flex gap-3 mb-4">
+                <input 
+                  type="text" 
+                  id="notes-search-input" 
+                  placeholder="Rechercher dans vos réflexions..."
+                  class="flex-1 border border-slate-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                />
+                <button 
+                  id="notes-search-btn" 
+                  class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+                >
+                  Chercher
+                </button>
+              </div>
+              <div id="notes-search-results" class="space-y-3">
+                <!-- Résultats de recherche -->
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -3392,11 +3478,262 @@
         initLectures();
       });
       $$('[data-tab="retraite"]')[0].addEventListener("click", renderRetraite);
-      $$('[data-tab="journal"]')[0].addEventListener("click", initJournal); // Assure l'initialisation si l'onglet Journal est ouvert
+      $$('[data-tab="journal"]')[0].addEventListener("click", async () => {
+        await initJournal();
+        setupJournalHistoryEventListeners();
+        await loadLast7Days();
+        await updateJournalStats();
+      });
       $$('[data-tab="mois"]')[0].addEventListener("click", renderMois);
 
       // Initialiser les lectures immédiatement pour que les onglets fonctionnent
       initLectures();
+
+      // Fonctions pour l'historique et la progression du Journal
+      async function loadJournalForDate(targetDate) {
+        const api = window.storageAPI;
+        if (!api) return;
+
+        try {
+          const dateStr = moment(targetDate).format("YYYY-MM-DD");
+          
+          // Charger les prières pour cette date
+          const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+          let prayersStatus = [];
+          for (const prayer of prayers) {
+            const isChecked = await api.storageGet(`jp:${dateStr}:${prayer}`, false);
+            prayersStatus.push({ prayer, done: isChecked });
+          }
+
+          // Charger la note pour cette date
+          const noteContent = await api.storageGet(`note:${dateStr}`, "");
+
+          // Afficher dans une modal ou section dédiée
+          displayDateHistory(dateStr, prayersStatus, noteContent);
+          
+        } catch (error) {
+          console.error('[Journal History] Erreur:', error);
+        }
+      }
+
+      function displayDateHistory(dateStr, prayersStatus, noteContent) {
+        const formattedDate = moment(dateStr).format("dddd D MMMM YYYY");
+        
+        // Créer le contenu de l'historique
+        let prayersHtml = prayersStatus.map(p => 
+          `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
+            p.done ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+          }">
+            ${p.done ? '✓' : '○'} ${p.prayer}
+          </span>`
+        ).join(' ');
+
+        const historyHtml = `
+          <div class="border-l-4 border-islamic-green bg-white rounded-r-xl p-4 shadow-md">
+            <div class="flex items-center justify-between mb-3">
+              <h5 class="font-semibold text-slate-800">${formattedDate}</h5>
+              <div class="text-xs text-slate-500">${prayersStatus.filter(p => p.done).length}/5 prières</div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-3">
+              ${prayersHtml}
+            </div>
+            ${noteContent ? `
+              <div class="bg-slate-50 rounded-lg p-3">
+                <div class="text-xs text-slate-600 mb-1">Note du jour :</div>
+                <div class="text-sm text-slate-800">${noteContent.length > 100 ? noteContent.substring(0, 100) + '...' : noteContent}</div>
+              </div>
+            ` : '<div class="text-xs text-slate-400 italic">Aucune note ce jour-là</div>'}
+          </div>
+        `;
+
+        // Ajouter en haut de la liste d'historique
+        const historyGrid = $("#journal-history-grid");
+        if (historyGrid) {
+          historyGrid.insertAdjacentHTML('afterbegin', historyHtml);
+        }
+      }
+
+      async function loadLast7Days() {
+        const api = window.storageAPI;
+        if (!api) return;
+
+        const historyGrid = $("#journal-history-grid");
+        if (!historyGrid) return;
+
+        historyGrid.innerHTML = '<div class="text-center text-slate-500">Chargement...</div>';
+
+        try {
+          const today = moment();
+          const historyHtml = [];
+
+          for (let i = 0; i < 7; i++) {
+            const date = today.clone().subtract(i, 'days');
+            const dateStr = date.format("YYYY-MM-DD");
+            
+            // Charger les données pour cette date
+            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            let prayersCount = 0;
+            for (const prayer of prayers) {
+              const isDone = await api.storageGet(`jp:${dateStr}:${prayer}`, false);
+              if (isDone) prayersCount++;
+            }
+
+            const noteContent = await api.storageGet(`note:${dateStr}`, "");
+            const hasNote = noteContent && noteContent.trim().length > 0;
+
+            // Créer la carte pour ce jour
+            const dayHtml = `
+              <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-slate-200 hover:shadow-md transition-shadow duration-300">
+                <div class="flex items-center gap-3">
+                  <div class="text-sm font-medium text-slate-800">${date.format("ddd DD/MM")}</div>
+                  <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1">
+                      <span class="text-xs text-slate-600">🤲</span>
+                      <span class="text-xs font-medium">${prayersCount}/5</span>
+                    </div>
+                    ${hasNote ? '<span class="text-xs">📝</span>' : ''}
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-islamic transition-all duration-300" style="width: ${(prayersCount/5)*100}%"></div>
+                  </div>
+                  <button 
+                    onclick="loadJournalForDate('${dateStr}')" 
+                    class="text-xs text-islamic-green hover:text-emerald-700 font-medium"
+                  >
+                    Voir
+                  </button>
+                </div>
+              </div>
+            `;
+            historyHtml.push(dayHtml);
+          }
+
+          historyGrid.innerHTML = historyHtml.join('');
+        } catch (error) {
+          console.error('[Journal] Erreur chargement historique:', error);
+          historyGrid.innerHTML = '<div class="text-center text-red-500">Erreur de chargement</div>';
+        }
+      }
+
+      async function updateJournalStats() {
+        const api = window.storageAPI;
+        if (!api) return;
+
+        try {
+          // Compter les jours avec des notes (sur les 30 derniers jours)
+          let notesCount = 0;
+          let totalDhikr = await api.storageGet("tasbihCount", 0);
+          
+          for (let i = 0; i < 30; i++) {
+            const date = moment().subtract(i, 'days').format("YYYY-MM-DD");
+            const note = await api.storageGet(`note:${date}`, "");
+            if (note && note.trim().length > 0) notesCount++;
+          }
+
+          // Calculer la série actuelle (déjà disponible)
+          const streakDays = await calculateStreak();
+
+          // Mettre à jour l'affichage
+          const notesCountEl = $("#stats-notes-count");
+          const streakEl = $("#stats-current-streak");
+          const dhikrEl = $("#stats-total-dhikr");
+
+          if (notesCountEl) notesCountEl.textContent = notesCount;
+          if (streakEl) streakEl.textContent = `${streakDays} jours`;
+          if (dhikrEl) dhikrEl.textContent = totalDhikr;
+
+        } catch (error) {
+          console.error('[Journal Stats] Erreur:', error);
+        }
+      }
+
+      async function searchInNotes(query) {
+        const api = window.storageAPI;
+        if (!api || !query.trim()) return;
+
+        const resultsContainer = $("#notes-search-results");
+        if (!resultsContainer) return;
+
+        resultsContainer.innerHTML = '<div class="text-center text-slate-500">Recherche en cours...</div>';
+
+        try {
+          const results = [];
+          // Chercher dans les 60 derniers jours
+          for (let i = 0; i < 60; i++) {
+            const date = moment().subtract(i, 'days');
+            const dateStr = date.format("YYYY-MM-DD");
+            const note = await api.storageGet(`note:${dateStr}`, "");
+            
+            if (note && note.toLowerCase().includes(query.toLowerCase())) {
+              results.push({
+                date: dateStr,
+                formattedDate: date.format("DD/MM/YYYY"),
+                content: note
+              });
+            }
+          }
+
+          if (results.length === 0) {
+            resultsContainer.innerHTML = '<div class="text-center text-slate-400">Aucun résultat trouvé</div>';
+            return;
+          }
+
+          const resultsHtml = results.map(result => `
+            <div class="bg-white border border-slate-200 rounded-lg p-4">
+              <div class="text-sm font-medium text-slate-800 mb-2">${result.formattedDate}</div>
+              <div class="text-sm text-slate-600 leading-relaxed">
+                ${result.content.length > 200 ? result.content.substring(0, 200) + '...' : result.content}
+              </div>
+              <button 
+                onclick="loadJournalForDate('${result.date}')" 
+                class="mt-2 text-xs text-purple-600 hover:text-purple-800 font-medium"
+              >
+                Voir la journée complète →
+              </button>
+            </div>
+          `).join('');
+
+          resultsContainer.innerHTML = resultsHtml;
+
+        } catch (error) {
+          console.error('[Notes Search] Erreur:', error);
+          resultsContainer.innerHTML = '<div class="text-center text-red-500">Erreur de recherche</div>';
+        }
+      }
+
+      // Event listeners pour les nouvelles fonctionnalités
+      function setupJournalHistoryEventListeners() {
+        const loadDateBtn = $("#journal-load-date-btn");
+        const datePicker = $("#journal-date-picker");
+        const searchBtn = $("#notes-search-btn");
+        const searchInput = $("#notes-search-input");
+
+        if (loadDateBtn && datePicker) {
+          loadDateBtn.addEventListener("click", () => {
+            const selectedDate = datePicker.value;
+            if (selectedDate) {
+              loadJournalForDate(selectedDate);
+            }
+          });
+        }
+
+        if (searchBtn && searchInput) {
+          searchBtn.addEventListener("click", () => {
+            searchInNotes(searchInput.value);
+          });
+
+          searchInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+              searchInNotes(searchInput.value);
+            }
+          });
+        }
+      }
+
+      // Exposer loadJournalForDate globalement pour les boutons onclick
+      window.loadJournalForDate = loadJournalForDate;
 
       // Icônes lucide
       window.lucide?.createIcons();
