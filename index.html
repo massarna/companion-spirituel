@@ -636,7 +636,8 @@
         </div>
         <div class="mt-5">
           <div id="date-greg" class="font-semibold text-sky-600">—</div>
-          <div id="date-hijri" class="text-slate-500">—</div>
+          <div id="date-hijri" class="text-slate-500 font-medium">—</div>
+          <div id="month-detail" class="text-sm text-slate-400 mt-2 italic max-w-md mx-auto">—</div>
         </div>
         <div class="mt-4">
           <span id="mode-badge" class="badge">Planning Annuel</span>
@@ -1502,13 +1503,43 @@
 
       // Horloge & Dates
       moment.locale("fr");
+      
+      let lastHijriDate = null;
+      
       function tickClock() {
         const now = moment();
         $("#clock").textContent = now.format("HH:mm:ss");
         $("#date-greg").textContent = now.format("dddd D MMMM YYYY");
-        const hijri = now.clone().format("iD iMMMM iYYYY"); // moment-hijri
-        $("#date-hijri").textContent = hijri;
+        
+        // Ne mettre à jour la date hijri que si elle a changé
+        const currentHijriDate = now.format("iD iMMMM iYYYY");
+        if (currentHijriDate !== lastHijriDate) {
+          $("#date-hijri").textContent = currentHijriDate;
+          lastHijriDate = currentHijriDate;
+          
+          // Mettre à jour les détails du mois hijri
+          updateHijriMonthDetails(now);
+        }
       }
+      
+      async function updateHijriMonthDetails(now) {
+        try {
+          const response = await fetch('./data/mois.json');
+          if (response.ok) {
+            const data = await response.json();
+            const currentHijriMonth = now.iMonth();
+            const currentMonth = data.mois.find(m => m.i === currentHijriMonth);
+            
+            const monthDetailEl = $("#month-detail");
+            if (currentMonth && monthDetailEl) {
+              monthDetailEl.textContent = currentMonth.sens;
+            }
+          }
+        } catch (error) {
+          console.log('[Hijri] Erreur chargement détails mois:', error);
+        }
+      }
+      
       tickClock();
       setInterval(tickClock, 1000);
 
