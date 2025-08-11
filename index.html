@@ -425,53 +425,105 @@
           font-size: 1.25rem;
         }
 
+        /* Optimisation mobile pour le texte arabe */
         .ayahs-block {
-          font-size: 1.6rem;
-          line-height: 3.2rem;
-          padding: 2.5rem 1.5rem;
-          word-spacing: 0.08em;
-          letter-spacing: 0.01em;
+          font-size: 1.4rem;
+          line-height: 2.8rem;
+          padding: 1.5rem 1rem;
+          word-spacing: 0.1em;
+          letter-spacing: 0.02em;
+          text-align: justify;
+          text-justify: inter-word;
+          text-align-last: right;
+          direction: rtl;
+          unicode-bidi: embed;
+          word-break: keep-all;
+          overflow-wrap: break-word;
+          hyphens: none;
+          -webkit-hyphens: none;
+          -moz-hyphens: none;
+          -ms-hyphens: none;
         }
 
-        /* Optimisation mobile pour les lectures */
+        /* Optimisation mobile pour les numéros de versets */
         .ayah-badge {
-          min-width: 1.5em;
-          height: 1.5em;
-          line-height: 1.5em;
-          margin: 0 0.3rem;
-          font-size: 0.75rem;
-          border: 1px solid rgba(255, 255, 255, 0.8);
-          box-shadow: 0 2px 8px rgba(217, 119, 6, 0.2);
+          display: inline-block;
+          min-width: 1.4em;
+          height: 1.4em;
+          line-height: 1.4em;
+          margin: 0 0.25rem;
+          padding: 0;
+          font-size: 0.7rem;
+          border: 1px solid rgba(255, 255, 255, 0.9);
+          box-shadow: 0 1px 4px rgba(217, 119, 6, 0.2);
+          vertical-align: baseline;
+          text-align: center;
+          direction: ltr;
+          unicode-bidi: isolate;
+          white-space: nowrap;
         }
 
+        /* Conteneur principal optimisé pour mobile */
         #surah-wrap {
-          padding: 2rem;
+          padding: 1.5rem 1rem;
+          margin: 0;
+          max-width: 100%;
+          border-radius: 16px;
         }
 
         #surah-title {
-          font-size: 2rem;
+          font-size: 1.8rem;
+          margin-bottom: 1rem;
+          line-height: 1.3;
         }
 
         .bismillah {
-          font-size: 1.5rem;
+          font-size: 1.4rem;
+          margin: 1rem 0 1.5rem;
+          line-height: 1.4;
         }
 
         /* Ajustements pour les onglets de lectures sur mobile */
         #lecture-tabs {
           flex-direction: column;
           gap: 0.75rem;
+          margin-bottom: 1.5rem;
         }
 
         .tab-btn {
           width: 100%;
           justify-content: center;
           padding: 1rem;
+          text-align: center;
         }
 
         /* Sélecteur de sourates responsive */
         #surah-select {
           font-size: 1rem;
           padding: 0.75rem;
+          width: 100%;
+          margin-bottom: 1.5rem;
+        }
+
+        /* Conteneur de lecture responsive */
+        #lect-content {
+          width: 100%;
+          overflow-x: hidden;
+        }
+
+        /* Améliorations pour la lisibilité sur petit écran */
+        #surah-selector {
+          margin-bottom: 1.5rem;
+        }
+
+        #surah-selector h3 {
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
+        }
+
+        #surah-selector p {
+          font-size: 0.9rem;
+          margin-bottom: 0.75rem;
         }
       }
 
