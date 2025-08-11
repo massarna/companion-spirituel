@@ -12,8 +12,16 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 
 // Offline d'abord: garde les données même sans connexion
-enableIndexedDbPersistence(db).catch(() => {
-  // Sur certains navigateurs onglets multiples, c'est normal si ça échoue.
+enableIndexedDbPersistence(db).catch((err) => {
+  if (err.code == 'failed-precondition') {
+    // Plusieurs onglets ouverts, la persistance ne peut être activée que dans un onglet
+    console.warn('[Firebase] Persistance désactivée: plusieurs onglets ouverts');
+  } else if (err.code == 'unimplemented') {
+    // Le navigateur ne supporte pas toutes les fonctionnalités requises
+    console.warn('[Firebase] Persistance non supportée par ce navigateur');
+  } else {
+    console.warn('[Firebase] Erreur de persistance:', err);
+  }
 });
 
 // Obtenir un UID (anonyme par défaut)
