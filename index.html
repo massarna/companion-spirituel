@@ -1512,7 +1512,18 @@
         $("#date-greg").textContent = now.format("dddd D MMMM YYYY");
         
         // Ne mettre à jour la date hijri que si elle a changé
-        const currentHijriDate = now.format("iD iMMMM iYYYY");
+        const hijriDay = now.iDate();
+        const hijriYear = now.iYear();
+        const hijriMonthIndex = now.iMonth();
+        
+        // Noms des mois hijri en français
+        const hijriMonthsFr = [
+          'Muharram', 'Safar', 'Rabi\' al-awwal', 'Rabi\' al-thani',
+          'Jumada al-awwal', 'Jumada al-thani', 'Rajab', 'Sha\'ban',
+          'Ramadan', 'Shawwal', 'Dhu al-Qi\'dah', 'Dhu al-Hijjah'
+        ];
+        
+        const currentHijriDate = `${hijriDay} ${hijriMonthsFr[hijriMonthIndex]} ${hijriYear}`;
         if (currentHijriDate !== lastHijriDate) {
           $("#date-hijri").textContent = currentHijriDate;
           lastHijriDate = currentHijriDate;
