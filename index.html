@@ -1915,13 +1915,14 @@
         $("#next-prayer-name").textContent = p.name;
 
         const now = moment();
-        const diff = t.diff(now, 'seconds');
+        const diffMs = t.diff(now);
 
         // S'assurer que le temps restant est positif
-        if (diff > 0) {
-          const hours = Math.floor(diff / 3600);
-          const minutes = Math.floor((diff % 3600) / 60);
-          const seconds = diff % 60;
+        if (diffMs > 0) {
+          const totalSeconds = Math.floor(diffMs / 1000);
+          const hours = Math.floor(totalSeconds / 3600);
+          const minutes = Math.floor((totalSeconds % 3600) / 60);
+          const seconds = totalSeconds % 60;
 
           const hh = String(hours).padStart(2, "0");
           const mm = String(minutes).padStart(2, "0");
@@ -1929,7 +1930,7 @@
 
           $("#next-prayer-eta").textContent = `${hh}:${mm}:${ss}`;
         } else {
-          // Si le temps est écoulé, afficher 00:00:00
+          // Si le temps est écoulé, afficher 00:00:00 et recalculer
           $("#next-prayer-eta").textContent = "00:00:00";
         }
 
