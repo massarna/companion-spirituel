@@ -1,5 +1,5 @@
 // Active Firebase en mettant true quand tu es prêt
-export const USE_FIREBASE = false;
+export const USE_FIREBASE = true;
 
 // Pour commencer sans te prendre la tête, on utilisera l'auth anonyme.
 // Tu pourras passer à Google/Email plus tard.
