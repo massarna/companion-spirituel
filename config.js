@@ -12,5 +12,5 @@ export const firebaseConfig = {
   projectId: "compagnon-spirituel",
   storageBucket: "compagnon-spirituel.firebasestorage.app",
   messagingSenderId: "615613488855",
-  appId: "1:615613488855:web:c2d406ab77ec25df339a92"
+  appId: "1:615613488855:web:c2d406ab77ec25df339a92",
 };
