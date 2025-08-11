@@ -403,6 +403,73 @@
         border: 2px solid rgba(255, 255, 255, 0.8);
       }
 
+      @media (max-width: 768px) {
+        .card {
+          padding: 1.5rem;
+        }
+
+        .journal-section {
+          padding: 2rem;
+        }
+
+        .tasbih-counter {
+          font-size: 4rem;
+        }
+
+        .tasbih-button {
+          width: 10rem;
+          height: 10rem;
+          font-size: 1.25rem;
+        }
+
+        .ayahs-block {
+          font-size: 1.25rem;
+          line-height: 2.3rem;
+          padding: 2rem;
+        }
+
+        /* Optimisation mobile pour les lectures */
+        .ayah-badge {
+          min-width: 1.5em;
+          height: 1.5em;
+          line-height: 1.5em;
+          margin: 0 0.3rem;
+          font-size: 0.75rem;
+          border: 1px solid rgba(255, 255, 255, 0.8);
+          box-shadow: 0 2px 8px rgba(217, 119, 6, 0.2);
+        }
+
+        #surah-wrap {
+          padding: 2rem;
+        }
+
+        #surah-title {
+          font-size: 2rem;
+        }
+
+        .bismillah {
+          font-size: 1.5rem;
+        }
+
+        /* Ajustements pour les onglets de lectures sur mobile */
+        #lecture-tabs {
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .tab-btn {
+          width: 100%;
+          justify-content: center;
+          padding: 1rem;
+        }
+
+        /* Sélecteur de sourates responsive */
+        #surah-select {
+          font-size: 1rem;
+          padding: 0.75rem;
+        }
+      }
+
       /* Styles spéciaux pour la page Journal */
       .journal-section {
         background: var(--card);
