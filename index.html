@@ -1450,18 +1450,18 @@
         <div class="card">
           <h2 class="title text-2xl mb-4">Lectures Spirituelles</h2>
 
-          <!-- Onglets modernisés avec menu français -->
+          <!-- Onglets selon l'ancienne version -->
           <div class="flex flex-wrap gap-3 mb-6" id="lecture-tabs">
             <button
               class="tab-btn px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
-              data-lect="arabic"
+              data-lect="kahf"
               aria-pressed="true"
             >
               <div class="flex items-center gap-2">
-                <span class="text-lg">📖</span>
+                <span class="text-lg">🕌</span>
                 <div class="text-left">
-                  <div class="font-bold">Coran</div>
-                  <div class="text-xs opacity-80">القرآن الكريم</div>
+                  <div class="font-bold">Sourate Al Kahf</div>
+                  <div class="text-xs opacity-80">سورة الكهف</div>
                 </div>
               </div>
             </button>
@@ -1472,28 +1472,14 @@
               <div class="flex items-center gap-2">
                 <span class="text-lg">✨</span>
                 <div class="text-left">
-                  <div class="font-bold">Lecture Quotidienne</div>
-                  <div class="text-xs opacity-80">القراءة الخاصة</div>
+                  <div class="font-bold">Lecture Spirituelle Quotidienne</div>
+                  <div class="text-xs opacity-80">القراءة الروحية اليومية</div>
                 </div>
               </div>
             </button>
           </div>
 
-          <!-- Sélection des sourates avec design modernisé -->
-          <div id="surah-selector" class="mb-6">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 bg-gradient-islamic rounded-full flex items-center justify-center shadow-lg">
-                <span class="text-white text-lg">📚</span>
-              </div>
-              <div>
-                <h3 class="font-semibold text-slate-800">Choisissez une sourate</h3>
-                <p class="text-sm text-slate-600">Sélectionnez le chapitre à réciter</p>
-              </div>
-            </div>
-            <select id="surah-select" class="w-full border-2 border-slate-200 rounded-xl px-4 py-3 text-lg font-medium focus:border-islamic-green focus:ring-4 focus:ring-emerald-100 transition-all duration-300">
-              <option value="">— Sélectionnez une sourate —</option>
-            </select>
-          </div>
+          
 
           <div id="lect-content" class="max-w-none">
             <div class="text-center py-12">
@@ -2769,60 +2755,124 @@
         }
       }
 
-      // Rendre le contenu spécial quotidien
-      function renderSpecialContent(data) {
+      // Rendre le contenu spécial quotidien avec sélecteur de sourates
+      function renderSpecialContent() {
         const contentEl = $("#lect-content");
+
+        // Créer la liste des sourates disponibles (toutes sauf Al-Kahf)
+        const availableSurahsForSpecial = Object.entries(availableSurahs)
+          .filter(([key]) => key !== 'kahf')
+          .map(([key, surah]) => {
+            const frenchNames = {
+              'fatiha': 'Al-Fatiha (L\'Ouverture)',
+              'yasin': 'Ya-Sin',
+              'dukhan': 'Ad-Dukhan (La Fumée)',
+              'waqiah': 'Al-Waqiah (L\'Événement)',
+              'mulk': 'Al-Mulk (La Royauté)',
+              'insan': 'Al-Insan (L\'Homme)',
+              'buruj': 'Al-Buruj (Les Constellations)'
+            };
+            return { key, surah, frenchName: frenchNames[key] || key };
+          });
 
         let html = `
           <div class="mb-6">
             <h3 class="text-2xl font-semibold mb-2 title">Lecture Spirituelle Quotidienne</h3>
-            <p class="text-slate-600 mb-4">${data.description}</p>
-          </div>
-
-          <div class="bg-emerald-50 p-6 rounded-xl mb-6">
-            <h4 class="font-semibold mb-3 text-emerald-800">Invocation du jour</h4>
-            <div class="arabic-text mb-3" dir="rtl" lang="ar">${data.dua}</div>
-            <div class="text-slate-700">${data.dua_fr}</div>
+            <p class="text-slate-600 mb-4">Sélectionnez une sourate parmi les lectures recommandées pour votre pratique spirituelle quotidienne.</p>
           </div>
 
           <div class="mb-6">
-            <h4 class="font-semibold mb-3">Sourates recommandées</h4>
-            <div class="grid sm:grid-cols-2 gap-2">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-gradient-islamic rounded-full flex items-center justify-center shadow-lg">
+                <span class="text-white text-lg">📚</span>
+              </div>
+              <div>
+                <h4 class="font-semibold text-slate-800">Sourates recommandées</h4>
+                <p class="text-sm text-slate-600">Choisissez votre lecture spirituelle</p>
+              </div>
+            </div>
+            <select id="special-surah-select" class="w-full border-2 border-slate-200 rounded-xl px-4 py-3 text-lg font-medium focus:border-islamic-green focus:ring-4 focus:ring-emerald-100 transition-all duration-300">
+              <option value="">— Sélectionnez une sourate —</option>
         `;
 
-        data.sourates.forEach((sourate, index) => {
-          html += `
-            <div class="p-3 bg-slate-50 rounded-lg text-sm">
-              <span class="font-medium">${index + 1}.</span> ${sourate}
-            </div>
-          `;
+        availableSurahsForSpecial.forEach(({ key, surah, frenchName }) => {
+          html += `<option value="${key}">${frenchName} - ${surah.title}</option>`;
         });
 
         html += `
-            </div>
+            </select>
           </div>
 
-          <div class="bg-blue-50 p-6 rounded-xl">
-            <h4 class="font-semibold mb-3 text-blue-800">Conseils de lecture</h4>
-            <ul class="space-y-2">
-        `;
-
-        data.recommendations.forEach(rec => {
-          html += `<li class="flex items-start gap-2"><span class="text-blue-600 mt-1">•</span><span class="text-slate-700">${rec}</span></li>`;
-        });
-
-        html += `
-            </ul>
+          <div id="special-surah-content">
+            <div class="text-center py-12">
+              <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span class="text-white text-2xl">📖</span>
+              </div>
+              <p class="text-slate-500 text-lg">Choisissez une sourate ci-dessus</p>
+              <p class="text-slate-400 text-sm mt-2">اختر سورة من القائمة أعلاه</p>
+            </div>
           </div>
         `;
 
         contentEl.innerHTML = html;
+
+        // Ajouter l'event listener pour la sélection
+        $("#special-surah-select").addEventListener('change', (e) => {
+          const selectedSurah = e.target.value;
+          const contentContainer = $("#special-surah-content");
+          
+          if (selectedSurah) {
+            // Afficher un état de chargement
+            contentContainer.innerHTML = `
+              <div class="text-center py-8">
+                <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-slate-600 rounded-full mb-4"></div>
+                <p class="text-slate-600">Chargement en cours...</p>
+              </div>
+            `;
+
+            // Charger la sourate sélectionnée
+            loadSurahForSpecial(selectedSurah, contentContainer);
+          } else {
+            contentContainer.innerHTML = `
+              <div class="text-center py-12">
+                <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <span class="text-white text-2xl">📖</span>
+                </div>
+                <p class="text-slate-500 text-lg">Choisissez une sourate ci-dessus</p>
+                <p class="text-slate-400 text-sm mt-2">اختر سورة من القائمة أعلاه</p>
+              </div>
+            `;
+          }
+        });
+      }
+
+      // Charger une sourate pour la section spéciale
+      async function loadSurahForSpecial(surahKey, container) {
+        try {
+          const surah = availableSurahs[surahKey];
+          if (!surah) throw new Error('Sourate non trouvée');
+
+          const response = await fetch(`./data/lectures/${surah.file}?v=${Date.now()}`);
+          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+          const surahData = await response.json();
+          renderSurahMushaf(container, surahData, surah.title);
+        } catch (error) {
+          console.error('[Lectures Special] Erreur chargement sourate:', error);
+          container.innerHTML = `
+            <div class="text-red-600 p-6 rounded-xl bg-red-50 text-center border border-red-200">
+              <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-red-600 text-xl">⚠️</span>
+              </div>
+              <p class="font-semibold text-red-800 mb-2">Erreur de chargement</p>
+              <p class="text-red-600">Impossible de charger cette sourate</p>
+            </div>
+          `;
+        }
       }
 
       // Gestion des onglets de lectures
       function setupLecturesTabs() {
-        const surahSelector = $("#surah-selector");
-
         $$('[data-lect]').forEach(btn => {
           btn.addEventListener('click', () => {
             // Mise à jour visuelle des boutons
@@ -2831,40 +2881,14 @@
 
             const lectureType = btn.dataset.lect;
 
-            if (lectureType === 'arabic') {
-              surahSelector.style.display = 'block';
-              $("#lect-content").innerHTML = `
-                <div class="text-center py-12">
-                  <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <span class="text-white text-2xl">📖</span>
-                  </div>
-                  <p class="text-slate-500 text-lg">Choisissez une sourate ci-dessus</p>
-                  <p class="text-slate-400 text-sm mt-2">اختر سورة من القائمة أعلاه</p>
-                </div>
-              `;
+            if (lectureType === 'kahf') {
+              // Charger directement la sourate Al-Kahf
+              loadSurah('kahf');
             } else if (lectureType === 'special') {
-              surahSelector.style.display = 'none';
+              // Charger le contenu spécial quotidien avec les autres sourates
               loadSpecialContent();
             }
           });
-        });
-
-        // Gestion de la sélection de sourates
-        $("#surah-select").addEventListener('change', (e) => {
-          const selectedSurah = e.target.value;
-          if (selectedSurah) {
-            loadSurah(selectedSurah);
-          } else {
-            $("#lect-content").innerHTML = `
-              <div class="text-center py-12">
-                <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <span class="text-white text-2xl">📖</span>
-                </div>
-                <p class="text-slate-500 text-lg">Choisissez une sourate ci-dessus</p>
-                <p class="text-slate-400 text-sm mt-2">اختر سورة من القائمة</p>
-              </div>
-            `;
-          }
         });
       }
 
@@ -2873,8 +2897,8 @@
         await loadSurahManifest();
         setupLecturesTabs();
 
-        // État initial : onglet arabe sélectionné
-        $("#surah-selector").style.display = 'block';
+        // État initial : onglet Al-Kahf sélectionné
+        loadSurah('kahf');
         console.log('[Lectures] loader ready');
       }
 
