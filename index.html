@@ -1532,7 +1532,21 @@
             
             const monthDetailEl = $("#month-detail");
             if (currentMonth && monthDetailEl) {
-              monthDetailEl.textContent = currentMonth.sens;
+              // Créer le descriptif avec jours clés et pratiques
+              let descriptif = currentMonth.sens;
+              
+              // Ajouter les jours clés
+              const joursDesc = currentMonth.cles.length > 0 
+                ? `Jours clés: ${currentMonth.cles.join(', ')}` 
+                : 'Aucun jour clé';
+              
+              // Ajouter les pratiques
+              const pratiquesDesc = `Pratiques: ${currentMonth.pratiques.join(', ')}`;
+              
+              // Combiner tout
+              descriptif += ` (${joursDesc}; ${pratiquesDesc})`;
+              
+              monthDetailEl.textContent = descriptif;
             }
           }
         } catch (error) {
