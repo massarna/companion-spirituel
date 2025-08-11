@@ -1455,7 +1455,7 @@
             <button
               class="tab-btn px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
               data-lect="kahf"
-              aria-pressed="true"
+              aria-pressed="false"
             >
               <div class="flex items-center gap-2">
                 <span class="text-lg">🕌</span>
@@ -2876,7 +2876,11 @@
         $$('[data-lect]').forEach(btn => {
           btn.addEventListener('click', () => {
             // Mise à jour visuelle des boutons
-            $$('[data-lect]').forEach(b => b.setAttribute('aria-pressed', 'false'));
+            $$('[data-lect]').forEach(b => {
+              b.setAttribute('aria-pressed', 'false');
+              b.classList.remove('tab-btn');
+              b.classList.add('tab-btn');
+            });
             btn.setAttribute('aria-pressed', 'true');
 
             const lectureType = btn.dataset.lect;
@@ -2886,7 +2890,7 @@
               loadSurah('kahf');
             } else if (lectureType === 'special') {
               // Charger le contenu spécial quotidien avec les autres sourates
-              loadSpecialContent();
+              renderSpecialContent();
             }
           });
         });
@@ -2897,8 +2901,12 @@
         await loadSurahManifest();
         setupLecturesTabs();
 
-        // État initial : onglet Al-Kahf sélectionné
-        loadSurah('kahf');
+        // État initial : onglet Al-Kahf sélectionné par défaut
+        const kahfBtn = $('[data-lect="kahf"]');
+        if (kahfBtn) {
+          kahfBtn.setAttribute('aria-pressed', 'true');
+          loadSurah('kahf');
+        }
         console.log('[Lectures] loader ready');
       }
 
