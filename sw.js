@@ -12,6 +12,7 @@ const urlsToCache = [
   "/data/lectures/surah-67-mulk.ar.json",
   "/data/lectures/surah-76-insan.ar.json",
   "/data/lectures/surah-85-buruj.ar.json",
+  "/data/lectures/surah-32-as-sajda.ar.json",
   "https://cdn.tailwindcss.com",
   "https://cdn.jsdelivr.net/npm/chart.js",
   "https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js",

@@ -1395,40 +1395,7 @@
           <div id="personal-zikr-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6"></div>
         </section>
 
-        <section id="zikr-formulas" class="mb-12">
-          <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Formules de Zikr à Réciter</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <!-- Carte 1: Formule de Tawḥīd -->
-            <div class="bg-white rounded-2xl shadow-lg p-6">
-              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Formule de Tawḥīd</h3>
-              <p class="text-gray-600 mb-4">Après la prière de la nuit du mardi – 70 fois</p>
-              <div class="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-500">
-                <p class="arabic-text text-lg text-blue-800">لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ، وَهُوَ حَيٌّ لَا يَمُوتُ، ذُو الْجَلَالِ وَالْإِكْرَامِ، بِيَدِهِ الْخَيْرُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ.</p>
-              </div>
-              <p class="text-sm text-gray-500 mt-3">Proclame l'unicité de Dieu, sa souveraineté et Sa puissance absolue.</p>
-            </div>
-
-            <!-- Carte 2: Formule du Jeudi Soir -->
-            <div class="bg-white rounded-2xl shadow-lg p-6">
-              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Formule du Jeudi Soir</h3>
-              <p class="text-gray-600 mb-4">Réciter 100 fois</p>
-              <div class="bg-yellow-50 p-4 rounded-xl border-l-4 border-yellow-500">
-                <p class="arabic-text text-lg text-yellow-800">لَا إِلَٰهَ إِلَّا اللَّهُ الْمَلِكُ الْحَقُّ الْمُبِينُ.</p>
-              </div>
-              <p class="text-sm text-gray-500 mt-3">« Il n'y a de divinité que Dieu, le Roi, le Juste, le Manifeste ».</p>
-            </div>
-
-            <!-- Carte 3: Formule du Vendredi -->
-            <div class="bg-white rounded-2xl shadow-lg p-6">
-              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Formule du Vendredi</h3>
-              <p class="text-gray-600 mb-4">Après la prière entre Dhuhr et ʿAsr – 50 fois</p>
-              <div class="bg-orange-50 p-4 rounded-xl border-l-4 border-orange-500">
-                <p class="arabic-text text-lg text-orange-800">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ.</p>
-              </div>
-              <p class="text-sm text-gray-500 mt-3">« Il n'y a de puissance ni de force qu'en Dieu, le Très-Haut, l'Immense ».</p>
-            </div>
-          </div>
-        </section>
+        
 
         <section id="special-invocations" class="mb-12">
           <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Pratique des Invocations Spéciales</h2>
@@ -2996,6 +2963,7 @@
               .map(([key, surah]) => {
                 const frenchNames = {
                   'fatiha': 'Al-Fatiha (L\'Ouverture)',
+                  'sajda': 'As-Sajda (La Prosternation)',
                   'yasin': 'Ya-Sin',
                   'dukhan': 'Ad-Dukhan (La Fumée)',
                   'waqiah': 'Al-Waqiah (L\'Événement)',
@@ -3308,7 +3276,7 @@
         }
       ];
 
-      // Fonction de rendu du programme détaillé - Version robuste
+      // Fonction de rendu du programme détaillé - Version réorganisée avec formules intégrées
       let programmeLoaded = false;
       async function renderProgramme() {
         if (programmeLoaded) return;
@@ -3337,7 +3305,7 @@
             throw new Error('Structure de données invalide');
           }
 
-          // 1. Programme quotidien
+          // 1. Programme quotidien avec formules intégrées
           if (dailyGrid && programData.daily && Array.isArray(programData.daily)) {
             setTimeout(() => {
               dailyGrid.innerHTML = '';
@@ -3347,17 +3315,57 @@
                   return;
                 }
                 
+                // Construire les formules spéciales s'il y en a
+                let formulasHtml = '';
+                if (program.special_formulas && program.special_formulas.length > 0) {
+                  formulasHtml = `
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                      <h4 class="font-semibold text-emerald-700 mb-3 flex items-center gap-2">
+                        <span class="text-lg">✨</span>
+                        Formules spéciales
+                      </h4>
+                      ${program.special_formulas.map(formula => `
+                        <div class="mb-4 p-4 bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-xl border-l-4 border-emerald-500">
+                          <div class="flex items-start justify-between mb-2">
+                            <h5 class="font-semibold text-emerald-800">${formula.title}</h5>
+                            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">${formula.timing}</span>
+                          </div>
+                          <div class="arabic-text text-lg text-emerald-800 leading-relaxed mb-2" dir="rtl">${formula.arabic}</div>
+                          <p class="text-sm text-emerald-600 italic">${formula.description}</p>
+                        </div>
+                      `).join('')}
+                    </div>
+                  `;
+                }
+                
                 const cardHtml = `
-                  <div class="bg-white rounded-2xl shadow-lg p-6 space-y-3 hover:shadow-xl transition-shadow duration-300">
-                    <h3 class="text-2xl font-bold text-[#6A4A3C]">${program.day}</h3>
-                    <div>
-                      <h4 class="font-semibold text-gray-700 mb-1">🌙 Nuit</h4>
-                      <p class="text-sm text-gray-600 leading-relaxed">${program.night || 'Aucune activité spécifique'}</p>
+                  <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4 hover:shadow-xl transition-all duration-300 border border-gray-100">
+                    <div class="flex items-center gap-3 mb-4">
+                      <div class="w-12 h-12 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg">
+                        <span class="text-white font-bold text-lg">${program.day.charAt(0)}</span>
+                      </div>
+                      <h3 class="text-2xl font-bold text-[#6A4A3C]">${program.day}</h3>
                     </div>
-                    <div>
-                      <h4 class="font-semibold text-gray-700 mb-1">☀️ Jour</h4>
-                      <p class="text-sm text-gray-600 leading-relaxed">${program.day_content || 'Aucune activité spécifique'}</p>
+                    
+                    <div class="space-y-3">
+                      <div class="p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border-l-4 border-indigo-400">
+                        <h4 class="font-semibold text-indigo-800 mb-2 flex items-center gap-2">
+                          <span class="text-lg">🌙</span>
+                          Prière nocturne
+                        </h4>
+                        <p class="text-sm text-indigo-700 leading-relaxed">${program.night || 'Aucune activité spécifique'}</p>
+                      </div>
+                      
+                      <div class="p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border-l-4 border-yellow-400">
+                        <h4 class="font-semibold text-yellow-800 mb-2 flex items-center gap-2">
+                          <span class="text-lg">☀️</span>
+                          Prière diurne
+                        </h4>
+                        <p class="text-sm text-yellow-700 leading-relaxed">${program.day_content || 'Aucune activité spécifique'}</p>
+                      </div>
                     </div>
+                    
+                    ${formulasHtml}
                   </div>
                 `;
                 dailyGrid.insertAdjacentHTML('beforeend', cardHtml);
@@ -3373,7 +3381,7 @@
             `;
           }
 
-          // 2. Zikrs personnalisés
+          // 2. Zikrs personnalisés (conservé tel quel)
           if (zikrGrid && programData.personalZikr && Array.isArray(programData.personalZikr)) {
             setTimeout(() => {
               zikrGrid.innerHTML = '';

@@ -1,93 +1,67 @@
 {
-  "semaine": {
-    "dimanche": {
-      "nuit": "4 rak'ât × 3 Taslîmah | Zikr : 70 Istighfâr",
-      "jour": "1 rak'ât ḍuḥā | 3 rak'ât × 3 Taslîmah | Zikr : 100 Taslîmah"
-    },
-    "lundi": {
-      "nuit": "2 rak'ât × 1 Fâtiḥa + 3× Aʿrâf Âyat + 1 Ikhlâṣ + 1 Falaq + 1 Nâs",
-      "jour": "2 rak'ât × 1 Fâtiḥa + 3× Aʿrâf Âyat + 3 Ikhlâṣ + 3 Falaq + 3 Nâs | Zikr : 70 Istighfâr"
-    },
-    "mardi": {
-      "nuit": "4 rak'ât × 3 Fâtiḥa + 1 Ikhlâṣ + 1 Falaq + 1 Nâs | Zikr : 70 Tawhîd"
-    },
-    "mercredi": {
-      "nuit": "4 rak'ât × 3 Fâtiḥa × 40 Ikhlâṣ | Zikr : 70 Istighfâr",
-      "jour": "1 rak'ât au milieu de la nuit | 3 rak'ât × Aʿrâf Âyat + 3 Ikhlâṣ + 1 Falaq + 1 Nâs"
-    },
-    "jeudi": {
-      "nuit": "4 rak'ât × 3 Fâtiḥa + 10 Ikhlâṣ | Zikr : 100 Formule du Jeudi Soir",
-      "jour": "1 rak'ât × 1 Fâtiḥa + 3 Nâr | Zikr : 100 Ṣalawât | Zikr : 70 Istighfâr"
-    },
-    "vendredi": {
-      "nuit": "4 rak'ât × 3 Fâtiḥa + 10 Ikhlâṣ | Zikr : 70 Istighfâr",
-      "jour": "2 rak'ât au milieu + 3 Fâtiḥa + 3× Aʿrâf Âyat + 3 Ikhlâṣ + 3 Falaq + 3 Nâs | Jour : 2 rak'ât + 3× Fâtiḥa + 70 Ṣalawât Vendredi"
-    },
-    "samedi": {
-      "nuit": "4 rak'ât × 3 Fâtiḥa + 3 Ikhlâṣ",
-      "jour": "1 rak'ât au milieu + 3 rak'ât × 3 Aʿrâf Âyat + 3 Ikhlâṣ + 7 Nâr"
-    }
-  },
-  "zikrPersonnels": [
-    { "nom": "Istighfār", "frequence": "quotidien", "repetitions": 100 },
-    { "nom": "Ṣalāt ʿala n-Nabī", "frequence": "quotidien", "repetitions": 100 },
-    { "nom": "Tasbīḥ", "frequence": "quotidien", "repetitions": 100 },
-    { "nom": "Tawḥīd", "frequence": "mardi nuit", "repetitions": 70 }
-  ],
-  "formules": {
-    "tawhid": {
-      "titre": "Formule de Tawḥīd",
-      "contexte": "Après la prière de la nuit du mardi – 70×",
-      "ar": "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ، وَهُوَ حَيٌّ لَا يَمُوتُ، ذُو الْجَلَالِ وَالْإِكْرَامِ، بِيَدِهِ الْخَيْرُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ."
-    },
-    "jeudi": {
-      "titre": "Formule du jeudi soir",
-      "contexte": "Réciter 100×",
-      "ar": "لَا إِلَٰهَ إِلَّا اللَّهُ الْمَلِكُ الْحَقُّ الْمُبِينُ."
-    },
-    "vendredi": {
-      "titre": "Formule du vendredi",
-      "contexte": "Entre Ẓuhr et ʿAṣr – 50×",
-      "ar": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ."
-    }
-  }
-}
-{
   "daily": [
     {
       "day": "Dimanche",
       "night": "4 rakʿat (1 Fātiḥa + 3 Ikhlāṣ) | Zikr : 70 Istighfār.",
-      "day_content": "4 rakʿat (1 Fātiḥa + 1 Kāfirūn) | Zikr : 10 Ikhlāṣ."
+      "day_content": "4 rakʿat (1 Fātiḥa + 1 Kāfirūn) | Zikr : 10 Ikhlāṣ.",
+      "special_formulas": []
     },
     {
       "day": "Lundi",
       "night": "2 rakʿat (1 Fātiḥa + 15 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās).",
-      "day_content": "2 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 10 Istighfār + 10 Ṣalāt."
+      "day_content": "2 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 10 Istighfār + 10 Ṣalāt.",
+      "special_formulas": []
     },
     {
       "day": "Mardi",
       "night": "6 rakʿat (1 Fātiḥa + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 70 Tawḥīd.",
-      "day_content": "10 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ)."
+      "day_content": "10 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ).",
+      "special_formulas": [
+        {
+          "title": "Formule de Tawḥīd",
+          "timing": "Après la prière de la nuit – 70 fois",
+          "arabic": "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ، وَهُوَ حَيٌّ لَا يَمُوتُ، ذُو الْجَلَالِ وَالْإِكْرَامِ، بِيَدِهِ الْخَيْرُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ.",
+          "description": "Proclame l'unicité de Dieu, sa souveraineté et Sa puissance absolue."
+        }
+      ]
     },
     {
       "day": "Mercredi",
       "night": "4 rakʿat (1 Fātiḥa + 40 Ikhlāṣ) | Zikr : 70 Istighfār.",
-      "day_content": "4 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ + 1 Falaq + 1 Nās)."
+      "day_content": "4 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ + 1 Falaq + 1 Nās).",
+      "special_formulas": []
     },
     {
       "day": "Jeudi",
       "night": "8 rakʿat (1 Fātiḥa + 10 Ikhlāṣ) | Zikr : 100 Formule du Jeudi.",
-      "day_content": "4 rakʿat (1 Fātiḥa + 5 Naṣr + 50 Kawthar) | Zikr : 10 Istighfār."
+      "day_content": "4 rakʿat (1 Fātiḥa + 5 Naṣr + 50 Kawthar) | Zikr : 10 Istighfār.",
+      "special_formulas": [
+        {
+          "title": "Formule du Jeudi Soir",
+          "timing": "Réciter 100 fois",
+          "arabic": "لَا إِلَٰهَ إِلَّا اللَّهُ الْمَلِكُ الْحَقُّ الْمُبِينُ.",
+          "description": "« Il n'y a de divinité que Dieu, le Roi, le Juste, le Manifeste »."
+        }
+      ]
     },
     {
-      "day": "Vendredi", 
+      "day": "Vendredi",
       "night": "4 rakʿat (1 Fātiḥa + 50 Zalzalah).",
-      "day_content": "2 rakʿat (1ʳᵉ : 1 Fātiḥa + 1 Āyat al-Kursī + 25 Falaq ; 2ᵉ : 1 Fātiḥa + 1 Ikhlāṣ + 25 Nās) | Zikr : 50 Formule du Vendredi."
+      "day_content": "2 rakʿat (1ʳᵉ : 1 Fātiḥa + 1 Āyat al-Kursī + 25 Falaq ; 2ᵉ : 1 Fātiḥa + 1 Ikhlāṣ + 25 Nās) | Zikr : 50 Formule du Vendredi.",
+      "special_formulas": [
+        {
+          "title": "Formule du Vendredi",
+          "timing": "Après la prière entre Dhuhr et ʿAsr – 50 fois",
+          "arabic": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ.",
+          "description": "« Il n'y a de puissance ni de force qu'en Dieu, le Très-Haut, l'Immense »."
+        }
+      ]
     },
     {
       "day": "Samedi",
       "night": "6 rakʿat (1 Fātiḥa + 3 Ikhlāṣ).",
-      "day_content": "4 rakʿat (1 Fātiḥa + 3 Kāfirūn) | Zikr : 3 Āyat al-Kursī."
+      "day_content": "4 rakʿat (1 Fātiḥa + 3 Kāfirūn) | Zikr : 3 Āyat al-Kursī.",
+      "special_formulas": []
     }
   ],
   "personalZikr": [
@@ -121,26 +95,6 @@
       "periodicity": "Après chaque prière du vendredi",
       "arabic": "اللَّهُمَّ اغْفِرْ لِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ الأَحْيَاءِ مِنْهُمْ وَالأَمْوَاتِ",
       "condition": "friday-every-prayer"
-    }
-  ],
-  "zikrFormulas": [
-    {
-      "title": "Formule de Tawḥīd",
-      "timing": "Après la prière de la nuit du mardi – 70 fois",
-      "arabic": "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ، وَهُوَ حَيٌّ لَا يَمُوتُ، ذُو الْجَلَالِ وَالْإِكْرَامِ، بِيَدِهِ الْخَيْرُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ.",
-      "description": "Proclame l'unicité de Dieu, sa souveraineté et Sa puissance absolue."
-    },
-    {
-      "title": "Formule du Jeudi Soir",
-      "timing": "Réciter 100 fois",
-      "arabic": "لَا إِلَٰهَ إِلَّا اللَّهُ الْمَلِكُ الْحَقُّ الْمُبِينُ.",
-      "description": "« Il n'y a de divinité que Dieu, le Roi, le Juste, le Manifeste »."
-    },
-    {
-      "title": "Formule du Vendredi",
-      "timing": "Après la prière entre Dhuhr et ʿAsr – 50 fois",
-      "arabic": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ.",
-      "description": "« Il n'y a de puissance ni de force qu'en Dieu, le Très-Haut, l'Immense »."
     }
   ]
 }
