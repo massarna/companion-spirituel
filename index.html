@@ -446,136 +446,89 @@
       @media (max-width: 768px) {
         .card {
           padding: 1.5rem;
+          margin: 0.5rem;
+          border-radius: 16px;
         }
 
         .journal-section {
-          padding: 2rem;
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
         }
 
         .tasbih-counter {
-          font-size: 4rem;
+          font-size: 3.5rem;
+          margin: 1rem 0;
         }
 
         .tasbih-button {
-          width: 10rem;
-          height: 10rem;
-          font-size: 1.25rem;
+          width: 9rem;
+          height: 9rem;
+          font-size: 1.1rem;
         }
 
-        /* Optimisation mobile pour le texte arabe */
-        .ayahs-block {
-          font-size: 1.6rem;
-          line-height: 3rem;
-          padding: 1rem 0.5rem;
-          word-spacing: 0.12em;
-          letter-spacing: 0.02em;
-          text-align: justify;
-          text-justify: inter-word;
-          text-align-last: right;
-          direction: rtl;
-          unicode-bidi: embed;
-          word-break: keep-all;
-          overflow-wrap: break-word;
-          hyphens: none;
-          -webkit-hyphens: none;
-          -moz-hyphens: none;
-          -ms-hyphens: none;
-          max-width: 100%;
-          width: 100%;
+        /* Navigation sticky optimisée mobile */
+        nav {
+          position: fixed;
+          bottom: 0;
+          top: auto;
+          background: rgba(253, 250, 246, 0.95);
+          backdrop-filter: blur(20px);
+          border-top: 1px solid rgba(139, 115, 85, 0.2);
+          border-bottom: none;
+          padding: 0.5rem 0;
+          z-index: 30;
         }
 
-        /* Optimisation mobile pour les numéros de versets */
-        .ayah-badge {
-          display: inline-flex;
-          align-items: center;
+        nav ul {
           justify-content: center;
-          min-width: 1.8em;
-          height: 1.8em;
-          margin: 0 0.4rem;
-          padding: 0;
-          font-size: 0.85rem;
-          font-weight: 800;
-          color: #2c1810;
-          background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
-          border: 1.5px solid rgba(255, 255, 255, 0.95);
-          box-shadow: 
-            0 2px 8px rgba(217, 119, 6, 0.35),
-            0 1px 3px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.5);
-          vertical-align: baseline;
-          text-align: center;
-          direction: ltr;
-          unicode-bidi: isolate;
-          white-space: nowrap;
-          font-family: "Orbitron", monospace;
-          text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
-          border-radius: 50%;
-        }
-
-        /* Conteneur principal optimisé pour mobile */
-        #surah-wrap {
-          padding: 1rem 0.5rem;
-          margin: 0;
-          max-width: 100%;
-          border-radius: 16px;
-          width: 100%;
-        }
-
-        #surah-title {
-          font-size: 1.8rem;
-          margin-bottom: 1rem;
-          line-height: 1.3;
-        }
-
-        .bismillah {
-          font-size: 1.4rem;
-          margin: 1rem 0 1.5rem;
-          line-height: 1.4;
-        }
-
-        /* Ajustements pour les onglets de lectures sur mobile */
-        #lecture-tabs {
-          flex-direction: column;
-          gap: 0.75rem;
-          margin-bottom: 1.5rem;
+          gap: 0.25rem;
+          padding: 0 0.5rem;
         }
 
         .tab-btn {
-          width: 100%;
-          justify-content: center;
+          padding: 0.5rem 0.75rem;
+          font-size: 0.75rem;
+          border-radius: 12px;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.25rem;
+        }
+
+        /* Ajouter des icônes aux onglets mobile */
+        .tab-btn[data-tab="accueil"]::before { content: "🏠"; font-size: 1rem; }
+        .tab-btn[data-tab="programme"]::before { content: "📋"; font-size: 1rem; }
+        .tab-btn[data-tab="lectures"]::before { content: "📖"; font-size: 1rem; }
+        .tab-btn[data-tab="retraite"]::before { content: "🕌"; font-size: 1rem; }
+        .tab-btn[data-tab="journal"]::before { content: "📝"; font-size: 1rem; }
+        .tab-btn[data-tab="mois"]::before { content: "🌙"; font-size: 1rem; }
+        .tab-btn[data-tab="qibla"]::before { content: "🧭"; font-size: 1rem; }
+
+        /* Ajuster le contenu principal pour la nav bottom */
+        main {
+          padding-bottom: 6rem;
+        }
+
+        /* Header plus compact sur mobile */
+        header {
+          padding: 2rem 1rem;
+        }
+
+        header h1 {
+          font-size: 2.5rem;
+        }
+
+        /* Améliorer les cards prières sur mobile */
+        .prayer-card {
           padding: 1rem;
-          text-align: center;
-        }
-
-        /* Sélecteur de sourates responsive */
-        #surah-select {
-          font-size: 1rem;
-          padding: 0.75rem;
-          width: 100%;
-          margin-bottom: 1.5rem;
-        }
-
-        /* Conteneur de lecture responsive */
-        #lect-content {
-          width: 100%;
-          overflow-x: hidden;
-          padding: 0;
-          margin: 0;
-        }
-
-        /* Améliorations pour la lisibilité sur petit écran */
-        #surah-selector {
-          margin-bottom: 1.5rem;
-        }
-
-        #surah-selector h3 {
-          font-size: 1rem;
           margin-bottom: 0.5rem;
         }
 
-        #surah-selector p {
-          font-size: 0.9rem;
-          margin-bottom: 0.75rem;
+        /* Focus du jour plus compact */
+        #daily-focus-content {
+          font-size: 1rem;
+          padding: 1rem;
         }
       }
 
@@ -1307,129 +1260,127 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Tendance et Analyse Long Terme -->
-            <div class="mt-6 space-y-4">
-              <!-- Graphique hebdomadaire amélioré -->
-              <div class="p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl">
-                <h3 class="font-semibold text-slate-700 mb-3">Progression de la Semaine</h3>
-                <div class="flex justify-between items-end h-20 mb-3">
-                  <div class="flex flex-col items-center">
-                    <div class="relative">
-                      <div id="weekly-day-1" class="w-8 bg-gradient-to-t from-emerald-400 to-emerald-500 rounded-t mb-1 transition-all duration-300" style="height: 25px;"></div>
-                      <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-600" id="weekly-score-1">3</div>
-                    </div>
-                    <span class="text-xs text-slate-500">L</span>
+          <!-- Tendance et Analyse Long Terme -->
+          <div class="mt-6 space-y-4">
+            <!-- Graphique hebdomadaire amélioré -->
+            <div class="p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl">
+              <h3 class="font-semibold text-slate-700 mb-3">Progression de la Semaine</h3>
+              <div class="flex justify-between items-end h-20 mb-3">
+                <div class="flex flex-col items-center">
+                  <div class="relative">
+                    <div id="weekly-day-1" class="w-8 bg-gradient-to-t from-emerald-400 to-emerald-500 rounded-t mb-1 transition-all duration-300" style="height: 25px;"></div>
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-600" id="weekly-score-1">3</div>
                   </div>
-                  <div class="flex flex-col items-center">
-                    <div class="relative">
-                      <div id="weekly-day-2" class="w-8 bg-gradient-to-t from-emerald-400 to-emerald-500 rounded-t mb-1 transition-all duration-300" style="height: 40px;"></div>
-                      <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-600" id="weekly-score-2">4</div>
-                    </div>
-                    <span class="text-xs text-slate-500">M</span>
-                  </div>
-                  <div class="flex flex-col items-center">
-                    <div class="relative">
-                      <div id="weekly-day-3" class="w-8 bg-gradient-to-t from-emerald-500 to-emerald-600 rounded-t mb-1 transition-all duration-300" style="height: 50px;"></div>
-                      <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-700" id="weekly-score-3">5</div>
-                    </div>
-                    <span class="text-xs text-slate-500">M</span>
-                  </div>
-                  <div class="flex flex-col items-center">
-                    <div class="relative">
-                      <div id="weekly-day-4" class="w-8 bg-gradient-to-t from-emerald-500 to-emerald-600 rounded-t mb-1 transition-all duration-300" style="height: 60px;"></div>
-                      <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-700" id="weekly-score-4">5</div>
-                    </div>
-                    <span class="text-xs text-slate-500">J</span>
-                  </div>
-                  <div class="flex flex-col items-center">
-                    <div class="relative">
-                      <div id="weekly-day-5" class="w-8 bg-gradient-to-t from-emerald-400 to-emerald-500 rounded-t mb-1 transition-all duration-300" style="height: 45px;"></div>
-                      <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-600" id="weekly-score-5">4</div>
-                    </div>
-                    <span class="text-xs text-slate-500">V</span>
-                  </div>
-                  <div class="flex flex-col items-center">
-                    <div class="relative">
-                      <div id="weekly-day-6" class="w-8 bg-gradient-to-t from-emerald-300 to-emerald-400 rounded-t mb-1 transition-all duration-300" style="height: 35px;"></div>
-                      <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-600" id="weekly-score-6">2</div>
-                    </div>
-                    <span class="text-xs text-slate-500">S</span>
-                  </div>
-                  <div class="flex flex-col items-center">
-                    <div class="relative">
-                      <div id="weekly-day-7" class="w-8 bg-gradient-to-t from-emerald-600 to-emerald-700 rounded-t mb-1 transition-all duration-300" style="height: 70px;"></div>
-                      <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-800" id="weekly-score-7">5</div>
-                    </div>
-                    <span class="text-xs text-slate-500">D</span>
-                  </div>
+                  <span class="text-xs text-slate-500">L</span>
                 </div>
-                <div class="text-center">
-                  <span class="text-xs text-slate-600">Prières accomplies par jour</span>
+                <div class="flex flex-col items-center">
+                  <div class="relative">
+                    <div id="weekly-day-2" class="w-8 bg-gradient-to-t from-emerald-400 to-emerald-500 rounded-t mb-1 transition-all duration-300" style="height: 40px;"></div>
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-600" id="weekly-score-2">4</div>
+                  </div>
+                  <span class="text-xs text-slate-500">M</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div class="relative">
+                    <div id="weekly-day-3" class="w-8 bg-gradient-to-t from-emerald-500 to-emerald-600 rounded-t mb-1 transition-all duration-300" style="height: 50px;"></div>
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-700" id="weekly-score-3">5</div>
+                  </div>
+                  <span class="text-xs text-slate-500">M</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div class="relative">
+                    <div id="weekly-day-4" class="w-8 bg-gradient-to-t from-emerald-500 to-emerald-600 rounded-t mb-1 transition-all duration-300" style="height: 60px;"></div>
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-700" id="weekly-score-4">5</div>
+                  </div>
+                  <span class="text-xs text-slate-500">J</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div class="relative">
+                    <div id="weekly-day-5" class="w-8 bg-gradient-to-t from-emerald-400 to-emerald-500 rounded-t mb-1 transition-all duration-300" style="height: 45px;"></div>
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-600" id="weekly-score-5">4</div>
+                  </div>
+                  <span class="text-xs text-slate-500">V</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div class="relative">
+                    <div id="weekly-day-6" class="w-8 bg-gradient-to-t from-emerald-300 to-emerald-400 rounded-t mb-1 transition-all duration-300" style="height: 35px;"></div>
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-600" id="weekly-score-6">2</div>
+                  </div>
+                  <span class="text-xs text-slate-500">S</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div class="relative">
+                    <div id="weekly-day-7" class="w-8 bg-gradient-to-t from-emerald-600 to-emerald-700 rounded-t mb-1 transition-all duration-300" style="height: 70px;"></div>
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-emerald-800" id="weekly-score-7">5</div>
+                  </div>
+                  <span class="text-xs text-slate-500">D</span>
                 </div>
               </div>
+              <div class="text-center">
+                <span class="text-xs text-slate-600">Prières accomplies par jour</span>
+              </div>
+            </div>
 
-              <!-- Analyse mensuelle -->
-              <div class="grid md:grid-cols-3 gap-4">
-                <div class="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
-                  <h4 class="font-semibold text-blue-800 mb-2">Ce Mois</h4>
-                  <div class="text-2xl font-bold text-blue-700 mb-1" id="monthly-prayers">87%</div>
-                  <div class="text-sm text-blue-600">Assiduité aux prières</div>
-                </div>
-                
-                <div class="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl">
-                  <h4 class="font-semibold text-purple-800 mb-2">Meilleure Série</h4>
-                  <div class="text-2xl font-bold text-purple-700 mb-1" id="best-streak">12</div>
-                  <div class="text-sm text-purple-600">jours consécutifs</div>
-                </div>
-                
-                <div class="p-4 bg-gradient-to-br from-orange-50 to-red-50 rounded-xl">
-                  <h4 class="font-semibold text-orange-800 mb-2">Dhikr Total</h4>
-                  <div class="text-2xl font-bold text-orange-700 mb-1" id="total-dhikr-month">3,247</div>
-                  <div class="text-sm text-orange-600">ce mois-ci</div>
-                </div>
+            <!-- Analyse mensuelle -->
+            <div class="grid md:grid-cols-3 gap-4">
+              <div class="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
+                <h4 class="font-semibold text-blue-800 mb-2">Ce Mois</h4>
+                <div class="text-2xl font-bold text-blue-700 mb-1" id="monthly-prayers">87%</div>
+                <div class="text-sm text-blue-600">Assiduité aux prières</div>
               </div>
 
-              <!-- Objectifs personnalisables -->
-              <div class="p-4 bg-gradient-to-r from-indigo-50 to-cyan-50 rounded-xl">
-                <h3 class="font-semibold text-slate-700 mb-3">🎯 Objectifs Personnels</h3>
-                <div class="space-y-3">
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium">Prières à l'heure</span>
-                    <div class="flex items-center gap-2">
-                      <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div class="h-full bg-indigo-500 transition-all duration-300" style="width: 78%"></div>
-                      </div>
-                      <span class="text-sm font-semibold text-indigo-600">78%</span>
+              <div class="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl">
+                <h4 class="font-semibold text-purple-800 mb-2">Meilleure Série</h4>
+                <div class="text-2xl font-bold text-purple-700 mb-1" id="best-streak">12</div>
+                <div class="text-sm text-purple-600">jours consécutifs</div>
+              </div>
+
+              <div class="p-4 bg-gradient-to-br from-orange-50 to-red-50 rounded-xl">
+                <h4 class="font-semibold text-orange-800 mb-2">Dhikr Total</h4>
+                <div class="text-2xl font-bold text-orange-700 mb-1" id="total-dhikr-month">3,247</div>
+                <div class="text-sm text-orange-600">ce mois-ci</div>
+              </div>
+            </div>
+
+            <!-- Objectifs personnalisables -->
+            <div class="p-4 bg-gradient-to-r from-indigo-50 to-cyan-50 rounded-xl">
+              <h3 class="font-semibold text-slate-700 mb-3">🎯 Objectifs Personnels</h3>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium">Prières à l'heure</span>
+                  <div class="flex items-center gap-2">
+                    <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-indigo-500 transition-all duration-300" style="width: 78%"></div>
                     </div>
+                    <span class="text-sm font-semibold text-indigo-600">78%</span>
                   </div>
-                  
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium">Lecture quotidienne</span>
-                    <div class="flex items-center gap-2">
-                      <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div class="h-full bg-cyan-500 transition-all duration-300" style="width: 92%"></div>
-                      </div>
-                      <span class="text-sm font-semibold text-cyan-600">92%</span>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium">Lecture quotidienne</span>
+                  <div class="flex items-center gap-2">
+                    <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-cyan-500 transition-all duration-300" style="width: 92%"></div>
                     </div>
+                    <span class="text-sm font-semibold text-cyan-600">92%</span>
                   </div>
-                  
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium">Dhikr quotidien (1261×)</span>
-                    <div class="flex items-center gap-2">
-                      <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div class="h-full bg-purple-500 transition-all duration-300" style="width: 65%"></div>
-                      </div>
-                      <span class="text-sm font-semibold text-purple-600">65%</span>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium">Dhikr quotidien (1261×)</span>
+                  <div class="flex items-center gap-2">
+                    <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-purple-500 transition-all duration-300" style="width: 65%"></div>
                     </div>
+                    <span class="text-sm font-semibold text-purple-600">65%</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-
       </section>
 
       <!-- Programme -->
@@ -1497,41 +1448,41 @@
                   <p><strong>Traduction :</strong> Ô ! Mon Dieu ! je Te Demande et m'Oriente vers Toi par le Biais de Ton Bien-Aimé et Messager, dont la Gradation est Sublime, notre Seigneur Mouhammad (PSL). Accordes-moi Ton Amour (Particulier), Pur (Agrée), par Toi. Ainsi que celui de Ton Bien-Aimé, notre Seigneur Mouhammad (PSL). Accordes-moi ici-bas et dans l'au-delà le Privilège de faire Partie de Tes Saints Privilégiés et Parfaits Exempts de toute Aspérité. Tu Es certes, sur toute chose le Tout Puissant.</p>
                 </div>
               </div>
-            </div>
 
-            <!-- Carte 2: Invocation protectrice avant le sommeil -->
-            <div class="bg-white rounded-2xl shadow-lg p-6">
-              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Invocation protectrice avant le sommeil</h3>
-              <div class="space-y-4">
-                <p class="text-gray-700"><strong>Oraison Protectrice et Punitive contre les ennemis et adversaires.</strong></p>
-                <p class="text-gray-600">Opérez la nuit avant de vous coucher.</p>
+              <!-- Carte 2: Invocation protectrice avant le sommeil -->
+              <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Invocation protectrice avant le sommeil</h3>
+                <div class="space-y-4">
+                  <p class="text-gray-700"><strong>Oraison Protectrice et Punitive contre les ennemis et adversaires.</strong></p>
+                  <p class="text-gray-600">Opérez la nuit avant de vous coucher.</p>
 
-                <div class="bg-purple-50 p-4 rounded-xl border-l-4 border-purple-500">
-                  <h4 class="font-semibold text-purple-800 mb-3">Procédure :</h4>
-                  <ol class="list-decimal list-inside space-y-2 text-sm text-purple-700">
-                    <li>Récitez 10 ou 11 fois le Ta'aouôz</li>
-                    <li>1 Fatiha jusqu'à "Iyyâka nâ'boudoû wa Iyyâka nas-ta'în"</li>
-                    <li>1 Salâtoul Fâtihi</li>
-                    <li>Posez la main droite ou gauche sur les yeux</li>
-                    <li>Après le zikr de 6 VT terminer la Fatiha ouvrez les yeux</li>
-                    <li>Répétez 11 fois l'Invocation Suivante :</li>
-                  </ol>
-                </div>
+                  <div class="bg-purple-50 p-4 rounded-xl border-l-4 border-purple-500">
+                    <h4 class="font-semibold text-purple-800 mb-3">Procédure :</h4>
+                    <ol class="list-decimal list-inside space-y-2 text-sm text-purple-700">
+                      <li>Récitez 10 ou 11 fois le Ta'aouôz</li>
+                      <li>1 Fatiha jusqu'à "Iyyâka nâ'boudoû wa Iyyâka nas-ta'în"</li>
+                      <li>1 Salâtoul Fâtihi</li>
+                      <li>Posez la main droite ou gauche sur les yeux</li>
+                      <li>Après le zikr de 6 VT terminer la Fatiha ouvrez les yeux</li>
+                      <li>Répétez 11 fois l'Invocation Suivante :</li>
+                    </ol>
+                  </div>
 
-                <div class="bg-red-50 p-4 rounded-xl border-l-4 border-red-500">
-                  <p class="arabic-text text-lg text-red-800 leading-relaxed mb-3">اللَّهُمَّ إِنِّي أَعُوذُ بِكَ رَبِّي وَرَبِّكُمْ مِنْ شَرِّ كُلِّ مُتَكَبِّرٍ لَا يُؤْمِنُ بِيَوْمِ الْحِسَابِ</p>
-                  <p class="text-sm text-red-700 italic">O! Mon Dieu je me Réfugie auprès de Toi! Mon Seigneur et Notre Maître Absolu contre tout prévaricateur plein de gloriole, de surcroît mécréant au Jour du Rendement des Comptes.</p>
-                </div>
+                  <div class="bg-red-50 p-4 rounded-xl border-l-4 border-red-500">
+                    <p class="arabic-text text-lg text-red-800 leading-relaxed mb-3">اللَّهُمَّ إِنِّي أَعُوذُ بِكَ رَبِّي وَرَبِّكُمْ مِنْ شَرِّ كُلِّ مُتَكَبِّرٍ لَا يُؤْمِنُ بِيَوْمِ الْحِسَابِ</p>
+                    <p class="text-sm text-red-700 italic">O! Mon Dieu je me Réfugie auprès de Toi! Mon Seigneur et Notre Maître Absolu contre tout prévaricateur plein de gloriole, de surcroît mécréant au Jour du Rendement des Comptes.</p>
+                  </div>
 
-                <p class="text-sm text-gray-600">Terminez ensuite la Récitation de la Fatiha.</p>
+                  <p class="text-sm text-gray-600">Terminez ensuite la Récitation de la Fatiha.</p>
 
-                <div class="bg-amber-50 p-4 rounded-xl border-l-4 border-amber-500">
-                  <h4 class="font-semibold text-amber-800 mb-2">NB : Sceau de Salomon (paix et salut sur lui)</h4>
-                  <p class="text-sm text-amber-700 mb-2">Si vous êtes sous l'emprise de l'ensorcellement, de la méchanceté, du mauvais œil ou des mauvaises langues, il est recommandé d'utiliser le pentacle suivant :</p>
-                  <ol class="list-decimal list-inside space-y-1 text-sm text-amber-700">
-                    <li>Écrivez le Sceau de Salomon trois fois sur des feuilles ou des tablettes</li>
-                    <li>Autour du pentacle, écrivez le Verset du Trône (Ayat al-Kursi)</li>
-                  </ol>
+                  <div class="bg-amber-50 p-4 rounded-xl border-l-4 border-amber-500">
+                    <h4 class="font-semibold text-amber-800 mb-2">NB : Sceau de Salomon (paix et salut sur lui)</h4>
+                    <p class="text-sm text-amber-700 mb-2">Si vous êtes sous l'emprise de l'ensorcellement, de la méchanceté, du mauvais œil ou des mauvaises langues, il est recommandé d'utiliser le pentacle suivant :</p>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-amber-700">
+                      <li>Écrivez le Sceau de Salomon trois fois sur des feuilles ou des tablettes</li>
+                      <li>Autour du pentacle, écrivez le Verset du Trône (Ayat al-Kursi)</li>
+                    </ol>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1573,7 +1524,7 @@
             </button>
           </div>
 
-          
+
 
           <div id="lect-content" class="max-w-none">
             <div class="text-center py-12">
@@ -2687,7 +2638,7 @@
 
           // Méthode robuste : utiliser storageAPI pour récupérer les données
           const allKeys = [];
-          
+
           // Parcourir localStorage pour identifier les clés
           for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -2826,7 +2777,7 @@
         if (!statusEl) return;
 
         statusEl.textContent = message;
-        
+
         // Styles selon le type
         const styles = {
           success: 'text-green-600 bg-green-50 border border-green-200',
@@ -2834,7 +2785,7 @@
           warning: 'text-orange-600 bg-orange-50 border border-orange-200',
           info: 'text-blue-600 bg-blue-50 border border-blue-200'
         };
-        
+
         statusEl.className = `mt-4 text-sm p-3 rounded-lg ${styles[type] || styles.info}`;
 
         // Effacer le message après 8 secondes (plus long pour lire)
@@ -3106,12 +3057,12 @@
           specialSelect.addEventListener('change', (e) => {
             const selectedSurah = e.target.value;
             const contentContainer = $("#special-surah-content");
-            
+
             if (!contentContainer) {
               console.warn('[Lectures] Conteneur de contenu spécial non trouvé');
               return;
             }
-            
+
             if (selectedSurah) {
               // Afficher un état de chargement
               contentContainer.innerHTML = `
@@ -3166,23 +3117,23 @@
       // Gestion des onglets de lectures
       function setupLecturesTabs() {
         console.log('[Lectures] Configuration des onglets...');
-        
+
         // Handler d'événement unifié
         function handleLectureClick(e) {
           e.preventDefault();
           e.stopPropagation();
-          
+
           const btn = e.currentTarget;
           const lectureType = btn.dataset.lect;
-          
+
           console.log('[Lectures] Clic détecté sur:', lectureType);
-          
+
           // Mise à jour visuelle des boutons
           $$('[data-lect]').forEach(b => {
             b.setAttribute('aria-pressed', 'false');
             b.classList.remove('bg-gradient-to-r', 'from-emerald-500', 'to-green-500', 'text-white');
           });
-          
+
           btn.setAttribute('aria-pressed', 'true');
           btn.classList.add('bg-gradient-to-r', 'from-emerald-500', 'to-green-500', 'text-white');
 
@@ -3194,30 +3145,30 @@
             renderSpecialContent();
           }
         }
-        
+
         // Fonction pour attacher les événements de manière plus robuste
         function attachEvents() {
           const lectureButtons = $$('[data-lect]');
           console.log('[Lectures] Boutons trouvés:', lectureButtons.length);
-          
+
           if (lectureButtons.length === 0) {
             console.warn('[Lectures] Aucun bouton trouvé, nouvelle tentative...');
             setTimeout(attachEvents, 100);
             return;
           }
-          
+
           lectureButtons.forEach((btn, index) => {
             // Cloner et remplacer l'élément pour supprimer tous les anciens listeners
             const newBtn = btn.cloneNode(true);
             btn.parentNode.replaceChild(newBtn, btn);
-            
+
             // Ajouter le nouveau listener sur l'élément cloné
             newBtn.addEventListener('click', handleLectureClick);
-            
+
             console.log(`[Lectures] Event listener attaché au bouton ${index + 1}:`, newBtn.dataset.lect);
           });
         }
-        
+
         // Démarrer l'attachement
         attachEvents();
       }
@@ -3225,19 +3176,19 @@
       // Charger les lectures lors de l'ouverture de l'onglet
       async function initLectures() {
         console.log('[Lectures] Début de l\'initialisation...');
-        
+
         try {
           await loadSurahManifest();
           console.log('[Lectures] Manifeste chargé');
-          
+
           // Observer pour détecter quand les éléments sont prêts
           const observer = new MutationObserver(() => {
             const lectureButtons = $$('[data-lect]');
             if (lectureButtons.length > 0) {
               observer.disconnect();
-              
+
               setupLecturesTabs();
-              
+
               // État initial après un court délai
               setTimeout(() => {
                 const kahfBtn = $('[data-lect="kahf"]');
@@ -3250,15 +3201,15 @@
               }, 50);
             }
           });
-          
+
           observer.observe(document.body, { childList: true, subtree: true });
-          
+
           // Fallback timeout
           setTimeout(() => {
             observer.disconnect();
             setupLecturesTabs();
           }, 2000);
-          
+
           console.log('[Lectures] Initialisation terminée');
         } catch (error) {
           console.error('[Lectures] Erreur d\'initialisation:', error);
@@ -3366,7 +3317,7 @@
           // Charger les données du programme depuis le fichier JSON
           const response = await fetch('./data/programme.json');
           let programData;
-          
+
           if (response.ok) {
             programData = await response.json();
             console.log('[Programme] Données chargées depuis JSON');
@@ -3383,7 +3334,7 @@
           const dailyGrid = $("#program-daily-grid");
           if (dailyGrid && programData.daily) {
             dailyGrid.innerHTML = '<div class="text-center text-slate-500 col-span-full py-8">Chargement...</div>';
-            
+
             setTimeout(() => {
               dailyGrid.innerHTML = '';
               programData.daily.forEach(program => {
@@ -3409,7 +3360,7 @@
           const zikrGrid = $("#personal-zikr-grid");
           if (zikrGrid && programData.personalZikr) {
             zikrGrid.innerHTML = '<div class="text-center text-slate-500 col-span-full py-8">Chargement...</div>';
-            
+
             setTimeout(() => {
               zikrGrid.innerHTML = '';
               const currentDay = moment().day(); // 0=dimanche, 1=lundi, ..., 5=vendredi, 6=samedi
@@ -3470,10 +3421,10 @@
 
           programmeLoaded = true;
           console.log('[Programme] Contenu chargé avec succès');
-          
+
         } catch (error) {
           console.error('[Programme] Erreur de chargement:', error);
-          
+
           // Afficher un message d'erreur dans les conteneurs
           const errorMessage = `
             <div class="col-span-full text-center py-8">
@@ -3481,10 +3432,10 @@
               <div class="text-gray-600 text-sm">Impossible de charger le programme détaillé</div>
             </div>
           `;
-          
+
           const dailyGrid = $("#program-daily-grid");
           const zikrGrid = $("#personal-zikr-grid");
-          
+
           if (dailyGrid) dailyGrid.innerHTML = errorMessage;
           if (zikrGrid) zikrGrid.innerHTML = errorMessage;
         }
@@ -3794,7 +3745,7 @@
 
         try {
           const dateStr = moment(targetDate).format("YYYY-MM-DD");
-          
+
           // Charger les prières pour cette date
           const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
           let prayersStatus = [];
@@ -3808,7 +3759,7 @@
 
           // Afficher dans une modal ou section dédiée
           displayDateHistory(dateStr, prayersStatus, noteContent);
-          
+
         } catch (error) {
           console.error('[Journal History] Erreur:', error);
         }
@@ -3816,7 +3767,7 @@
 
       function displayDateHistory(dateStr, prayersStatus, noteContent) {
         const formattedDate = moment(dateStr).format("dddd D MMMM YYYY");
-        
+
         // Créer le contenu de l'historique
         let prayersHtml = prayersStatus.map(p => 
           `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
@@ -3867,7 +3818,7 @@
           for (let i = 0; i < 7; i++) {
             const date = today.clone().subtract(i, 'days');
             const dateStr = date.format("YYYY-MM-DD");
-            
+
             // Charger les données pour cette date
             const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
             let prayersCount = 0;
@@ -3923,7 +3874,7 @@
           // Compter les jours avec des notes (sur les 30 derniers jours)
           let notesCount = 0;
           let totalDhikr = await api.storageGet("tasbihCount", 0);
-          
+
           for (let i = 0; i < 30; i++) {
             const date = moment().subtract(i, 'days').format("YYYY-MM-DD");
             const note = await api.storageGet(`note:${date}`, "");
@@ -3963,7 +3914,7 @@
             const date = moment().subtract(i, 'days');
             const dateStr = date.format("YYYY-MM-DD");
             const note = await api.storageGet(`note:${dateStr}`, "");
-            
+
             if (note && note.toLowerCase().includes(query.toLowerCase())) {
               results.push({
                 date: dateStr,
@@ -4056,10 +4007,10 @@
               requireInteraction: true
             });
           }
-          
+
           // Retirer de la liste des rappels actifs
           activeReminders.delete(taskId);
-          
+
           // Feedback visuel
           showReminderFeedback(taskId, 'reminder');
         }, delayMinutes * 60 * 1000);
@@ -4074,9 +4025,9 @@
           clearTimeout(activeReminders.get(taskId));
           activeReminders.delete(taskId);
         }
-        
+
         showReminderFeedback(taskId, 'completed');
-        
+
         // Sauvegarder la completion
         const api = window.storageAPI;
         if (api) {
@@ -4091,7 +4042,7 @@
 
         let message = '';
         let className = '';
-        
+
         switch (action) {
           case 'set':
             message = `⏰ Rappel dans ${delayMinutes} minutes`;
@@ -4115,10 +4066,10 @@
           notification.style.position = 'relative';
           notification.appendChild(feedbackBadge);
         }
-        
+
         feedbackBadge.textContent = message;
         feedbackBadge.className = `feedback-badge absolute -top-2 -right-2 px-2 py-1 text-xs rounded-full border transition-all duration-300 ${className}`;
-        
+
         // Masquer après 5 secondes
         setTimeout(() => {
           if (feedbackBadge && feedbackBadge.parentNode) {
@@ -4134,7 +4085,7 @@
 
         const today = moment().format("YYYY-MM-DD");
         const tasks = ['istighfar', 'salat-prophet', 'hasbunallah', 'dua-defunts'];
-        
+
         for (const taskId of tasks) {
           const isCompleted = await api.storageGet(`completed:${today}:${taskId}`, false);
           if (isCompleted) {
