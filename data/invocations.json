@@ -1,0 +1,15 @@
+
+{
+  "opening": {
+    "title": "Invocation d'ouverture",
+    "arabic": "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+    "transliteration": "A'ūdhu billāhi mina sh-shayṭāni'r-rajīm",
+    "french": "Je cherche refuge auprès d'Allah contre Satan le lapidé"
+  },
+  "closing": {
+    "title": "Invocation de clôture", 
+    "arabic": "صَدَقَ اللَّهُ الْعَظِيمُ",
+    "transliteration": "Ṣadaqa Allāhu'l-'Aẓīm",
+    "french": "Allah le Très Grand a dit la vérité"
+  }
+}

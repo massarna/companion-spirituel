@@ -3005,6 +3005,27 @@
             </select>
           </div>
 
+          <div class="mb-6 flex gap-3">
+            <button 
+              id="continuous-reading-btn" 
+              class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+              Lecture continue de toutes les sourates
+            </button>
+            <button 
+              id="back-to-selection-btn" 
+              class="hidden inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-colors duration-300"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+              </svg>
+              Retour à la sélection
+            </button>
+          </div>
+
           <div id="special-surah-content">
             <div class="text-center py-12">
               <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -3057,6 +3078,102 @@
             }
           });
         }
+
+        // Event listener pour la lecture continue
+        const continuousBtn = $("#continuous-reading-btn");
+        const backBtn = $("#back-to-selection-btn");
+        
+        if (continuousBtn) {
+          continuousBtn.addEventListener('click', async () => {
+            await loadContinuousReading();
+          });
+        }
+
+        if (backBtn) {
+          backBtn.addEventListener('click', () => {
+            backBtn.classList.add('hidden');
+            specialSelect.style.display = 'block';
+            continuousBtn.style.display = 'inline-flex';
+            
+            const contentContainer = $("#special-surah-content");
+            contentContainer.innerHTML = `
+              <div class="text-center py-12">
+                <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <span class="text-white text-2xl">📖</span>
+                </div>
+                <p class="text-slate-500 text-lg">Choisissez une sourate ci-dessus</p>
+                <p class="text-slate-400 text-sm mt-2">اختر سورة من القائمة أعلاه</p>
+              </div>
+            `;
+          });
+        }
+      }
+
+      // Charger les invocations
+      let invocationsData = null;
+      async function loadInvocations() {
+        if (invocationsData) return invocationsData;
+        
+        try {
+          const response = await fetch('./data/invocations.json');
+          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+          invocationsData = await response.json();
+          return invocationsData;
+        } catch (error) {
+          console.error('[Invocations] Erreur chargement:', error);
+          return null;
+        }
+      }
+
+      // Rendre une sourate avec invocations
+      function renderSurahWithInvocations(container, surahData, title, invocations) {
+        if (!container || !surahData || !Array.isArray(surahData.ayahs)) return;
+
+        const showBasmala = (surahData.surah !== 9);
+        const htmlAyahs = surahData.ayahs
+          .map(a => `${a.ar}<span class="ayah-badge">${toArabicDigits(a.n || a.numberInSurah || a.number || 0)}</span>`)
+          .join(' ');
+
+        let invocationOpening = '';
+        let invocationClosing = '';
+
+        if (invocations) {
+          if (invocations.opening) {
+            invocationOpening = `
+              <div class="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
+                <h4 class="text-lg font-semibold text-blue-800 mb-4 text-center">${invocations.opening.title}</h4>
+                <div class="text-center">
+                  <p class="arabic-text text-2xl text-blue-800 mb-3" dir="rtl">${invocations.opening.arabic}</p>
+                  <p class="text-sm text-blue-600 italic mb-2">${invocations.opening.transliteration}</p>
+                  <p class="text-sm text-blue-700">${invocations.opening.french}</p>
+                </div>
+              </div>
+            `;
+          }
+
+          if (invocations.closing) {
+            invocationClosing = `
+              <div class="mt-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-200">
+                <h4 class="text-lg font-semibold text-green-800 mb-4 text-center">${invocations.closing.title}</h4>
+                <div class="text-center">
+                  <p class="arabic-text text-2xl text-green-800 mb-3" dir="rtl">${invocations.closing.arabic}</p>
+                  <p class="text-sm text-green-600 italic mb-2">${invocations.closing.transliteration}</p>
+                  <p class="text-sm text-green-700">${invocations.closing.french}</p>
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        container.innerHTML = `
+          <div id="surah-wrap">
+            ${invocationOpening}
+            <div id="surah-title">${title}</div>
+            ${showBasmala ? '<span class="bismillah">﷽</span>' : ''}
+            <p class="ayahs-block" dir="rtl" lang="ar">${htmlAyahs}</p>
+            ${invocationClosing}
+          </div>
+        `;
       }
 
       // Charger une sourate pour la section spéciale
@@ -3065,11 +3182,15 @@
           const surah = availableSurahs[surahKey];
           if (!surah) throw new Error('Sourate non trouvée');
 
-          const response = await fetch(`./data/lectures/${surah.file}?v=${Date.now()}`);
-          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+          const [surahResponse, invocations] = await Promise.all([
+            fetch(`./data/lectures/${surah.file}?v=${Date.now()}`),
+            loadInvocations()
+          ]);
 
-          const surahData = await response.json();
-          renderSurahMushaf(container, surahData, surah.title);
+          if (!surahResponse.ok) throw new Error(`Erreur ${surahResponse.status}`);
+
+          const surahData = await surahResponse.json();
+          renderSurahWithInvocations(container, surahData, surah.title, invocations);
         } catch (error) {
           console.error('[Lectures Special] Erreur chargement sourate:', error);
           container.innerHTML = `
@@ -4107,6 +4228,118 @@
           if (isCompleted) {
             showReminderFeedback(taskId, 'completed');
           }
+        }
+      }
+
+      // Fonction de lecture continue
+      async function loadContinuousReading() {
+        const contentContainer = $("#special-surah-content");
+        const continuousBtn = $("#continuous-reading-btn");
+        const backBtn = $("#back-to-selection-btn");
+        const specialSelect = $("#special-surah-select");
+
+        if (!contentContainer) return;
+
+        // Masquer le sélecteur et afficher le bouton retour
+        specialSelect.style.display = 'none';
+        continuousBtn.style.display = 'none';
+        backBtn.classList.remove('hidden');
+
+        // Afficher le chargement
+        contentContainer.innerHTML = `
+          <div class="text-center py-8">
+            <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-slate-600 rounded-full mb-4"></div>
+            <p class="text-slate-600">Chargement de toutes les sourates...</p>
+            <p class="text-slate-400 text-sm mt-2">جاري تحميل جميع السور...</p>
+          </div>
+        `;
+
+        try {
+          const invocations = await loadInvocations();
+          const surahOrder = ['fatiha', 'sajda', 'yasin', 'dukhan', 'waqiah', 'mulk', 'insan', 'buruj'];
+          const availableSurahsForContinuous = surahOrder.filter(key => availableSurahs[key]);
+
+          let continuousHtml = '';
+
+          // Invocation d'ouverture globale
+          if (invocations?.opening) {
+            continuousHtml += `
+              <div class="mb-12 p-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-3xl border-2 border-blue-200 shadow-lg">
+                <h3 class="text-2xl font-bold text-blue-800 mb-6 text-center">${invocations.opening.title}</h3>
+                <div class="text-center">
+                  <p class="arabic-text text-3xl text-blue-800 mb-4" dir="rtl">${invocations.opening.arabic}</p>
+                  <p class="text-lg text-blue-600 italic mb-3">${invocations.opening.transliteration}</p>
+                  <p class="text-blue-700 font-medium">${invocations.opening.french}</p>
+                </div>
+              </div>
+            `;
+          }
+
+          // Charger et afficher toutes les sourates
+          for (const [index, surahKey] of availableSurahsForContinuous.entries()) {
+            const surah = availableSurahs[surahKey];
+            if (!surah) continue;
+
+            try {
+              const response = await fetch(`./data/lectures/${surah.file}?v=${Date.now()}`);
+              if (!response.ok) continue;
+
+              const surahData = await response.json();
+              const showBasmala = (surahData.surah !== 9);
+              const htmlAyahs = surahData.ayahs
+                .map(a => `${a.ar}<span class="ayah-badge">${toArabicDigits(a.n || a.numberInSurah || a.number || 0)}</span>`)
+                .join(' ');
+
+              continuousHtml += `
+                <div class="mb-16 ${index > 0 ? 'border-t-4 border-islamic-green pt-12' : ''}">
+                  <div id="surah-title" class="mb-8">${surah.title}</div>
+                  ${showBasmala ? '<span class="bismillah">﷽</span>' : ''}
+                  <p class="ayahs-block" dir="rtl" lang="ar">${htmlAyahs}</p>
+                </div>
+              `;
+
+            } catch (error) {
+              console.error(`Erreur chargement ${surahKey}:`, error);
+            }
+          }
+
+          // Invocation de clôture globale
+          if (invocations?.closing) {
+            continuousHtml += `
+              <div class="mt-12 p-8 bg-gradient-to-r from-green-50 to-emerald-50 rounded-3xl border-2 border-green-200 shadow-lg">
+                <h3 class="text-2xl font-bold text-green-800 mb-6 text-center">${invocations.closing.title}</h3>
+                <div class="text-center">
+                  <p class="arabic-text text-3xl text-green-800 mb-4" dir="rtl">${invocations.closing.arabic}</p>
+                  <p class="text-lg text-green-600 italic mb-3">${invocations.closing.transliteration}</p>
+                  <p class="text-green-700 font-medium">${invocations.closing.french}</p>
+                </div>
+              </div>
+            `;
+          }
+
+          contentContainer.innerHTML = `
+            <div id="continuous-reading-wrap">
+              <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold title mb-2">Lecture Spirituelle Continue</h2>
+                <p class="text-slate-600">القراءة الروحية المتواصلة</p>
+              </div>
+              ${continuousHtml}
+            </div>
+          `;
+
+          console.log('[Lectures] Lecture continue chargée avec succès');
+
+        } catch (error) {
+          console.error('[Lectures Continuous] Erreur:', error);
+          contentContainer.innerHTML = `
+            <div class="text-red-600 p-6 rounded-xl bg-red-50 text-center border border-red-200">
+              <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-red-600 text-xl">⚠️</span>
+              </div>
+              <p class="font-semibold text-red-800 mb-2">Erreur de chargement</p>
+              <p class="text-red-600">Impossible de charger la lecture continue</p>
+            </div>
+          `;
         }
       }
 
