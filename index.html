@@ -1903,18 +1903,29 @@
         const { p, t } = nextPrayer();
         $("#next-prayer-name").textContent = p.name;
 
-        const diff = moment.duration(t.diff(moment()));
-        const hh = String(Math.floor(diff.asHours())).padStart(2, "0");
-        const mm = String(diff.minutes()).padStart(2, "0");
-        const ss = String(diff.seconds()).padStart(2, "0");
+        const now = moment();
+        const diff = moment.duration(t.diff(now));
+        
+        // Calculer le temps restant en heures, minutes et secondes
+        const totalSeconds = Math.floor(diff.asSeconds());
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        
+        const hh = String(hours).padStart(2, "0");
+        const mm = String(minutes).padStart(2, "0");
+        const ss = String(seconds).padStart(2, "0");
+        
         $("#next-prayer-eta").textContent = `${hh}:${mm}:${ss}`;
 
         // surbrillance
         PRAYERS.forEach((x) => {
           const el = $("#p-" + x.name);
-          el.classList.toggle("ring", x.name === p.name);
-          el.classList.toggle("ring-emerald-500", x.name === p.name);
-          el.classList.toggle("ring-offset-2", x.name === p.name);
+          if (el) {
+            el.classList.toggle("ring", x.name === p.name);
+            el.classList.toggle("ring-emerald-500", x.name === p.name);
+            el.classList.toggle("ring-offset-2", x.name === p.name);
+          }
         });
       }
 
