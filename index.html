@@ -2920,67 +2920,103 @@
 
       // Gestion des onglets de lectures
       function setupLecturesTabs() {
-        // Attendre que les éléments soient dans le DOM
-        setTimeout(() => {
+        console.log('[Lectures] Configuration des onglets...');
+        
+        // Fonction pour attacher les événements
+        function attachEvents() {
           const lectureButtons = $$('[data-lect]');
           console.log('[Lectures] Boutons trouvés:', lectureButtons.length);
           
-          // Supprimer les anciens event listeners s'ils existent
-          lectureButtons.forEach(btn => {
-            const clone = btn.cloneNode(true);
-            btn.parentNode.replaceChild(clone, btn);
+          if (lectureButtons.length === 0) {
+            console.warn('[Lectures] Aucun bouton trouvé, nouvelle tentative...');
+            setTimeout(attachEvents, 100);
+            return;
+          }
+          
+          lectureButtons.forEach((btn, index) => {
+            // Supprimer les anciens listeners
+            btn.removeEventListener('click', handleLectureClick);
+            
+            // Ajouter le nouveau listener
+            btn.addEventListener('click', handleLectureClick);
+            
+            console.log(`[Lectures] Event listener attaché au bouton ${index + 1}:`, btn.dataset.lect);
+          });
+        }
+        
+        // Handler d'événement unifié
+        function handleLectureClick(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const btn = e.currentTarget;
+          const lectureType = btn.dataset.lect;
+          
+          console.log('[Lectures] Clic détecté sur:', lectureType);
+          
+          // Mise à jour visuelle des boutons
+          $$('[data-lect]').forEach(b => {
+            b.setAttribute('aria-pressed', 'false');
+            b.classList.remove('bg-gradient-to-r', 'from-emerald-500', 'to-green-500', 'text-white');
           });
           
-          // Récupérer les nouveaux éléments après clonage
-          const newLectureButtons = $$('[data-lect]');
-          
-          newLectureButtons.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              e.preventDefault();
-              console.log('[Lectures] Clic sur:', btn.dataset.lect);
-              
-              // Mise à jour visuelle des boutons
-              newLectureButtons.forEach(b => {
-                b.setAttribute('aria-pressed', 'false');
-              });
-              btn.setAttribute('aria-pressed', 'true');
+          btn.setAttribute('aria-pressed', 'true');
+          btn.classList.add('bg-gradient-to-r', 'from-emerald-500', 'to-green-500', 'text-white');
 
-              const lectureType = btn.dataset.lect;
-
-              if (lectureType === 'kahf') {
-                // Charger directement la sourate Al-Kahf
-                console.log('[Lectures] Chargement Al-Kahf');
-                loadSurah('kahf');
-              } else if (lectureType === 'special') {
-                // Charger le contenu spécial quotidien avec les autres sourates
-                console.log('[Lectures] Chargement contenu spécial');
-                renderSpecialContent();
-              }
-            });
-          });
-        }, 50);
+          if (lectureType === 'kahf') {
+            console.log('[Lectures] Chargement Al-Kahf');
+            loadSurah('kahf');
+          } else if (lectureType === 'special') {
+            console.log('[Lectures] Chargement contenu spécial');
+            renderSpecialContent();
+          }
+        }
+        
+        // Démarrer l'attachement
+        attachEvents();
       }
 
       // Charger les lectures lors de l'ouverture de l'onglet
       async function initLectures() {
-        await loadSurahManifest();
+        console.log('[Lectures] Début de l\'initialisation...');
         
-        // Attendre que les éléments soient dans le DOM
-        setTimeout(() => {
-          setupLecturesTabs();
-
-          // État initial : onglet Al-Kahf sélectionné par défaut après setup
-          setTimeout(() => {
-            const kahfBtn = $('[data-lect="kahf"]');
-            if (kahfBtn) {
-              kahfBtn.setAttribute('aria-pressed', 'true');
-              loadSurah('kahf');
-              console.log('[Lectures] État initial Al-Kahf configuré');
+        try {
+          await loadSurahManifest();
+          console.log('[Lectures] Manifeste chargé');
+          
+          // Observer pour détecter quand les éléments sont prêts
+          const observer = new MutationObserver(() => {
+            const lectureButtons = $$('[data-lect]');
+            if (lectureButtons.length > 0) {
+              observer.disconnect();
+              
+              setupLecturesTabs();
+              
+              // État initial après un court délai
+              setTimeout(() => {
+                const kahfBtn = $('[data-lect="kahf"]');
+                if (kahfBtn) {
+                  kahfBtn.setAttribute('aria-pressed', 'true');
+                  kahfBtn.classList.add('bg-gradient-to-r', 'from-emerald-500', 'to-green-500', 'text-white');
+                  loadSurah('kahf');
+                  console.log('[Lectures] État initial Al-Kahf configuré');
+                }
+              }, 50);
             }
-          }, 100);
+          });
+          
+          observer.observe(document.body, { childList: true, subtree: true });
+          
+          // Fallback timeout
+          setTimeout(() => {
+            observer.disconnect();
+            setupLecturesTabs();
+          }, 2000);
           
           console.log('[Lectures] Initialisation terminée');
-        }, 100);
+        } catch (error) {
+          console.error('[Lectures] Erreur d\'initialisation:', error);
+        }
       }
 
       // Helpers pour les zikrs (simplifiés, maintenant intégrés dans le nouveau système Focus)
