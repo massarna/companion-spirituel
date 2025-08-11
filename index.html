@@ -2640,18 +2640,31 @@
           const response = await fetch('./data/lectures/manifest.json');
           if (!response.ok) throw new Error(`Erreur ${response.status}`);
 
-          availableSurahs = await response.json();
+          const manifestData = await response.json();
+          if (!manifestData || typeof manifestData !== 'object') {
+            throw new Error('Manifeste invalide');
+          }
+
+          availableSurahs = manifestData;
           populateSurahSelector();
           console.log('[Lectures] Manifeste chargé:', Object.keys(availableSurahs).length, 'sourates');
         } catch (error) {
           console.error('[Lectures] Erreur manifeste:', error);
-          $("#surah-select").innerHTML = '<option value="">خطأ في تحميل القائمة</option>';
+          const selectEl = $("#surah-select");
+          if (selectEl) {
+            selectEl.innerHTML = '<option value="">خطأ في تحميل القائمة</option>';
+          }
         }
       }
 
       // Remplir le sélecteur de sourates
       function populateSurahSelector() {
         const select = $("#surah-select");
+        if (!select) {
+          console.warn('[Lectures] Sélecteur de sourates non trouvé');
+          return;
+        }
+
         let html = '<option value="">— Sélectionnez une sourate —</option>';
 
         // Mapping des noms français pour les sourates
@@ -2666,10 +2679,14 @@
           'buruj': 'Al-Buruj (Les Constellations)'
         };
 
-        Object.entries(availableSurahs).forEach(([key, surah]) => {
-          const frenchName = frenchNames[key] || key;
-          html += `<option value="${key}">${frenchName} - ${surah.title}</option>`;
-        });
+        if (availableSurahs && typeof availableSurahs === 'object') {
+          Object.entries(availableSurahs).forEach(([key, surah]) => {
+            if (surah && surah.title) {
+              const frenchName = frenchNames[key] || key;
+              html += `<option value="${key}">${frenchName} - ${surah.title}</option>`;
+            }
+          });
+        }
 
         select.innerHTML = html;
       }
@@ -2758,22 +2775,28 @@
       // Rendre le contenu spécial quotidien avec sélecteur de sourates
       function renderSpecialContent() {
         const contentEl = $("#lect-content");
+        if (!contentEl) {
+          console.warn('[Lectures] Conteneur de lectures non trouvé');
+          return;
+        }
 
         // Créer la liste des sourates disponibles (toutes sauf Al-Kahf)
-        const availableSurahsForSpecial = Object.entries(availableSurahs)
-          .filter(([key]) => key !== 'kahf')
-          .map(([key, surah]) => {
-            const frenchNames = {
-              'fatiha': 'Al-Fatiha (L\'Ouverture)',
-              'yasin': 'Ya-Sin',
-              'dukhan': 'Ad-Dukhan (La Fumée)',
-              'waqiah': 'Al-Waqiah (L\'Événement)',
-              'mulk': 'Al-Mulk (La Royauté)',
-              'insan': 'Al-Insan (L\'Homme)',
-              'buruj': 'Al-Buruj (Les Constellations)'
-            };
-            return { key, surah, frenchName: frenchNames[key] || key };
-          });
+        const availableSurahsForSpecial = availableSurahs && typeof availableSurahs === 'object'
+          ? Object.entries(availableSurahs)
+              .filter(([key]) => key !== 'kahf')
+              .map(([key, surah]) => {
+                const frenchNames = {
+                  'fatiha': 'Al-Fatiha (L\'Ouverture)',
+                  'yasin': 'Ya-Sin',
+                  'dukhan': 'Ad-Dukhan (La Fumée)',
+                  'waqiah': 'Al-Waqiah (L\'Événement)',
+                  'mulk': 'Al-Mulk (La Royauté)',
+                  'insan': 'Al-Insan (L\'Homme)',
+                  'buruj': 'Al-Buruj (Les Constellations)'
+                };
+                return { key, surah, frenchName: frenchNames[key] || key };
+              })
+          : [];
 
         let html = `
           <div class="mb-6">
@@ -2817,33 +2840,41 @@
         contentEl.innerHTML = html;
 
         // Ajouter l'event listener pour la sélection
-        $("#special-surah-select").addEventListener('change', (e) => {
-          const selectedSurah = e.target.value;
-          const contentContainer = $("#special-surah-content");
-          
-          if (selectedSurah) {
-            // Afficher un état de chargement
-            contentContainer.innerHTML = `
-              <div class="text-center py-8">
-                <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-slate-600 rounded-full mb-4"></div>
-                <p class="text-slate-600">Chargement en cours...</p>
-              </div>
-            `;
-
-            // Charger la sourate sélectionnée
-            loadSurahForSpecial(selectedSurah, contentContainer);
-          } else {
-            contentContainer.innerHTML = `
-              <div class="text-center py-12">
-                <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <span class="text-white text-2xl">📖</span>
+        const specialSelect = $("#special-surah-select");
+        if (specialSelect) {
+          specialSelect.addEventListener('change', (e) => {
+            const selectedSurah = e.target.value;
+            const contentContainer = $("#special-surah-content");
+            
+            if (!contentContainer) {
+              console.warn('[Lectures] Conteneur de contenu spécial non trouvé');
+              return;
+            }
+            
+            if (selectedSurah) {
+              // Afficher un état de chargement
+              contentContainer.innerHTML = `
+                <div class="text-center py-8">
+                  <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-slate-600 rounded-full mb-4"></div>
+                  <p class="text-slate-600">Chargement en cours...</p>
                 </div>
-                <p class="text-slate-500 text-lg">Choisissez une sourate ci-dessus</p>
-                <p class="text-slate-400 text-sm mt-2">اختر سورة من القائمة أعلاه</p>
-              </div>
-            `;
-          }
-        });
+              `;
+
+              // Charger la sourate sélectionnée
+              loadSurahForSpecial(selectedSurah, contentContainer);
+            } else {
+              contentContainer.innerHTML = `
+                <div class="text-center py-12">
+                  <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-white text-2xl">📖</span>
+                  </div>
+                  <p class="text-slate-500 text-lg">Choisissez une sourate ci-dessus</p>
+                  <p class="text-slate-400 text-sm mt-2">اختر سورة من القائمة أعلاه</p>
+                </div>
+              `;
+            }
+          });
+        }
       }
 
       // Charger une sourate pour la section spéciale
