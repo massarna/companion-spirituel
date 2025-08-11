@@ -335,9 +335,9 @@
       }
 
       /* Conteneur de lecture modernisé */
-      #surah-wrap { 
-        max-width: 65rem; 
-        margin-inline: auto; 
+      #surah-wrap {
+        max-width: 65rem;
+        margin-inline: auto;
         background: var(--card);
         border-radius: 24px;
         padding: 3rem;
@@ -346,10 +346,10 @@
       }
 
       /* Titre et basmala modernisés */
-      #surah-title { 
-        text-align: center; 
-        margin: 1rem 0 2rem; 
-        font-weight: 700; 
+      #surah-title {
+        text-align: center;
+        margin: 1rem 0 2rem;
+        font-weight: 700;
         font-size: 2.5rem;
         background: var(--gradient-islamic);
         -webkit-background-clip: text;
@@ -358,10 +358,10 @@
         font-family: "Amiri", serif;
       }
 
-      .bismillah { 
-        display: block; 
-        text-align: center; 
-        margin: 1rem 0 2rem; 
+      .bismillah {
+        display: block;
+        text-align: center;
+        margin: 1rem 0 2rem;
         font-size: 2rem;
         color: var(--islamic-green);
         text-shadow: 0 2px 8px rgba(0, 168, 107, 0.2);
@@ -370,35 +370,38 @@
       /* Bloc de texte mushaf modernisé */
       .ayahs-block {
         font-family: "Amiri Quran", "Amiri", serif;
-        direction: rtl; 
-        text-align: justify; 
+        direction: rtl;
+        text-align: justify;
         text-justify: inter-word;
-        font-size: 1.5rem; 
-        line-height: 3rem; 
-        color: var(--ink); 
+        font-size: 1.8rem;
+        line-height: 3.6rem;
+        color: var(--ink);
         word-break: break-word;
         background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(248,250,252,0.8) 100%);
-        padding: 2.5rem;
+        padding: 2rem 1rem;
         border-radius: 16px;
         border: 1px solid var(--border-soft);
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        word-spacing: 0.12em;
+        letter-spacing: 0.02em;
+        hyphens: none;
       }
 
       /* Pastille du numéro de verset modernisée */
       .ayah-badge {
-        display: inline-block; 
-        min-width: 2em; 
-        height: 2em; 
+        display: inline-block;
+        min-width: 2em;
+        height: 2em;
         line-height: 2em;
-        margin: 0 0.5rem; 
-        border-radius: 50%; 
+        margin: 0 0.5rem;
+        border-radius: 50%;
         text-align: center;
-        font-size: 0.9rem; 
-        font-weight: 700; 
+        font-size: 0.9rem;
+        font-weight: 700;
         color: white;
         background: var(--gradient-warm);
         box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
-        vertical-align: middle; 
+        vertical-align: middle;
         direction: ltr;
         border: 2px solid rgba(255, 255, 255, 0.8);
       }
@@ -2256,7 +2259,7 @@
         const api = window.storageAPI;
         if (!api) return;
 
-        const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+        const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
         for (const prayer of prayers) {
           const checkbox = $(`#mayyit-${prayer}`);
           if (checkbox) {
