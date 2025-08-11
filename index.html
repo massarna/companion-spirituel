@@ -2904,10 +2904,15 @@
 
       // Gestion des onglets de lectures
       function setupLecturesTabs() {
-        $$('[data-lect]').forEach(btn => {
+        const lectureButtons = $$('[data-lect]');
+        console.log('[Lectures] Boutons trouvés:', lectureButtons.length);
+        
+        lectureButtons.forEach(btn => {
           btn.addEventListener('click', () => {
+            console.log('[Lectures] Clic sur:', btn.dataset.lect);
+            
             // Mise à jour visuelle des boutons
-            $$('[data-lect]').forEach(b => {
+            lectureButtons.forEach(b => {
               b.setAttribute('aria-pressed', 'false');
               b.classList.remove('tab-btn');
               b.classList.add('tab-btn');
@@ -2938,7 +2943,7 @@
           kahfBtn.setAttribute('aria-pressed', 'true');
           loadSurah('kahf');
         }
-        console.log('[Lectures] loader ready');
+        console.log('[Lectures] Initialisation terminée');
       }
 
       // Helpers pour les zikrs (simplifiés, maintenant intégrés dans le nouveau système Focus)
@@ -3313,6 +3318,9 @@
       $$('[data-tab="retraite"]')[0].addEventListener("click", renderRetraite);
       $$('[data-tab="journal"]')[0].addEventListener("click", initJournal); // Assure l'initialisation si l'onglet Journal est ouvert
       $$('[data-tab="mois"]')[0].addEventListener("click", renderMois);
+
+      // Initialiser les lectures immédiatement pour que les onglets fonctionnent
+      initLectures();
 
       // Icônes lucide
       window.lucide?.createIcons();
