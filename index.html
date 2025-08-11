@@ -1945,8 +1945,8 @@
         });
       }
 
+      // updateCountdown est maintenant appelé dans tick()
       updateCountdown();
-      setInterval(updateCountdown, 1000);
 
       // Journal - fonctions utilitaires et d'initialisation
       let journalInitialized = false;
@@ -2909,9 +2909,8 @@
         $("#date-greg").textContent = now.format("dddd D MMMM YYYY");
         // Ne pas écraser la date hijri ici, elle est gérée par tickClock()
 
-        const next = nextPrayer();
-        $("#next-prayer-name").textContent = next.p.name;
-        $("#next-prayer-eta").textContent = next.t.format("HH:mm:ss"); // Affiche l'heure exacte de la prochaine prière
+        // Utiliser la fonction updateCountdown existante qui calcule le temps restant dynamiquement
+        updateCountdown();
       }
       setInterval(tick, 1000);
       tick();
