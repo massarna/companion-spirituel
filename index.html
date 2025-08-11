@@ -2922,28 +2922,6 @@
       function setupLecturesTabs() {
         console.log('[Lectures] Configuration des onglets...');
         
-        // Fonction pour attacher les événements
-        function attachEvents() {
-          const lectureButtons = $$('[data-lect]');
-          console.log('[Lectures] Boutons trouvés:', lectureButtons.length);
-          
-          if (lectureButtons.length === 0) {
-            console.warn('[Lectures] Aucun bouton trouvé, nouvelle tentative...');
-            setTimeout(attachEvents, 100);
-            return;
-          }
-          
-          lectureButtons.forEach((btn, index) => {
-            // Supprimer les anciens listeners
-            btn.removeEventListener('click', handleLectureClick);
-            
-            // Ajouter le nouveau listener
-            btn.addEventListener('click', handleLectureClick);
-            
-            console.log(`[Lectures] Event listener attaché au bouton ${index + 1}:`, btn.dataset.lect);
-          });
-        }
-        
         // Handler d'événement unifié
         function handleLectureClick(e) {
           e.preventDefault();
@@ -2970,6 +2948,29 @@
             console.log('[Lectures] Chargement contenu spécial');
             renderSpecialContent();
           }
+        }
+        
+        // Fonction pour attacher les événements de manière plus robuste
+        function attachEvents() {
+          const lectureButtons = $$('[data-lect]');
+          console.log('[Lectures] Boutons trouvés:', lectureButtons.length);
+          
+          if (lectureButtons.length === 0) {
+            console.warn('[Lectures] Aucun bouton trouvé, nouvelle tentative...');
+            setTimeout(attachEvents, 100);
+            return;
+          }
+          
+          lectureButtons.forEach((btn, index) => {
+            // Cloner et remplacer l'élément pour supprimer tous les anciens listeners
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            
+            // Ajouter le nouveau listener sur l'élément cloné
+            newBtn.addEventListener('click', handleLectureClick);
+            
+            console.log(`[Lectures] Event listener attaché au bouton ${index + 1}:`, newBtn.dataset.lect);
+          });
         }
         
         // Démarrer l'attachement
