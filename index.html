@@ -42,7 +42,7 @@
         --gradient-warm: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         --border-soft: rgba(139, 115, 85, 0.2);
       }
-      
+
       html,
       body {
         height: 100%;
@@ -61,7 +61,7 @@
           sans-serif;
         color: var(--ink);
       }
-      
+
       .title {
         font-family: "Amiri", serif;
         background: var(--gradient-islamic);
@@ -69,7 +69,7 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
       }
-      
+
       .clock {
         font-family: "Orbitron", monospace;
         letter-spacing: 0.06em;
@@ -78,7 +78,7 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
       }
-      
+
       .card {
         background: var(--card);
         backdrop-filter: blur(20px);
@@ -90,7 +90,7 @@
         position: relative;
         overflow: hidden;
       }
-      
+
       .card::before {
         content: '';
         position: absolute;
@@ -101,13 +101,13 @@
         background: var(--gradient-islamic);
         border-radius: 24px 24px 0 0;
       }
-      
+
       .card:hover {
         background: var(--card-hover);
         box-shadow: var(--shadow-hover);
         transform: translateY(-2px);
       }
-      
+
       .tab-btn {
         position: relative;
         padding: 0.75rem 1.5rem;
@@ -117,20 +117,20 @@
         color: var(--muted);
         border: 1px solid transparent;
       }
-      
+
       .tab-btn[aria-selected="true"] {
         background: var(--gradient-islamic);
         color: white;
         box-shadow: 0 8px 25px rgba(0, 168, 107, 0.3);
         border-color: rgba(255, 255, 255, 0.2);
       }
-      
+
       .tab-btn:hover:not([aria-selected="true"]) {
         background: rgba(0, 168, 107, 0.1);
         color: var(--islamic-green);
         border-color: rgba(0, 168, 107, 0.2);
       }
-      
+
       .badge {
         background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
         color: #92400e;
@@ -141,7 +141,7 @@
         box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
         border: 1px solid rgba(251, 191, 36, 0.2);
       }
-      
+
       .qibla-rose {
         width: 280px;
         height: 280px;
@@ -152,7 +152,7 @@
         margin: auto;
         box-shadow: 0 20px 60px rgba(0, 168, 107, 0.2);
       }
-      
+
       .qibla-rose::after {
         content: "الشمال";
         position: absolute;
@@ -164,7 +164,7 @@
         font-family: "Amiri", serif;
         font-size: 1.1rem;
       }
-      
+
       .qibla-arrow {
         position: absolute;
         width: 0;
@@ -178,7 +178,7 @@
         transform: translate(-50%, -80%) rotate(0deg);
         filter: drop-shadow(0 10px 20px rgba(0, 168, 107, 0.4));
       }
-      
+
       .sr-only {
         position: absolute;
         width: 1px;
@@ -190,18 +190,18 @@
         white-space: nowrap;
         border: 0;
       }
-      
+
       /* Animations spirituelles */
       @keyframes breathe {
         0%, 100% { transform: scale(1) translateY(0px); opacity: 0.9; }
         50% { transform: scale(1.02) translateY(-3px); opacity: 1; }
       }
-      
+
       @keyframes shimmer {
         0% { background-position: -200% center; }
         100% { background-position: 200% center; }
       }
-      
+
       .special-notification {
         background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
         backdrop-filter: blur(20px);
@@ -214,7 +214,7 @@
         position: relative;
         overflow: hidden;
       }
-      
+
       .special-notification::before {
         content: '';
         position: absolute;
@@ -299,7 +299,7 @@
         position: relative;
         overflow: hidden;
       }
-      
+
       .prayer-card::before {
         content: '';
         position: absolute;
@@ -312,7 +312,7 @@
         opacity: 0;
         transition: opacity 0.3s ease;
       }
-      
+
       .prayer-card.ring {
         background: linear-gradient(135deg, rgba(0, 168, 107, 0.15) 0%, rgba(0, 168, 107, 0.05) 100%);
         border-color: var(--islamic-green);
@@ -320,7 +320,7 @@
         transform: translateY(-3px) scale(1.02);
         animation: breathe 3s infinite ease-in-out;
       }
-      
+
       .prayer-card.ring::before {
         opacity: 1;
       }
@@ -357,7 +357,7 @@
         background-clip: text;
         font-family: "Amiri", serif;
       }
-      
+
       .bismillah { 
         display: block; 
         text-align: center; 
@@ -416,7 +416,7 @@
         position: relative;
         overflow: hidden;
       }
-      
+
       .journal-section::before {
         content: '';
         position: absolute;
@@ -427,7 +427,7 @@
         background: var(--gradient-islamic);
         border-radius: 24px 24px 0 0;
       }
-      
+
       .journal-section:hover {
         box-shadow: var(--shadow-hover);
         transform: translateY(-2px);
@@ -445,7 +445,7 @@
         margin-bottom: 2rem;
         position: relative;
       }
-      
+
       .journal-title::after {
         content: '';
         position: absolute;
@@ -469,20 +469,20 @@
         transition: all 0.3s ease;
         margin-bottom: 0.75rem;
       }
-      
+
       .checkbox-container:hover {
         background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(0,168,107,0.02) 100%);
         border-color: var(--islamic-green);
         box-shadow: 0 8px 25px rgba(0, 168, 107, 0.1);
       }
-      
+
       .checkbox-container input[type="checkbox"] {
         width: 1.25rem;
         height: 1.25rem;
         accent-color: var(--islamic-green);
         border-radius: 4px;
       }
-      
+
       .checkbox-container label {
         font-weight: 500;
         color: var(--ink);
@@ -499,7 +499,7 @@
         position: relative;
         overflow: hidden;
       }
-      
+
       .tasbih-section::before {
         content: '﷽';
         position: absolute;
@@ -538,7 +538,7 @@
         position: relative;
         overflow: hidden;
       }
-      
+
       .tasbih-button::before {
         content: '';
         position: absolute;
@@ -550,16 +550,16 @@
         transform: scale(0);
         transition: transform 0.6s ease;
       }
-      
+
       .tasbih-button:active::before {
         transform: scale(1);
       }
-      
+
       .tasbih-button:hover {
         transform: scale(1.05);
         box-shadow: 0 30px 80px rgba(0, 168, 107, 0.4);
       }
-      
+
       .tasbih-button:active {
         transform: scale(0.95);
       }
@@ -578,14 +578,14 @@
         resize: vertical;
         transition: all 0.3s ease;
       }
-      
+
       .notes-textarea:focus {
         outline: none;
         border-color: var(--islamic-green);
         box-shadow: 0 0 0 4px rgba(0, 168, 107, 0.1);
         background: rgba(255, 255, 255, 0.98);
       }
-      
+
       .notes-textarea::placeholder {
         color: var(--muted);
         font-style: italic;
@@ -595,21 +595,21 @@
         .card {
           padding: 1.5rem;
         }
-        
+
         .journal-section {
           padding: 2rem;
         }
-        
+
         .tasbih-counter {
           font-size: 4rem;
         }
-        
+
         .tasbih-button {
           width: 10rem;
           height: 10rem;
           font-size: 1.25rem;
         }
-        
+
         .ayahs-block {
           font-size: 1.25rem;
           line-height: 2.3rem;
@@ -767,7 +767,7 @@
             <!-- Ornements décoratifs -->
             <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-400/20 to-transparent rounded-full blur-2xl"></div>
             <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-400/20 to-transparent rounded-full blur-xl"></div>
-            
+
             <div class="relative p-6">
               <!-- En-tête avec icône -->
               <div class="flex items-center gap-3 mb-6">
@@ -814,7 +814,7 @@
                   </div>
                   <div class="text-lg font-mono font-bold text-slate-800" id="t-Fajr">—</div>
                 </div>
-                
+
                 <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Shuruq">
                   <div class="flex items-center gap-2 mb-1">
                     <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
@@ -822,7 +822,7 @@
                   </div>
                   <div class="text-lg font-mono font-bold text-slate-800" id="t-Shuruq">—</div>
                 </div>
-                
+
                 <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Dhuhr">
                   <div class="flex items-center gap-2 mb-1">
                     <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
@@ -830,7 +830,7 @@
                   </div>
                   <div class="text-lg font-mono font-bold text-slate-800" id="t-Dhuhr">—</div>
                 </div>
-                
+
                 <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Asr">
                   <div class="flex items-center gap-2 mb-1">
                     <div class="w-2 h-2 bg-green-400 rounded-full"></div>
@@ -838,7 +838,7 @@
                   </div>
                   <div class="text-lg font-mono font-bold text-slate-800" id="t-Asr">—</div>
                 </div>
-                
+
                 <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Maghrib">
                   <div class="flex items-center gap-2 mb-1">
                     <div class="w-2 h-2 bg-red-400 rounded-full"></div>
@@ -846,7 +846,7 @@
                   </div>
                   <div class="text-lg font-mono font-bold text-slate-800" id="t-Maghrib">—</div>
                 </div>
-                
+
                 <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Isha">
                   <div class="flex items-center gap-2 mb-1">
                     <div class="w-2 h-2 bg-purple-400 rounded-full"></div>
@@ -861,7 +861,7 @@
           <!-- Tableau de Bord Spirituel -->
           <div class="card">
             <h2 class="title text-2xl mb-4">Tableau de Bord Spirituel</h2>
-            
+
             <!-- Statistiques aujourd'hui -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div class="text-center p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl">
@@ -869,19 +869,19 @@
                 <div class="text-sm text-emerald-600">Prières</div>
                 <div class="text-xs text-emerald-500">aujourd'hui</div>
               </div>
-              
+
               <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
                 <div class="text-2xl font-bold text-blue-700" id="dhikr-count">0</div>
                 <div class="text-sm text-blue-600">Dhikr</div>
                 <div class="text-xs text-blue-500">comptés</div>
               </div>
-              
+
               <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
                 <div class="text-2xl font-bold text-purple-700" id="streak-days">0</div>
                 <div class="text-sm text-purple-600">Jours</div>
                 <div class="text-xs text-purple-500">consécutifs</div>
               </div>
-              
+
               <div class="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl">
                 <div class="text-2xl font-bold text-orange-700" id="weekly-progress">0%</div>
                 <div class="text-sm text-orange-600">Semaine</div>
@@ -892,7 +892,7 @@
             <!-- Progression des objectifs -->
             <div class="space-y-3">
               <h3 class="font-semibold text-slate-700 mb-2">Progression du Jour</h3>
-              
+
               <!-- Prières obligatoires -->
               <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                 <div class="flex items-center gap-3">
@@ -982,7 +982,7 @@
           </div>
         </div>
 
-        
+
       </section>
 
       <!-- Programme -->
@@ -1041,11 +1041,11 @@
               <div class="space-y-4">
                 <p class="text-gray-700"><strong>Pour Bénéficier indubitablement de l'Amour du Prophète (PSL) source de Salvation et de Sainteté.</strong></p>
                 <p class="text-gray-600">Récitez 12 fois la Salâtoul Fâthîh - suivie du zikr de cette litanie (12 fois).</p>
-                
+
                 <div class="bg-green-50 p-4 rounded-xl border-l-4 border-green-500">
                   <p class="arabic-text text-lg text-green-800 leading-relaxed">اللَّهُمَّ إِنِّي أَسْأَلُكَ وَأَتَوَجَّهُ إِلَيْكَ. بِحَبِيبِكَ وَرَسُولِكَ وَرَفِيعِ الْقَدْرِ عِنْدَكَ. سَيِّدِنَا مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ. ارْزُقْنِي مَحَبَّةً خَاصَّةً، خَالِصَةً فِيكَ. وَفِي حَبِيبِكَ سَيِّدِنَا مُحَمَّدٍ (صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ). وَاجْعَلْنِي فِي الدُّنْيَا وَالْآخِرَةِ. مِنْ أَهْلِ الْوِلَايَةِ الْخَاصَّةِ. كَامِلَةِ الْعِرْفَةِ الَّتِي لَا شَائِبَةَ فِيهَا لِغَيْرِكَ. إِنَّكَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ</p>
                 </div>
-                
+
                 <div class="text-sm text-gray-600 italic leading-relaxed">
                   <p><strong>Traduction :</strong> Ô ! Mon Dieu ! je Te Demande et m'Oriente vers Toi par le Biais de Ton Bien-Aimé et Messager, dont la Gradation est Sublime, notre Seigneur Mouhammad (PSL). Accordes-moi Ton Amour (Particulier), Pur (Agrée), par Toi. Ainsi que celui de Ton Bien-Aimé, notre Seigneur Mouhammad (PSL). Accordes-moi ici-bas et dans l'au-delà le Privilège de faire Partie de Tes Saints Privilégiés et Parfaits Exempts de toute Aspérité. Tu Es certes, sur toute chose le Tout Puissant.</p>
                 </div>
@@ -1058,7 +1058,7 @@
               <div class="space-y-4">
                 <p class="text-gray-700"><strong>Oraison Protectrice et Punitive contre les ennemis et adversaires.</strong></p>
                 <p class="text-gray-600">Opérez la nuit avant de vous coucher.</p>
-                
+
                 <div class="bg-purple-50 p-4 rounded-xl border-l-4 border-purple-500">
                   <h4 class="font-semibold text-purple-800 mb-3">Procédure :</h4>
                   <ol class="list-decimal list-inside space-y-2 text-sm text-purple-700">
@@ -1066,18 +1066,18 @@
                     <li>1 Fatiha jusqu'à "Iyyâka nâ'boudoû wa Iyyâka nas-ta'în"</li>
                     <li>1 Salâtoul Fâtihi</li>
                     <li>Posez la main droite ou gauche sur les yeux</li>
-                    <li>Après le zikr de 6 VT terminer la Fâtiha ouvrez les yeux</li>
+                    <li>Après le zikr de 6 VT terminer la Fatiha ouvrez les yeux</li>
                     <li>Répétez 11 fois l'Invocation Suivante :</li>
                   </ol>
                 </div>
-                
+
                 <div class="bg-red-50 p-4 rounded-xl border-l-4 border-red-500">
                   <p class="arabic-text text-lg text-red-800 leading-relaxed mb-3">اللَّهُمَّ إِنِّي أَعُوذُ بِكَ رَبِّي وَرَبِّكُمْ مِنْ شَرِّ كُلِّ مُتَكَبِّرٍ لَا يُؤْمِنُ بِيَوْمِ الْحِسَابِ</p>
                   <p class="text-sm text-red-700 italic">O! Mon Dieu je me Réfugie auprès de Toi! Mon Seigneur et Notre Maître Absolu contre tout prévaricateur plein de gloriole, de surcroît mécréant au Jour du Rendement des Comptes.</p>
                 </div>
-                
+
                 <p class="text-sm text-gray-600">Terminez ensuite la Récitation de la Fatiha.</p>
-                
+
                 <div class="bg-amber-50 p-4 rounded-xl border-l-4 border-amber-500">
                   <h4 class="font-semibold text-amber-800 mb-2">NB : Sceau de Salomon (paix et salut sur lui)</h4>
                   <p class="text-sm text-amber-700 mb-2">Si vous êtes sous l'emprise de l'ensorcellement, de la méchanceté, du mauvais œil ou des mauvaises langues, il est recommandé d'utiliser le pentacle suivant :</p>
@@ -1096,7 +1096,7 @@
       <section data-page="lectures" class="hidden">
         <div class="card">
           <h2 class="title text-2xl mb-4">Lectures Spirituelles</h2>
-          
+
           <!-- Onglets modernisés avec menu français -->
           <div class="flex flex-wrap gap-3 mb-6" id="lecture-tabs">
             <button
@@ -1206,7 +1206,7 @@
       <!-- Journal -->
       <section data-page="journal" class="hidden">
         <div class="space-y-8" id="journal-container">
-          
+
           <!-- En-tête spirituel -->
           <div class="text-center mb-8">
             <h1 class="journal-title">مُذَكِّرَتِي الرُّوحِيَّة</h1>
@@ -1227,7 +1227,7 @@
               </div>
               <h3 class="text-xl font-bold text-slate-800">Sauvegarde des Données</h3>
             </div>
-            
+
             <div class="flex flex-wrap gap-4">
               <button
                 id="export-data"
@@ -1272,7 +1272,7 @@
                 <p class="text-muted">Les Cinq Prières Quotidiennes</p>
               </div>
             </div>
-            
+
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="checkbox-container">
                 <input type="checkbox" class="jp" value="Fajr" id="prayer-fajr" />
@@ -1283,7 +1283,7 @@
                   </div>
                 </label>
               </div>
-              
+
               <div class="checkbox-container">
                 <input type="checkbox" class="jp" value="Dhuhr" id="prayer-dhuhr" />
                 <label for="prayer-dhuhr">
@@ -1293,7 +1293,7 @@
                   </div>
                 </label>
               </div>
-              
+
               <div class="checkbox-container">
                 <input type="checkbox" class="jp" value="Asr" id="prayer-asr" />
                 <label for="prayer-asr">
@@ -1303,7 +1303,7 @@
                   </div>
                 </label>
               </div>
-              
+
               <div class="checkbox-container">
                 <input type="checkbox" class="jp" value="Maghrib" id="prayer-maghrib" />
                 <label for="prayer-maghrib">
@@ -1313,7 +1313,7 @@
                   </div>
                 </label>
               </div>
-              
+
               <div class="checkbox-container">
                 <input type="checkbox" class="jp" value="Isha" id="prayer-isha" />
                 <label for="prayer-isha">
@@ -1341,13 +1341,13 @@
                   </div>
                 </div>
               </div>
-              
+
               <!-- Compteur centré -->
               <div class="text-center mb-8">
                 <div class="tasbih-counter" id="tasbih-counter-display">0</div>
                 <p class="text-muted mt-2">invocations comptées</p>
               </div>
-              
+
               <!-- Bouton principal centré -->
               <div class="text-center mb-6">
                 <button id="tasbih-counter-btn" class="tasbih-button">
@@ -1357,7 +1357,7 @@
                   </div>
                 </button>
               </div>
-              
+
               <!-- Bouton reset centré -->
               <div class="text-center">
                 <button id="tasbih-reset-btn" class="inline-flex items-center gap-2 text-muted hover:text-red-500 underline transition-colors duration-300">
@@ -1383,7 +1383,7 @@
                 <p class="text-muted">Notes et Réflexions Personnelles</p>
               </div>
             </div>
-            
+
             <div class="relative">
               <textarea
                 id="note"
@@ -1397,13 +1397,13 @@
 📚 Enseignements reçus
 💝 Actes de bonté accomplis"
               ></textarea>
-              
+
               <!-- Ornement décoratif -->
               <div class="absolute top-4 right-4 text-2xl text-muted opacity-30">
                 ﴿۞﴾
               </div>
             </div>
-            
+
             <div class="mt-4 flex items-center justify-between text-sm text-muted">
               <div class="flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1503,36 +1503,36 @@
 
       // Horloge & Dates
       moment.locale("fr");
-      
+
       let lastHijriDate = null;
-      
+
       function tickClock() {
         const now = moment();
         $("#clock").textContent = now.format("HH:mm:ss");
         $("#date-greg").textContent = now.format("dddd D MMMM YYYY");
-        
+
         // Ne mettre à jour la date hijri que si elle a changé
         const hijriDay = now.iDate();
         const hijriYear = now.iYear();
         const hijriMonthIndex = now.iMonth();
-        
+
         // Noms des mois hijri en français
         const hijriMonthsFr = [
           'Muharram', 'Safar', 'Rabi\' al-awwal', 'Rabi\' al-thani',
           'Jumada al-awwal', 'Jumada al-thani', 'Rajab', 'Sha\'ban',
           'Ramadan', 'Shawwal', 'Dhu al-Qi\'dah', 'Dhu al-Hijjah'
         ];
-        
+
         const currentHijriDate = `${hijriDay} ${hijriMonthsFr[hijriMonthIndex]} ${hijriYear}`;
         if (currentHijriDate !== lastHijriDate) {
           $("#date-hijri").textContent = currentHijriDate;
           lastHijriDate = currentHijriDate;
-          
+
           // Mettre à jour les détails du mois hijri
           updateHijriMonthDetails(now);
         }
       }
-      
+
       async function updateHijriMonthDetails(now) {
         try {
           const response = await fetch('./data/mois.json');
@@ -1540,23 +1540,23 @@
             const data = await response.json();
             const currentHijriMonth = now.iMonth();
             const currentMonth = data.mois.find(m => m.i === currentHijriMonth);
-            
+
             const monthDetailEl = $("#month-detail");
             if (currentMonth && monthDetailEl) {
               // Créer le descriptif avec jours clés et pratiques
               let descriptif = currentMonth.sens;
-              
+
               // Ajouter les jours clés
               const joursDesc = currentMonth.cles.length > 0 
                 ? `Jours clés: ${currentMonth.cles.join(', ')}` 
                 : 'Aucun jour clé';
-              
+
               // Ajouter les pratiques
               const pratiquesDesc = `Pratiques: ${currentMonth.pratiques.join(', ')}`;
-              
+
               // Combiner tout
               descriptif += ` (${joursDesc}; ${pratiquesDesc})`;
-              
+
               monthDetailEl.textContent = descriptif;
             }
           }
@@ -1564,7 +1564,7 @@
           console.log('[Hijri] Erreur chargement détails mois:', error);
         }
       }
-      
+
       tickClock();
       setInterval(tickClock, 1000);
 
@@ -1617,7 +1617,7 @@
         }
       }
 
-      
+
 
       // Charger la date sauvegardée dans l'input
       async function loadRetreatDate() {
@@ -1648,9 +1648,9 @@
         // Sauvegarder avec les deux clés pour compatibilité
         await api.storageSet("retreatStart", dateValue);
         localStorage.setItem("retreat_start", dateValue);
-        
+
         await refreshRetreat();
-        
+
         // Redémarrer le système Focus avec les nouvelles données
         startFocus();
       });
@@ -1673,27 +1673,27 @@
         if (!api) return;
 
         const today = moment().format("YYYY-MM-DD");
-        
+
         try {
           // 1. Compter les prières accomplies aujourd'hui
           const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
           let prayersToday = 0;
-          
+
           for (const prayer of prayers) {
             const isDone = await api.storageGet(`jp:${today}:${prayer}`, false);
             if (isDone) prayersToday++;
           }
-          
+
           $("#prayers-today").textContent = prayersToday;
           $("#prayer-fraction").textContent = `${prayersToday}/5`;
-          
+
           const prayerProgress = (prayersToday / 5) * 100;
           $("#prayer-progress").style.width = `${prayerProgress}%`;
 
           // 2. Récupérer le compteur de dhikr
           const dhikrCount = await api.storageGet("tasbihCount", 0);
           $("#dhikr-count").textContent = dhikrCount;
-          
+
           const dhikrTarget = 100; // Objectif quotidien
           const dhikrProgress = Math.min((dhikrCount / dhikrTarget) * 100, 100);
           $("#dhikr-progress").style.width = `${dhikrProgress}%`;
@@ -1730,29 +1730,29 @@
 
         let streak = 0;
         let currentDate = moment();
-        
+
         // Vérifier les 30 derniers jours maximum
         for (let i = 0; i < 30; i++) {
           const dateStr = currentDate.format("YYYY-MM-DD");
           let dayScore = 0;
-          
+
           // Vérifier les prières de ce jour
           const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
           for (const prayer of prayers) {
             const isDone = await api.storageGet(`jp:${dateStr}:${prayer}`, false);
             if (isDone) dayScore++;
           }
-          
+
           // Un jour est considéré "réussi" si au moins 3 prières sont faites
           if (dayScore >= 3) {
             streak++;
           } else {
             break; // Arrêter la série
           }
-          
+
           currentDate.subtract(1, 'day');
         }
-        
+
         return streak;
       }
 
@@ -1765,11 +1765,11 @@
         const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
         let totalPossible = 0;
         let totalAccomplished = 0;
-        
+
         for (let i = 0; i < 7; i++) {
           const date = startOfWeek.clone().add(i, 'days');
           const dateStr = date.format("YYYY-MM-DD");
-          
+
           // Ne compter que les jours déjà passés
           if (date.isSameOrBefore(moment(), 'day')) {
             for (const prayer of prayers) {
@@ -1779,7 +1779,7 @@
             }
           }
         }
-        
+
         return totalPossible > 0 ? Math.round((totalAccomplished / totalPossible) * 100) : 0;
       }
 
@@ -1827,7 +1827,7 @@
         const hijriDay = currentTime.iDate();
         const weeklyFocusContainer = $("#weekly-special-focus");
         let weeklyHTML = '';
-        
+
         // Toujours afficher l'istighfar quotidien
         weeklyHTML += `
           <div class="special-notification">
@@ -1839,7 +1839,7 @@
               </div>
             </div>
           </div>`;
-        
+
         if (dayOfWeek === 1 || dayOfWeek === 4) { // Monday or Thursday
           weeklyHTML += `
             <div class="special-notification">
@@ -1876,7 +1876,7 @@
               </div>
             </div>`;
         }
-        
+
         // Nuit du mercredi (Hasbunallah)
         const isWednesdayNight = (dayOfWeek === 3 && currentTimeStr >= "19:00") || (dayOfWeek === 4 && currentTimeStr < "04:30");
         if (isWednesdayNight) {
@@ -1891,7 +1891,7 @@
               </div>
             </div>`;
         }
-        
+
         weeklyFocusContainer.innerHTML = weeklyHTML;
       }
 
@@ -1915,19 +1915,23 @@
         $("#next-prayer-name").textContent = p.name;
 
         const now = moment();
-        const diff = moment.duration(t.diff(now));
-        
-        // Calculer le temps restant en heures, minutes et secondes
-        const totalSeconds = Math.floor(diff.asSeconds());
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        
-        const hh = String(hours).padStart(2, "0");
-        const mm = String(minutes).padStart(2, "0");
-        const ss = String(seconds).padStart(2, "0");
-        
-        $("#next-prayer-eta").textContent = `${hh}:${mm}:${ss}`;
+        const diff = t.diff(now, 'seconds');
+
+        // S'assurer que le temps restant est positif
+        if (diff > 0) {
+          const hours = Math.floor(diff / 3600);
+          const minutes = Math.floor((diff % 3600) / 60);
+          const seconds = diff % 60;
+
+          const hh = String(hours).padStart(2, "0");
+          const mm = String(minutes).padStart(2, "0");
+          const ss = String(seconds).padStart(2, "0");
+
+          $("#next-prayer-eta").textContent = `${hh}:${mm}:${ss}`;
+        } else {
+          // Si le temps est écoulé, afficher 00:00:00
+          $("#next-prayer-eta").textContent = "00:00:00";
+        }
 
         // surbrillance
         PRAYERS.forEach((x) => {
@@ -2647,7 +2651,7 @@
 
           personalZikr.forEach(zikr => {
             let badge = '';
-            
+
             // Générer le badge conditionnel
             if (zikr.condition === 'daily') {
               badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Quotidien</span>';
