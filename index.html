@@ -3140,6 +3140,56 @@
         if (invocations) {
           if (invocations.opening) {
             invocationOpening = `
+              <div class="mb-8 p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 rounded-3xl border-2 border-blue-200 shadow-lg">
+                <div class="text-center mb-6">
+                  <h4 class="text-xl font-bold text-blue-900 mb-2">${invocations.opening.title}</h4>
+                  <p class="text-sm text-blue-600 italic">${invocations.opening.subtitle}</p>
+                </div>
+                <div class="space-y-4">
+                  <div class="text-center p-4 bg-white/50 rounded-2xl">
+                    <p class="arabic-text text-xl text-blue-900 leading-relaxed" dir="rtl">${invocations.opening.arabic}</p>
+                  </div>
+                  <div class="text-center p-3 bg-blue-50/50 rounded-xl">
+                    <p class="text-xs text-blue-700 italic leading-relaxed">${invocations.opening.transliteration}</p>
+                  </div>
+                  <div class="text-center p-3 bg-white/30 rounded-xl">
+                    <p class="text-sm text-blue-800 leading-relaxed">${invocations.opening.french}</p>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+
+          if (invocations.closing) {
+            let closingSections = '';
+            if (invocations.closing.sections) {
+              closingSections = invocations.closing.sections.map(section => `
+                <div class="space-y-3 mb-6">
+                  <div class="text-center p-4 bg-white/50 rounded-2xl">
+                    <p class="arabic-text text-xl text-green-900 leading-relaxed" dir="rtl">${section.arabic}</p>
+                  </div>
+                  <div class="text-center p-3 bg-green-50/50 rounded-xl">
+                    <p class="text-xs text-green-700 italic leading-relaxed">${section.transliteration}</p>
+                  </div>
+                  <div class="text-center p-3 bg-white/30 rounded-xl">
+                    <p class="text-sm text-green-800 leading-relaxed">${section.french}</p>
+                  </div>
+                </div>
+              `).join('');
+            }
+
+            invocationClosing = `
+              <div class="mt-8 p-6 bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 rounded-3xl border-2 border-green-200 shadow-lg">
+                <div class="text-center mb-6">
+                  <h4 class="text-xl font-bold text-green-900 mb-2">${invocations.closing.title}</h4>
+                  <p class="text-sm text-green-600 italic">${invocations.closing.subtitle}</p>
+                </div>
+                ${closingSections}
+              </div>
+            `;
+          }
+        }tions.opening) {
+            invocationOpening = `
               <div class="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
                 <h4 class="text-lg font-semibold text-blue-800 mb-4 text-center">${invocations.opening.title}</h4>
                 <div class="text-center">

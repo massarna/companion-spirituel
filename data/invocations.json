@@ -2,14 +2,29 @@
 {
   "opening": {
     "title": "Invocation d'ouverture",
-    "arabic": "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
-    "transliteration": "A'ūdhu billāhi mina sh-shayṭāni'r-rajīm",
-    "french": "Je cherche refuge auprès d'Allah contre Satan le lapidé"
+    "subtitle": "À réciter avant la lecture des sourates",
+    "arabic": "أَسْتَغْفِرُ اللهَ الْعَظِيمَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ غَفَّارُ الذُّنُوبِ ذُو الجَلَالِ وَالْإِكْرَامِ، وَأَتُوبُ إِلَيْهِ مِنْ جَمِيعِ الْمَعَاصِي كُلْهَا وَالذُّنُوبِ وَالْآثَامِ وَمِنْ كُلِّ ذَنْبٍ أَذْنَبْتُهُ عَمْداً وَخَطَأَ ظَاهِراً وَبَاطِنَا قَوْلاً وَفِعْلاً فِي جَمِيعِ حَرَكَاتِي وَسَكَنَاتِي وَخَطَرَاتِي وَأَنْفَاسِي كُلِّهَا دَائِماً أَبَداً سَرْمَداً مِنَ الذَّنْبِ الَّذِي أَعْلَم وَمِنَ الذَّنْبِ الَّذِي لَا أَعْلَمُ عَدَدَ مَا أَحَاطَ بِهِ الْعِلْمُ وَأَحْصَاهُ الْكِتَابُ وَخَطْهُ الْقَلَمُ وَعَدَدَ مَا أَوْجَدَتْهُ الْقُدْرَةُ وَخَصَّصَتْهُ الْإِرَادَةُ وَمِدَادَ كَلِمَاتِ اللَّهِ كَمَا يَنْبَغِي لِجَلَالِ وَجْهِ رَبِّنَا وَجَمَالِهِ وَكَمَالِهِ وَكَمَا يُحِبُّ رَبُّنَا وَيَرْضَى",
+    "transliteration": "Astaghfiru'llāha'l-'Aẓīma'lladhī lā ilāha illā Huwa'l-Ḥayyu'l-Qayyūmu ghaffāru'dh-dhunūbi dhū'l-jalāli wa'l-ikrām, wa atūbu ilayhi min jamī'i'l-ma'āṣī kullihā wa'dh-dhunūbi wa'l-āthāmi wa min kulli dhanbin adhnabtuhū 'amdan wa khaṭa'an ẓāhiran wa bāṭinan qawlan wa fi'lan fī jamī'i ḥarakātī wa sakanātī wa khaṭarātī wa anfāsī kullihā dā'iman abadan sarmadan mina'dh-dhanbi'lladhī a'lamu wa mina'dh-dhanbi'lladhī lā a'lamu 'adada mā aḥāṭa bihi'l-'ilmu wa aḥṣāhu'l-kitābu wa khaṭṭahu'l-qalamu wa 'adada mā awjadathu'l-qudratu wa khaṣṣaṣathu'l-irādatu wa midāda kalimāti'llāhi kamā yanbaghī li-jalāli wajhi Rabbinā wa jamālihi wa kamālihi wa kamā yuḥibbu Rabbunā wa yarḍā",
+    "french": "Je demande pardon à Allah le Très Grand, Celui en dehors de qui il n'y a point de divinité, le Vivant, Celui qui subsiste par Lui-même, Celui qui pardonne les péchés, Détenteur de la Majesté et de la Générosité. Je me repens à Lui de tous les péchés, de toutes les désobéissances et de tous les crimes, de tout péché que j'ai commis volontairement ou par erreur, apparemment ou secrètement, en parole et en acte, dans tous mes mouvements et mes repos, mes pensées et mes respirations, constamment et éternellement, du péché que je connais et du péché que je ne connais pas, selon le nombre de ce que la science englobe, que le Livre dénombre et que la Plume a écrit, selon le nombre de ce que la Puissance a créé et que la Volonté a spécifié, et selon l'encre des Paroles d'Allah, comme il convient à la Majesté de la Face de notre Seigneur, à Sa Beauté et à Sa Perfection, et comme notre Seigneur aime et agrée.",
+    "theme": "blue"
   },
   "closing": {
     "title": "Invocation de clôture", 
-    "arabic": "صَدَقَ اللَّهُ الْعَظِيمُ",
-    "transliteration": "Ṣadaqa Allāhu'l-'Aẓīm",
-    "french": "Allah le Très Grand a dit la vérité"
+    "subtitle": "À réciter après la lecture des sourates",
+    "sections": [
+      {
+        "type": "main",
+        "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿الْحَمْدُ للهِ رَبِّ الْعَالَمِينَ﴾ عَلَى النِّعْمَةِ الْعُظْمَى رَحْمَةِ اللهِ لِلْعَالَمِينَ رَسُولِ ﴿الرَّحْمَنِ الرَّحِيمِ﴾ الْمَنْعُوتِ بِقَوْلِ الْحَقِّ بِالْمُؤْمِنِينَ رَؤُفٌ رَّحِيمٍ شَفِيعِنَا يَوْمَ الدِّينِ عِنْدَ ﴿مَالِكِ يَوْمِ الدِّينَ﴾ مَنْ عَلَّمَنَا الْعُبُودِيَّةِ لِلْمَلِكِ الْحَقِّ الْمُبِينِ فَنَحْنُ نَدْعُوهُ سُبْحَانَهُ ضَارِ عِينَ مُتَبَتِلِينَ رَبَّنَا ﴿إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ﴾",
+        "transliteration": "Bismi'llāhi'r-Raḥmāni'r-Raḥīm. Al-ḥamdu lillāhi Rabbi'l-'ālamīn 'alā'n-ni'mati'l-'uẓmā raḥmati'llāhi li'l-'ālamīna rasūli'r-Raḥmāni'r-Raḥīmi'l-man'ūti bi-qawli'l-ḥaqqi bi'l-mu'minīna ra'ūfun raḥīm shafī'unā yawma'd-dīni 'inda Māliki yawmi'd-dīni man 'allamanā'l-'ubūdiyyata li'l-Maliki'l-Ḥaqqi'l-Mubīni fa-naḥnu nad'ūhu subḥānahu ḍāri'īna mutabattilīna Rabbanā iyyāka na'budu wa iyyāka nasta'īn",
+        "french": "Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux. Louange à Allah, Seigneur des mondes, pour le bienfait immense de la miséricorde d'Allah pour les mondes, le Messager du Tout Miséricordieux, le Très Miséricordieux, qualifié par la parole de la Vérité comme étant compatissant et miséricordieux envers les croyants, notre intercesseur au Jour du Jugement auprès du Maître du Jour du Jugement, celui qui nous a enseigné la servitude envers le Roi Véritable, l'Évident. Nous L'invoquons donc, Gloire à Lui, en suppliants dévoués : Notre Seigneur, c'est Toi que nous adorons et c'est Toi dont nous implorons l'aide."
+      },
+      {
+        "type": "prayer",
+        "arabic": "فَاللَّهُمَّ صَلِّ وَسَلَّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ الصِّرَاطِ الْمُسْتَقِيمِ وَبِجَاهِهِ صَلَّى اللهُ عَلَيْهِ وَآلِهِ وَسَلَّمَ عِنْدَكَ ﴿اهْدِنَا الصِّرَاطِ الْمُسْتَقِيم﴾ وَصَلِّ عَلَيْهِ رَبَّنَا وَعَلَى آلِهِ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ وَهَدَيْتَهُمُ ﴿صَرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ﴾ فَصَارُوا بِهِ صَلَّى اللَّهُ عَلَيْهِ وَآلِهِ وَسَلَّمَ مِنْ أَعْظَمِ الْمُقَرَّبِينَ وَأَكْمَلِ الْمَحْبُوبِين وَأَصْفَى الْمُهْتَدِينَ ﴿غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ﴾ فَاللَّهُمَّ اجْعَلْنَا فِي رِحَابِهِمْ وَعَلَى أَعْتَابِهِمْ مِنَ الْمَقْبُولِينَ ﴿آمِينَ﴾ يَارَبَّ الْعَالَمِينَ",
+        "transliteration": "Fa'llāhumma ṣalli wa sallim wa bārik 'alā sayyidinā Muḥammadin'ṣ-ṣirāṭi'l-mustaqīmi wa bi-jāhihi ṣallā'llāhu 'alayhi wa ālihi wa sallama 'indaka ihdinā'ṣ-ṣirāṭa'l-mustaqīm wa ṣalli 'alayhi Rabbanā wa 'alā ālihi'lladhīna an'amta 'alayhim wa hadaytahum ṣirāṭa'lladhīna an'amta 'alayhim fa-ṣārū bihi ṣallā'llāhu 'alayhi wa ālihi wa sallama min a'ẓami'l-muqarrabīna wa akmali'l-maḥbūbīna wa aṣfā'l-muhtadīna ghayri'l-maghḍūbi 'alayhim wa lā'ḍ-ḍāllīn fa'llāhumma ij'alnā fī riḥābihim wa 'alā a'tābihim mina'l-maqbūlīna āmīn yā Rabba'l-'ālamīn",
+        "french": "Ô Allah, prie sur notre maître Muhammad, le droit chemin, bénis-le et salue-le, et par son rang auprès de Toi, ô Allah qu'Il a prié sur lui et sa famille et l'a salué : Guide-nous sur le droit chemin. Prie sur lui, notre Seigneur, et sur sa famille sur laquelle Tu as accordé Tes bienfaits et que Tu as guidés, le chemin de ceux sur lesquels Tu as accordé Tes bienfaits, qui sont devenus par lui - qu'Allah prie sur lui et sa famille et le salue - parmi les plus grands rapprochés, les plus parfaits bien-aimés et les plus purs guidés, non pas de ceux qui ont encouru Ta colère ni des égarés. Ô Allah, place-nous dans leur voisinage et sur leurs seuils parmi les acceptés. Âmîn, ô Seigneur des mondes !"
+      }
+    ],
+    "theme": "green"
   }
 }
