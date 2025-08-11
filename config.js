@@ -7,7 +7,7 @@ export const USE_ANONYMOUS_AUTH = true;
 
 // Ta config Firebase (les clés publiques ne sont PAS secrètes côté web)
 export const firebaseConfig = {
-  apiKey: "VOTRE_VRAIE_CLE_API_FIREBASE_ICI",
+  apiKey: "AIzaSyAPsWhYz28Ii8uNWMlVokHrbRA3iOpzA1o",
   authDomain: "compagnon-spirituel.firebaseapp.com",
   projectId: "compagnon-spirituel",
   storageBucket: "compagnon-spirituel.firebasestorage.app",
