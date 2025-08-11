@@ -7,6 +7,19 @@
 
     <!-- Styles & Librairies externes -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Configuration Tailwind pour supprimer l'avertissement
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'islamic-green': '#00a86b',
+              'warm-white': '#fefcf9'
+            }
+          }
+        }
+      }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/fr.js"></script>
