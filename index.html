@@ -2574,7 +2574,7 @@
       // Initialisation au chargement de la page et à l'ouverture de l'onglet
       document.addEventListener("DOMContentLoaded", initJournal);
 
-      // Fonctions Export/Import des données
+      // Fonctions Export/Import des données - Version robuste
       async function exportUserData() {
         const api = window.storageAPI;
         if (!api) {
@@ -2584,22 +2584,44 @@
 
         try {
           const prefixes = ['tasbihCount', 'retreatStart', 'jp:', 'note:', 'zikrDone:', 'mayyit:'];
-          const exportData = {};
+          const exportData = {
+            metadata: {
+              exportDate: moment().toISOString(),
+              appVersion: "1.0.0",
+              dataVersion: "1.0"
+            },
+            data: {}
+          };
           let exportCount = 0;
 
-          // Parcourir localStorage pour trouver les clés correspondantes
+          // Méthode robuste : utiliser storageAPI pour récupérer les données
+          const allKeys = [];
+          
+          // Parcourir localStorage pour identifier les clés
           for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && prefixes.some(prefix => key.startsWith(prefix))) {
-              try {
-                const value = JSON.parse(localStorage.getItem(key));
-                exportData[key] = value;
-                exportCount++;
-              } catch (e) {
-                // Ignorer les valeurs qui ne sont pas du JSON valide
-                console.warn(`Impossible d'exporter la clé ${key}:`, e);
-              }
+              allKeys.push(key);
             }
+          }
+
+          // Utiliser l'API unifiée pour récupérer chaque valeur
+          for (const key of allKeys) {
+            try {
+              const value = await api.storageGet(key, null);
+              if (value !== null) {
+                exportData.data[key] = value;
+                exportCount++;
+              }
+            } catch (e) {
+              console.warn(`Impossible d'exporter la clé ${key}:`, e);
+            }
+          }
+
+          // Validation avant export
+          if (exportCount === 0) {
+            showImportStatus("⚠️ Aucune donnée à exporter", "warning");
+            return;
           }
 
           // Créer et télécharger le fichier
@@ -2629,44 +2651,81 @@
 
         try {
           const text = await file.text();
-          const importData = JSON.parse(text);
+          let importData = JSON.parse(text);
 
+          // Validation du format de fichier
           if (typeof importData !== 'object' || importData === null) {
             throw new Error('Format de fichier invalide');
+          }
+
+          // Support des anciens formats d'export (rétrocompatibilité)
+          let dataToImport = {};
+          if (importData.metadata && importData.data) {
+            // Nouveau format avec metadata
+            console.log('[Import] Format avec metadata détecté:', importData.metadata);
+            dataToImport = importData.data;
+          } else {
+            // Ancien format direct
+            console.log('[Import] Format direct détecté');
+            dataToImport = importData;
           }
 
           const prefixes = ['tasbihCount', 'retreatStart', 'jp:', 'note:', 'zikrDone:', 'mayyit:'];
           let importCount = 0;
           let skippedCount = 0;
+          let errorCount = 0;
 
-          for (const [key, value] of Object.entries(importData)) {
+          // Demander confirmation pour l'import
+          const confirmImport = confirm(`Voulez-vous importer ${Object.keys(dataToImport).length} entrées ? Cette action remplacera vos données existantes.`);
+          if (!confirmImport) {
+            showImportStatus("❌ Import annulé par l'utilisateur", "warning");
+            return;
+          }
+
+          for (const [key, value] of Object.entries(dataToImport)) {
             // Vérifier que la clé correspond aux préfixes autorisés
             if (prefixes.some(prefix => key.startsWith(prefix))) {
               try {
+                // Validation basique de la valeur
+                if (value === undefined) {
+                  console.warn(`Valeur undefined pour la clé ${key}, ignorée`);
+                  skippedCount++;
+                  continue;
+                }
+
                 await api.storageSet(key, value);
                 importCount++;
               } catch (e) {
-                console.warn(`Impossible d'importer la clé ${key}:`, e);
-                skippedCount++;
+                console.error(`Impossible d'importer la clé ${key}:`, e);
+                errorCount++;
               }
             } else {
               skippedCount++;
             }
           }
 
-          showImportStatus(`✅ ${importCount} entrées importées${skippedCount > 0 ? `, ${skippedCount} ignorées` : ''}`, "success");
+          // Affichage du résultat détaillé
+          let statusMessage = `✅ ${importCount} entrées importées`;
+          if (skippedCount > 0) statusMessage += `, ${skippedCount} ignorées`;
+          if (errorCount > 0) statusMessage += `, ${errorCount} erreurs`;
 
-          // Recharger la page après un court délai pour appliquer les changements
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
+          showImportStatus(statusMessage, importCount > 0 ? "success" : "warning");
+
+          // Recharger la page seulement si des données ont été importées
+          if (importCount > 0) {
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
+          }
 
         } catch (error) {
           console.error('[Import] Erreur:', error);
           if (error.name === 'SyntaxError') {
-            showImportStatus("❌ Fichier JSON invalide", "error");
+            showImportStatus("❌ Fichier JSON invalide ou corrompu", "error");
+          } else if (error.message.includes('Format de fichier invalide')) {
+            showImportStatus("❌ Format de fichier non reconnu", "error");
           } else {
-            showImportStatus("❌ Erreur lors de l'import", "error");
+            showImportStatus("❌ Erreur technique lors de l'import", "error");
           }
         }
       }
@@ -2676,13 +2735,22 @@
         if (!statusEl) return;
 
         statusEl.textContent = message;
-        statusEl.className = `mt-3 text-sm ${type === 'error' ? 'text-red-600' : 'text-green-600'}`;
+        
+        // Styles selon le type
+        const styles = {
+          success: 'text-green-600 bg-green-50 border border-green-200',
+          error: 'text-red-600 bg-red-50 border border-red-200',
+          warning: 'text-orange-600 bg-orange-50 border border-orange-200',
+          info: 'text-blue-600 bg-blue-50 border border-blue-200'
+        };
+        
+        statusEl.className = `mt-4 text-sm p-3 rounded-lg ${styles[type] || styles.info}`;
 
-        // Effacer le message après 5 secondes
+        // Effacer le message après 8 secondes (plus long pour lire)
         setTimeout(() => {
           statusEl.textContent = '';
-          statusEl.className = 'mt-3 text-sm';
-        }, 5000);
+          statusEl.className = 'mt-4 text-sm';
+        }, 8000);
       }
 
       // Event listeners pour Export/Import
@@ -3198,74 +3266,137 @@
         }
       ];
 
-      // Fonction de rendu du programme détaillé
+      // Fonction de rendu du programme détaillé - Version robuste
       let programmeLoaded = false;
       async function renderProgramme() {
         if (programmeLoaded) return;
 
-        // 1. Programme quotidien
-        const dailyGrid = $("#program-daily-grid");
-        if (dailyGrid) {
-          dailyGrid.innerHTML = '';
-          dailyProgram.forEach(program => {
-            const cardHtml = `
-              <div class="bg-white rounded-2xl shadow-lg p-6 space-y-3">
-                <h3 class="text-2xl font-bold text-[#6A4A3C]">${program.day}</h3>
-                <div>
-                  <h4 class="font-semibold text-gray-700 mb-1">🌙 Nuit</h4>
-                  <p class="text-sm text-gray-600">${program.night}</p>
-                </div>
-                <div>
-                  <h4 class="font-semibold text-gray-700 mb-1">☀️ Jour</h4>
-                  <p class="text-sm text-gray-600">${program.day_content}</p>
-                </div>
-              </div>
-            `;
-            dailyGrid.insertAdjacentHTML('beforeend', cardHtml);
-          });
-        }
+        try {
+          // Charger les données du programme depuis le fichier JSON
+          const response = await fetch('./data/programme.json');
+          let programData;
+          
+          if (response.ok) {
+            programData = await response.json();
+            console.log('[Programme] Données chargées depuis JSON');
+          } else {
+            // Fallback vers les données codées en dur
+            programData = {
+              daily: dailyProgram,
+              personalZikr: personalZikr
+            };
+            console.warn('[Programme] Utilisation du fallback de données');
+          }
 
-        // 2. Zikrs personnalisés
-        const zikrGrid = $("#personal-zikr-grid");
-        if (zikrGrid) {
-          zikrGrid.innerHTML = '';
-          const currentDay = moment().day(); // 0=dimanche, 1=lundi, ..., 5=vendredi, 6=samedi
-
-          personalZikr.forEach(zikr => {
-            let badge = '';
-
-            // Générer le badge conditionnel
-            if (zikr.condition === 'daily') {
-              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Quotidien</span>';
-            } else if (zikr.condition === 'friday' && currentDay === 5) {
-              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Aujourd\'hui</span>';
-            } else if (zikr.condition === 'wednesday' && currentDay === 3) {
-              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Ce soir</span>';
-            } else if (zikr.condition === 'friday-every-prayer' && currentDay === 5) {
-              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">À chaque ṣalāt</span>';
-            }
-
-            const countDisplay = zikr.count ? `<div class="text-3xl font-bold text-[#6A4A3C]">${zikr.count}×</div>` : '';
-
-            const cardHtml = `
-              <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col justify-between">
-                <div>
-                  <div class="flex items-start justify-between mb-3">
-                    <h3 class="text-lg font-bold text-[#6A4A3C]">${zikr.title}</h3>
-                    ${badge}
+          // 1. Programme quotidien
+          const dailyGrid = $("#program-daily-grid");
+          if (dailyGrid && programData.daily) {
+            dailyGrid.innerHTML = '<div class="text-center text-slate-500 col-span-full py-8">Chargement...</div>';
+            
+            setTimeout(() => {
+              dailyGrid.innerHTML = '';
+              programData.daily.forEach(program => {
+                const cardHtml = `
+                  <div class="bg-white rounded-2xl shadow-lg p-6 space-y-3 hover:shadow-xl transition-shadow duration-300">
+                    <h3 class="text-2xl font-bold text-[#6A4A3C]">${program.day}</h3>
+                    <div>
+                      <h4 class="font-semibold text-gray-700 mb-1">🌙 Nuit</h4>
+                      <p class="text-sm text-gray-600 leading-relaxed">${program.night}</p>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-gray-700 mb-1">☀️ Jour</h4>
+                      <p class="text-sm text-gray-600 leading-relaxed">${program.day_content}</p>
+                    </div>
                   </div>
-                  ${countDisplay}
-                  <p class="text-sm text-gray-500 mb-3">${zikr.periodicity}</p>
-                  <p class="arabic-text text-lg mt-2">${zikr.arabic}</p>
-                </div>
-              </div>
-            `;
-            zikrGrid.insertAdjacentHTML('beforeend', cardHtml);
-          });
-        }
+                `;
+                dailyGrid.insertAdjacentHTML('beforeend', cardHtml);
+              });
+            }, 300); // Petit délai pour l'effet visuel
+          }
 
-        programmeLoaded = true;
-        console.log('[Programme] Contenu chargé avec succès');
+          // 2. Zikrs personnalisés
+          const zikrGrid = $("#personal-zikr-grid");
+          if (zikrGrid && programData.personalZikr) {
+            zikrGrid.innerHTML = '<div class="text-center text-slate-500 col-span-full py-8">Chargement...</div>';
+            
+            setTimeout(() => {
+              zikrGrid.innerHTML = '';
+              const currentDay = moment().day(); // 0=dimanche, 1=lundi, ..., 5=vendredi, 6=samedi
+
+              programData.personalZikr.forEach(zikr => {
+                let badge = '';
+
+                // Générer le badge conditionnel
+                if (zikr.condition === 'daily') {
+                  badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Quotidien</span>';
+                } else if (zikr.condition === 'friday' && currentDay === 5) {
+                  badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Aujourd\'hui</span>';
+                } else if (zikr.condition === 'wednesday' && currentDay === 3) {
+                  badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Ce soir</span>';
+                } else if (zikr.condition === 'friday-every-prayer' && currentDay === 5) {
+                  badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">À chaque ṣalāt</span>';
+                }
+
+                const countDisplay = zikr.count ? `<div class="text-3xl font-bold text-[#6A4A3C]">${zikr.count}×</div>` : '';
+
+                const cardHtml = `
+                  <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col justify-between hover:shadow-xl transition-all duration-300">
+                    <div>
+                      <div class="flex items-start justify-between mb-3">
+                        <h3 class="text-lg font-bold text-[#6A4A3C]">${zikr.title}</h3>
+                        ${badge}
+                      </div>
+                      ${countDisplay}
+                      <p class="text-sm text-gray-500 mb-3">${zikr.periodicity}</p>
+                      <p class="arabic-text text-lg mt-2 leading-relaxed">${zikr.arabic}</p>
+                    </div>
+                  </div>
+                `;
+                zikrGrid.insertAdjacentHTML('beforeend', cardHtml);
+              });
+            }, 500); // Délai plus long pour les zikrs
+          }
+
+          // 3. Formules de Zikr (si disponible)
+          if (programData.zikrFormulas) {
+            const formulasContainer = $("#zikr-formulas .grid");
+            if (formulasContainer) {
+              programData.zikrFormulas.forEach(formula => {
+                const cardHtml = `
+                  <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">${formula.title}</h3>
+                    <p class="text-gray-600 mb-4">${formula.timing}</p>
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border-l-4 border-blue-500">
+                      <p class="arabic-text text-lg text-blue-800 leading-relaxed">${formula.arabic}</p>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-3">${formula.description}</p>
+                  </div>
+                `;
+                formulasContainer.insertAdjacentHTML('beforeend', cardHtml);
+              });
+            }
+          }
+
+          programmeLoaded = true;
+          console.log('[Programme] Contenu chargé avec succès');
+          
+        } catch (error) {
+          console.error('[Programme] Erreur de chargement:', error);
+          
+          // Afficher un message d'erreur dans les conteneurs
+          const errorMessage = `
+            <div class="col-span-full text-center py-8">
+              <div class="text-red-600 text-lg mb-2">⚠️ Erreur de chargement</div>
+              <div class="text-gray-600 text-sm">Impossible de charger le programme détaillé</div>
+            </div>
+          `;
+          
+          const dailyGrid = $("#program-daily-grid");
+          const zikrGrid = $("#personal-zikr-grid");
+          
+          if (dailyGrid) dailyGrid.innerHTML = errorMessage;
+          if (zikrGrid) zikrGrid.innerHTML = errorMessage;
+        }
       }
 
       // Fonction de rendu de la retraite
