@@ -2646,7 +2646,6 @@
           }
 
           availableSurahs = manifestData;
-          populateSurahSelector();
           console.log('[Lectures] Manifeste chargé:', Object.keys(availableSurahs).length, 'sourates');
         } catch (error) {
           console.error('[Lectures] Erreur manifeste:', error);
@@ -2657,12 +2656,12 @@
         }
       }
 
-      // Remplir le sélecteur de sourates
+      // Remplir le sélecteur de sourates (appelé seulement quand le sélecteur existe)
       function populateSurahSelector() {
         const select = $("#surah-select");
         if (!select) {
-          console.warn('[Lectures] Sélecteur de sourates non trouvé');
-          return;
+          // Ne pas afficher d'avertissement car c'est normal si le contenu spécial n'est pas encore rendu
+          return false;
         }
 
         let html = '<option value="">— Sélectionnez une sourate —</option>';
@@ -2689,6 +2688,7 @@
         }
 
         select.innerHTML = html;
+        return true;
       }
 
       // Convertit 123 -> ١٢٣
@@ -2838,6 +2838,9 @@
         `;
 
         contentEl.innerHTML = html;
+
+        // Maintenant que le sélecteur existe, le remplir avec les sourates
+        populateSurahSelector();
 
         // Ajouter l'event listener pour la sélection
         const specialSelect = $("#special-surah-select");
