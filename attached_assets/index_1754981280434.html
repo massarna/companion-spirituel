@@ -1,0 +1,3387 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compagnon Spirituel</title>
+
+    <!-- Styles & Librairies externes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Configuration Tailwind pour supprimer l'avertissement
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'islamic-green': '#00a86b',
+              'warm-white': '#fefcf9'
+            }
+          }
+        }
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/fr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Polices & PWA -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Lato:wght@300;400;700&family=Orbitron:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#fdfaf6" />
+
+    <!-- CSS uniquement -->
+    <style>
+      :root {
+        --bg: linear-gradient(135deg, #fdfbf7 0%, #f7f3ed 100%);
+        --card: rgba(255, 255, 255, 0.95);
+        --card-hover: rgba(255, 255, 255, 0.98);
+        --ink: #2c1810;
+        --muted: #8b7355;
+        --brand: #d97706;
+        --ring: #059669;
+        --gold: #f59e0b;
+        --islamic-green: #00a86b;
+        --warm-white: #fefcf9;
+        --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.08);
+        --shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.15);
+        --gradient-islamic: linear-gradient(135deg, #00a86b 0%, #059669 100%);
+        --gradient-warm: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --border-soft: rgba(139, 115, 85, 0.2);
+      }
+
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        background-attachment: fixed;
+        font-family:
+          "Lato",
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          "Helvetica Neue",
+          Arial,
+          "Noto Sans",
+          "Liberation Sans",
+          sans-serif;
+        color: var(--ink);
+      }
+
+      .title {
+        font-family: "Amiri", serif;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .clock {
+        font-family: "Orbitron", monospace;
+        letter-spacing: 0.06em;
+        background: var(--gradient-warm);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .card {
+        background: var(--card);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--border-soft);
+        padding: 2rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-islamic);
+        border-radius: 24px 24px 0 0;
+      }
+
+      .card:hover {
+        background: var(--card-hover);
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-2px);
+      }
+
+      .tab-btn {
+        position: relative;
+        padding: 0.75rem 1.5rem;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        color: var(--muted);
+        border: 1px solid transparent;
+      }
+
+      .tab-btn[aria-selected="true"] {
+        background: var(--gradient-islamic);
+        color: white;
+        box-shadow: 0 8px 25px rgba(0, 168, 107, 0.3);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .tab-btn:hover:not([aria-selected="true"]) {
+        background: rgba(0, 168, 107, 0.1);
+        color: var(--islamic-green);
+        border-color: rgba(0, 168, 107, 0.2);
+      }
+
+      .badge {
+        background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+        color: #92400e;
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+      }
+
+      .qibla-rose {
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        border: 12px solid var(--islamic-green);
+        background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(0,168,107,0.1) 100%);
+        position: relative;
+        margin: auto;
+        box-shadow: 0 20px 60px rgba(0, 168, 107, 0.2);
+      }
+
+      .qibla-rose::after {
+        content: "الشمال";
+        position: absolute;
+        top: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--islamic-green);
+        font-weight: 700;
+        font-family: "Amiri", serif;
+        font-size: 1.1rem;
+      }
+
+      .qibla-arrow {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-bottom: 100px solid var(--islamic-green);
+        left: 50%;
+        top: 50%;
+        transform-origin: 50% 90%;
+        transform: translate(-50%, -80%) rotate(0deg);
+        filter: drop-shadow(0 10px 20px rgba(0, 168, 107, 0.4));
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* Animations spirituelles */
+      @keyframes breathe {
+        0%, 100% { transform: scale(1) translateY(0px); opacity: 0.9; }
+        50% { transform: scale(1.02) translateY(-3px); opacity: 1; }
+      }
+
+      @keyframes shimmer {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+
+      .special-notification {
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 168, 107, 0.2);
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 15px 40px rgba(0, 168, 107, 0.1);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .special-notification::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 168, 107, 0.1), transparent);
+        animation: shimmer 3s infinite;
+      }
+
+      .special-notification:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 25px 60px rgba(0, 168, 107, 0.2);
+        border-color: rgba(0, 168, 107, 0.4);
+      }
+
+      .notification-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        margin-right: 1rem;
+        font-size: 1.25rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Styles pour le texte arabe améliorés */
+      .arabic-text {
+        font-family: "Amiri Quran", "Amiri", serif;
+        font-size: 1.75rem;
+        line-height: 2.5;
+        direction: rtl;
+        text-align: right;
+        color: var(--ink);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .ayah-container {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-right: 6px solid var(--islamic-green);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 168, 107, 0.1);
+      }
+
+      .ayah-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        background: var(--gradient-islamic);
+        color: white;
+        border-radius: 50%;
+        font-size: 1rem;
+        font-weight: bold;
+        margin-left: 1rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 6px 20px rgba(0, 168, 107, 0.3);
+      }
+
+      .ayah-marker {
+        font-size: 1rem;
+        margin: 0 0.5rem;
+        opacity: 0.9;
+        color: var(--islamic-green);
+        font-weight: bold;
+      }
+
+      /* Styles pour les cartes de prières modernisées */
+      .prayer-card {
+        background: var(--card);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border-soft);
+        border-radius: 20px;
+        padding: 1.5rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .prayer-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--gradient-islamic);
+        border-radius: 20px 20px 0 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .prayer-card.ring {
+        background: linear-gradient(135deg, rgba(0, 168, 107, 0.15) 0%, rgba(0, 168, 107, 0.05) 100%);
+        border-color: var(--islamic-green);
+        box-shadow: 0 0 30px rgba(0, 168, 107, 0.25);
+        transform: translateY(-3px) scale(1.02);
+        animation: breathe 3s infinite ease-in-out;
+      }
+
+      .prayer-card.ring::before {
+        opacity: 1;
+      }
+
+      .prayer-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .prayer-card.ring:hover {
+        transform: translateY(-4px) scale(1.02);
+      }
+
+      /* Conteneur de lecture modernisé */
+      #surah-wrap {
+        max-width: 65rem;
+        margin-inline: auto;
+        background: var(--card);
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--border-soft);
+      }
+
+      /* Titre et basmala modernisés */
+      #surah-title {
+        text-align: center;
+        margin: 1rem 0 2rem;
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-family: "Amiri", serif;
+      }
+
+      .bismillah {
+        display: block;
+        text-align: center;
+        margin: 1rem 0 2rem;
+        font-size: 2rem;
+        color: var(--islamic-green);
+        text-shadow: 0 2px 8px rgba(0, 168, 107, 0.2);
+      }
+
+      /* Bloc de texte mushaf modernisé */
+      .ayahs-block {
+        font-family: "Amiri Quran", "Amiri", serif;
+        direction: rtl;
+        text-align: justify;
+        text-justify: inter-word;
+        font-size: 1.8rem;
+        line-height: 3.6rem;
+        color: var(--ink);
+        word-break: break-word;
+        background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(248,250,252,0.8) 100%);
+        padding: 2rem 1rem;
+        border-radius: 16px;
+        border: 1px solid var(--border-soft);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        word-spacing: 0.12em;
+        letter-spacing: 0.02em;
+        hyphens: none;
+      }
+
+      /* Pastille du numéro de verset modernisée */
+      .ayah-badge {
+        display: inline-block;
+        min-width: 2.2em;
+        height: 2.2em;
+        line-height: 2.2em;
+        margin: 0 0.6rem;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: 800;
+        color: #2c1810;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+        box-shadow: 
+          0 4px 12px rgba(217, 119, 6, 0.4),
+          0 2px 6px rgba(0, 0, 0, 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        vertical-align: middle;
+        direction: ltr;
+        border: 2px solid rgba(255, 255, 255, 0.9);
+        font-family: "Orbitron", monospace;
+        letter-spacing: -0.02em;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .ayah-badge::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+        transform: scale(0);
+        transition: transform 0.3s ease;
+      }
+
+      .ayah-badge:hover::before {
+        transform: scale(1);
+      }
+
+      @media (max-width: 768px) {
+        .card {
+          padding: 1.5rem;
+        }
+
+        .journal-section {
+          padding: 2rem;
+        }
+
+        .tasbih-counter {
+          font-size: 4rem;
+        }
+
+        .tasbih-button {
+          width: 10rem;
+          height: 10rem;
+          font-size: 1.25rem;
+        }
+
+        /* Optimisation mobile pour le texte arabe */
+        .ayahs-block {
+          font-size: 1.6rem;
+          line-height: 3rem;
+          padding: 1rem 0.5rem;
+          word-spacing: 0.12em;
+          letter-spacing: 0.02em;
+          text-align: justify;
+          text-justify: inter-word;
+          text-align-last: right;
+          direction: rtl;
+          unicode-bidi: embed;
+          word-break: keep-all;
+          overflow-wrap: break-word;
+          hyphens: none;
+          -webkit-hyphens: none;
+          -moz-hyphens: none;
+          -ms-hyphens: none;
+          max-width: 100%;
+          width: 100%;
+        }
+
+        /* Optimisation mobile pour les numéros de versets */
+        .ayah-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 1.8em;
+          height: 1.8em;
+          margin: 0 0.4rem;
+          padding: 0;
+          font-size: 0.85rem;
+          font-weight: 800;
+          color: #2c1810;
+          background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+          border: 1.5px solid rgba(255, 255, 255, 0.95);
+          box-shadow: 
+            0 2px 8px rgba(217, 119, 6, 0.35),
+            0 1px 3px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5);
+          vertical-align: baseline;
+          text-align: center;
+          direction: ltr;
+          unicode-bidi: isolate;
+          white-space: nowrap;
+          font-family: "Orbitron", monospace;
+          text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+          border-radius: 50%;
+        }
+
+        /* Conteneur principal optimisé pour mobile */
+        #surah-wrap {
+          padding: 1rem 0.5rem;
+          margin: 0;
+          max-width: 100%;
+          border-radius: 16px;
+          width: 100%;
+        }
+
+        #surah-title {
+          font-size: 1.8rem;
+          margin-bottom: 1rem;
+          line-height: 1.3;
+        }
+
+        .bismillah {
+          font-size: 1.4rem;
+          margin: 1rem 0 1.5rem;
+          line-height: 1.4;
+        }
+
+        /* Ajustements pour les onglets de lectures sur mobile */
+        #lecture-tabs {
+          flex-direction: column;
+          gap: 0.75rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+          width: 100%;
+          justify-content: center;
+          padding: 1rem;
+          text-align: center;
+        }
+
+        /* Sélecteur de sourates responsive */
+        #surah-select {
+          font-size: 1rem;
+          padding: 0.75rem;
+          width: 100%;
+          margin-bottom: 1.5rem;
+        }
+
+        /* Conteneur de lecture responsive */
+        #lect-content {
+          width: 100%;
+          overflow-x: hidden;
+          padding: 0;
+          margin: 0;
+        }
+
+        /* Améliorations pour la lisibilité sur petit écran */
+        #surah-selector {
+          margin-bottom: 1.5rem;
+        }
+
+        #surah-selector h3 {
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
+        }
+
+        #surah-selector p {
+          font-size: 0.9rem;
+          margin-bottom: 0.75rem;
+        }
+      }
+
+      /* Styles spéciaux pour la page Journal */
+      .journal-section {
+        background: var(--card);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-soft);
+        box-shadow: var(--shadow-soft);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .journal-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-islamic);
+        border-radius: 24px 24px 0 0;
+      }
+
+      .journal-section:hover {
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-2px);
+      }
+
+      .journal-title {
+        font-family: "Amiri", serif;
+        font-size: 2rem;
+        font-weight: 700;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+      }
+
+      .journal-title::after {
+        content: '';
+        position: absolute;
+        bottom: -0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--gradient-warm);
+        border-radius: 2px;
+      }
+
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.9) 100%);
+        border-radius: 16px;
+        border: 1px solid var(--border-soft);
+        transition: all 0.3s ease;
+        margin-bottom: 0.75rem;
+      }
+
+      .checkbox-container:hover {
+        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(0,168,107,0.02) 100%);
+        border-color: var(--islamic-green);
+        box-shadow: 0 8px 25px rgba(0, 168, 107, 0.1);
+      }
+
+      .checkbox-container input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        accent-color: var(--islamic-green);
+        border-radius: 4px;
+      }
+
+      .checkbox-container label {
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+        flex: 1;
+      }
+
+      .tasbih-section {
+        text-align: center;
+        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(245,158,11,0.05) 100%);
+        border-radius: 24px;
+        padding: 3rem;
+        border: 1px solid var(--border-soft);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tasbih-section::before {
+        content: '﷽';
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        font-size: 1.5rem;
+        color: var(--islamic-green);
+        opacity: 0.3;
+      }
+
+      .tasbih-counter {
+        font-family: "Orbitron", monospace;
+        font-size: 6rem;
+        font-weight: 700;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 2rem 0;
+        text-shadow: 0 4px 20px rgba(0, 168, 107, 0.3);
+      }
+
+      .tasbih-button {
+        width: 12rem;
+        height: 12rem;
+        border-radius: 50%;
+        background: var(--gradient-islamic);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 20px 60px rgba(0, 168, 107, 0.3);
+        margin: 2rem auto;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tasbih-button::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+        transform: scale(0);
+        transition: transform 0.6s ease;
+      }
+
+      .tasbih-button:active::before {
+        transform: scale(1);
+      }
+
+      .tasbih-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 30px 80px rgba(0, 168, 107, 0.4);
+      }
+
+      .tasbih-button:active {
+        transform: scale(0.95);
+      }
+
+      .notes-textarea {
+        width: 100%;
+        min-height: 200px;
+        padding: 2rem;
+        border: 2px solid var(--border-soft);
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
+        font-family: "Lato", sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--ink);
+        resize: vertical;
+        transition: all 0.3s ease;
+      }
+
+      .notes-textarea:focus {
+        outline: none;
+        border-color: var(--islamic-green);
+        box-shadow: 0 0 0 4px rgba(0, 168, 107, 0.1);
+        background: rgba(255, 255, 255, 0.98);
+      }
+
+      .notes-textarea::placeholder {
+        color: var(--muted);
+        font-style: italic;
+      }
+
+      @media (max-width: 768px) {
+        .card {
+          padding: 1.5rem;
+        }
+
+        .journal-section {
+          padding: 2rem;
+        }
+
+        .tasbih-counter {
+          font-size: 4rem;
+        }
+
+        .tasbih-button {
+          width: 10rem;
+          height: 10rem;
+          font-size: 1.25rem;
+        }
+
+        .ayahs-block {
+          font-size: 1.6rem;
+          line-height: 3.2rem;
+          padding: 2.5rem 1.5rem;
+          word-spacing: 0.08em;
+          letter-spacing: 0.01em;
+        }
+      }
+
+      /* Styles spéciaux pour la page Journal */
+      .journal-section {
+        background: var(--card);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-soft);
+        box-shadow: var(--shadow-soft);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .journal-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-islamic);
+        border-radius: 24px 24px 0 0;
+      }
+
+      .journal-section:hover {
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-2px);
+      }
+
+      .journal-title {
+        font-family: "Amiri", serif;
+        font-size: 2rem;
+        font-weight: 700;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+      }
+
+      .journal-title::after {
+        content: '';
+        position: absolute;
+        bottom: -0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--gradient-warm);
+        border-radius: 2px;
+      }
+
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.9) 100%);
+        border-radius: 16px;
+        border: 1px solid var(--border-soft);
+        transition: all 0.3s ease;
+        margin-bottom: 0.75rem;
+      }
+
+      .checkbox-container:hover {
+        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(0,168,107,0.02) 100%);
+        border-color: var(--islamic-green);
+        box-shadow: 0 8px 25px rgba(0, 168, 107, 0.1);
+      }
+
+      .checkbox-container input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        accent-color: var(--islamic-green);
+        border-radius: 4px;
+      }
+
+      .checkbox-container label {
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+        flex: 1;
+      }
+
+      .tasbih-section {
+        text-align: center;
+        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(245,158,11,0.05) 100%);
+        border-radius: 24px;
+        padding: 3rem;
+        border: 1px solid var(--border-soft);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tasbih-section::before {
+        content: '﷽';
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        font-size: 1.5rem;
+        color: var(--islamic-green);
+        opacity: 0.3;
+      }
+
+      .tasbih-counter {
+        font-family: "Orbitron", monospace;
+        font-size: 6rem;
+        font-weight: 700;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 2rem 0;
+        text-shadow: 0 4px 20px rgba(0, 168, 107, 0.3);
+      }
+
+      .tasbih-button {
+        width: 12rem;
+        height: 12rem;
+        border-radius: 50%;
+        background: var(--gradient-islamic);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 20px 60px rgba(0, 168, 107, 0.3);
+        margin: 2rem auto;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tasbih-button::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+        transform: scale(0);
+        transition: transform 0.6s ease;
+      }
+
+      .tasbih-button:active::before {
+        transform: scale(1);
+      }
+
+      .tasbih-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 30px 80px rgba(0, 168, 107, 0.4);
+      }
+
+      .tasbih-button:active {
+        transform: scale(0.95);
+      }
+
+      .notes-textarea {
+        width: 100%;
+        min-height: 200px;
+        padding: 2rem;
+        border: 2px solid var(--border-soft);
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
+        font-family: "Lato", sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--ink);
+        resize: vertical;
+        transition: all 0.3s ease;
+      }
+
+      .notes-textarea:focus {
+        outline: none;
+        border-color: var(--islamic-green);
+        box-shadow: 0 0 0 4px rgba(0, 168, 107, 0.1);
+        background: rgba(255, 255, 255, 0.98);
+      }
+
+      .notes-textarea::placeholder {
+        color: var(--muted);
+        font-style: italic;
+      }
+    </style>
+  </head>
+
+  <body class="text-slate-800">
+    <!-- Header -->
+    <header class="max-w-5xl mx-auto px-4 py-10">
+      <h1 class="title text-center text-5xl sm:text-6xl text-slate-800">
+        Compagnon Spirituel
+      </h1>
+      <p class="text-center text-[var(--brand)] mt-2">
+        Votre guide spirituel quotidien
+      </p>
+
+      <!-- Horloge & Dates -->
+      <div class="mt-8 card max-w-xl mx-auto text-center">
+        <div id="clock" class="clock text-5xl sm:text-6xl text-slate-700">
+          --:--:--
+        </div>
+        <div class="mt-5">
+          <div id="date-greg" class="font-semibold text-sky-600">—</div>
+          <div id="date-hijri" class="text-slate-500 font-medium">—</div>
+          <div id="month-detail" class="text-sm text-slate-400 mt-2 italic max-w-md mx-auto">—</div>
+        </div>
+        <div class="mt-4">
+          <span id="mode-badge" class="badge">Planning Annuel</span>
+        </div>
+      </div>
+
+      <!-- Focus du jour - Version modernisée -->
+      <div class="mt-8 max-w-4xl mx-auto">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-blue-50 to-indigo-100 shadow-2xl border border-white/50">
+          <!-- Badge flottant -->
+          <div class="absolute top-4 right-4 z-10">
+            <div id="focus-mode-badge" class="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg border border-emerald-200">
+              <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span class="text-xs font-semibold text-emerald-700"></span>
+            </div>
+          </div>
+
+          <!-- Contenu principal -->
+          <div class="relative p-8 md:p-12">
+            <!-- Titre avec icône animée -->
+            <div class="text-center mb-6">
+              <div class="inline-flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                  </svg>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Focus du Jour
+                </h2>
+              </div>
+              <p id="daily-focus-time" class="text-lg text-slate-600 font-medium"></p>
+            </div>
+
+            <!-- Contenu principal avec design moderne -->
+            <div class="relative">
+              <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-2xl blur-xl"></div>
+              <div class="relative bg-white/70 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/50 shadow-lg">
+                <div id="daily-focus-content" class="text-lg md:text-xl text-slate-700 leading-relaxed text-center font-medium"></div>
+              </div>
+            </div>
+
+            <!-- Section spéciale avec effets visuels -->
+            <div id="weekly-special-focus" class="mt-8 space-y-4"></div>
+          </div>
+
+          <!-- Ornements décoratifs -->
+          <div class="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-emerald-400/20 to-transparent rounded-full blur-2xl"></div>
+          <div class="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-blue-400/20 to-transparent rounded-full blur-2xl"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-20 bg-[var(--bg)] border-y border-slate-200/70">
+      <div class="max-w-5xl mx-auto px-4">
+        <ul class="flex flex-wrap gap-2 sm:gap-3 py-3">
+          <!-- 7 onglets -->
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="accueil"
+              aria-selected="true"
+            >
+              Accueil
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="programme"
+            >
+              Programme
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="lectures"
+            >
+              Lectures
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="retraite"
+            >
+              Retraite
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="journal"
+            >
+              Journal
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="mois"
+            >
+              Mois
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="qibla"
+            >
+              Qibla
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Pages -->
+    <main class="max-w-5xl mx-auto px-4 py-8 space-y-10">
+      <!-- Accueil -->
+      <section data-page="accueil">
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Prochaine prière -->
+          <div class="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-3xl shadow-xl border border-white/50">
+            <!-- Ornements décoratifs -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-400/20 to-transparent rounded-full blur-2xl"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-400/20 to-transparent rounded-full blur-xl"></div>
+
+            <div class="relative p-6">
+              <!-- En-tête avec icône -->
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="title text-2xl font-bold text-slate-800">Prochaine prière</h2>
+                  <p class="text-sm text-slate-600 flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Bobo-Dioulasso, Burkina Faso
+                  </p>
+                </div>
+              </div>
+
+              <!-- Prochaine prière en évidence -->
+              <div class="relative mb-6">
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg">
+                  <div class="text-center">
+                    <div class="text-lg text-slate-600 mb-2">Prochaine prière</div>
+                    <div class="text-3xl font-bold text-slate-800 mb-2" id="next-prayer-name">—</div>
+                    <div class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-full shadow-lg">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      <span class="text-xl font-mono font-bold" id="next-prayer-eta">--:--:--</span>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-2">temps restant</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Grille des horaires -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Fajr">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-orange-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Fajr</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Fajr">—</div>
+                </div>
+
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Shuruq">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Shuruq</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Shuruq">—</div>
+                </div>
+
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Dhuhr">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Dhuhr</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Dhuhr">—</div>
+                </div>
+
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Asr">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Asr</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Asr">—</div>
+                </div>
+
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Maghrib">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-red-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Maghrib</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Maghrib">—</div>
+                </div>
+
+                <div class="prayer-card group relative bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300" id="p-Isha">
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2 h-2 bg-purple-400 rounded-full"></div>
+                    <span class="font-semibold text-slate-700">Isha</span>
+                  </div>
+                  <div class="text-lg font-mono font-bold text-slate-800" id="t-Isha">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tableau de Bord Spirituel -->
+          <div class="card">
+            <h2 class="title text-2xl mb-4">Tableau de Bord Spirituel</h2>
+
+            <!-- Statistiques aujourd'hui -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div class="text-center p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl">
+                <div class="text-2xl font-bold text-emerald-700" id="prayers-today">0</div>
+                <div class="text-sm text-emerald-600">Prières</div>
+                <div class="text-xs text-emerald-500">aujourd'hui</div>
+              </div>
+
+              <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
+                <div class="text-2xl font-bold text-blue-700" id="dhikr-count">0</div>
+                <div class="text-sm text-blue-600">Dhikr</div>
+                <div class="text-xs text-blue-500">comptés</div>
+              </div>
+
+              <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
+                <div class="text-2xl font-bold text-purple-700" id="streak-days">0</div>
+                <div class="text-sm text-purple-600">Jours</div>
+                <div class="text-xs text-purple-500">consécutifs</div>
+              </div>
+
+              <div class="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl">
+                <div class="text-2xl font-bold text-orange-700" id="weekly-progress">0%</div>
+                <div class="text-sm text-orange-600">Semaine</div>
+                <div class="text-xs text-orange-500">accomplie</div>
+              </div>
+            </div>
+
+            <!-- Progression des objectifs -->
+            <div class="space-y-3">
+              <h3 class="font-semibold text-slate-700 mb-2">Progression du Jour</h3>
+
+              <!-- Prières obligatoires -->
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <span class="text-emerald-600 text-sm">🤲</span>
+                  </div>
+                  <span class="text-sm font-medium">Prières obligatoires</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="prayer-progress" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%"></div>
+                  </div>
+                  <span class="text-xs text-slate-600" id="prayer-fraction">0/5</span>
+                </div>
+              </div>
+
+              <!-- Dhikr quotidien -->
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span class="text-blue-600 text-sm">📿</span>
+                  </div>
+                  <span class="text-sm font-medium">Dhikr quotidien</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="dhikr-progress" class="h-full bg-blue-500 transition-all duration-300" style="width: 0%"></div>
+                  </div>
+                  <span class="text-xs text-slate-600" id="dhikr-fraction">0/100</span>
+                </div>
+              </div>
+
+              <!-- Lecture Coran -->
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                    <span class="text-purple-600 text-sm">📖</span>
+                  </div>
+                  <span class="text-sm font-medium">Lecture du Coran</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="quran-progress" class="h-full bg-purple-500 transition-all duration-300" style="width: 0%"></div>
+                  </div>
+                  <span class="text-xs text-slate-600" id="quran-status">En attente</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tendance de la semaine -->
+            <div class="mt-6 p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl">
+              <h3 class="font-semibold text-slate-700 mb-3">Tendance de la Semaine</h3>
+              <div class="flex justify-between items-end h-16">
+                <div class="flex flex-col items-center">
+                  <div id="day-1" class="w-6 bg-emerald-400 rounded-t mb-1" style="height: 20px;"></div>
+                  <span class="text-xs text-slate-500">L</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-2" class="w-6 bg-emerald-400 rounded-t mb-1" style="height: 35px;"></div>
+                  <span class="text-xs text-slate-500">M</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-3" class="w-6 bg-emerald-400 rounded-t mb-1" style="height: 45px;"></div>
+                  <span class="text-xs text-slate-500">M</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-4" class="w-6 bg-emerald-400 rounded-t mb-1" style="height: 60px;"></div>
+                  <span class="text-xs text-slate-500">J</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-5" class="w-6 bg-emerald-500 rounded-t mb-1" style="height: 55px;"></div>
+                  <span class="text-xs text-slate-500">V</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-6" class="w-6 bg-emerald-300 rounded-t mb-1" style="height: 30px;"></div>
+                  <span class="text-xs text-slate-500">S</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div id="day-7" class="w-6 bg-emerald-600 rounded-t mb-1" style="height: 64px;"></div>
+                  <span class="text-xs text-slate-500">D</span>
+                </div>
+              </div>
+              <div class="text-center mt-2">
+                <span class="text-xs text-slate-600">Régularité spirituelle (7 derniers jours)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </section>
+
+      <!-- Programme -->
+      <section data-page="programme" class="hidden">
+        <section id="program-daily" class="mb-12">
+          <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Programme Détaillé Jour par Jour</h2>
+          <div id="program-daily-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+        </section>
+
+        <section id="personal-zikr" class="mb-12">
+          <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Mes Zikrs Personnalisés</h2>
+          <div id="personal-zikr-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6"></div>
+        </section>
+
+        <section id="zikr-formulas" class="mb-12">
+          <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Formules de Zikr à Réciter</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Carte 1: Formule de Tawḥīd -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Formule de Tawḥīd</h3>
+              <p class="text-gray-600 mb-4">Après la prière de la nuit du mardi – 70 fois</p>
+              <div class="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-500">
+                <p class="arabic-text text-lg text-blue-800">لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ، وَهُوَ حَيٌّ لَا يَمُوتُ، ذُو الْجَلَالِ وَالْإِكْرَامِ، بِيَدِهِ الْخَيْرُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ.</p>
+              </div>
+              <p class="text-sm text-gray-500 mt-3">Proclame l'unicité de Dieu, sa souveraineté et Sa puissance absolue.</p>
+            </div>
+
+            <!-- Carte 2: Formule du Jeudi Soir -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Formule du Jeudi Soir</h3>
+              <p class="text-gray-600 mb-4">Réciter 100 fois</p>
+              <div class="bg-yellow-50 p-4 rounded-xl border-l-4 border-yellow-500">
+                <p class="arabic-text text-lg text-yellow-800">لَا إِلَٰهَ إِلَّا اللَّهُ الْمَلِكُ الْحَقُّ الْمُبِينُ.</p>
+              </div>
+              <p class="text-sm text-gray-500 mt-3">« Il n'y a de divinité que Dieu, le Roi, le Juste, le Manifeste ».</p>
+            </div>
+
+            <!-- Carte 3: Formule du Vendredi -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Formule du Vendredi</h3>
+              <p class="text-gray-600 mb-4">Après la prière entre Dhuhr et ʿAsr – 50 fois</p>
+              <div class="bg-orange-50 p-4 rounded-xl border-l-4 border-orange-500">
+                <p class="arabic-text text-lg text-orange-800">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ.</p>
+              </div>
+              <p class="text-sm text-gray-500 mt-3">« Il n'y a de puissance ni de force qu'en Dieu, le Très-Haut, l'Immense ».</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="special-invocations" class="mb-12">
+          <h2 class="text-3xl font-bold text-center mb-8 text-[#00A0B0]">Pratique des Invocations Spéciales</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Carte 1: Litanie d'amour du Prophète ﷺ -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Litanie d'amour du Prophète ﷺ</h3>
+              <div class="space-y-4">
+                <p class="text-gray-700"><strong>Pour Bénéficier indubitablement de l'Amour du Prophète (PSL) source de Salvation et de Sainteté.</strong></p>
+                <p class="text-gray-600">Récitez 12 fois la Salâtoul Fâthîh - suivie du zikr de cette litanie (12 fois).</p>
+
+                <div class="bg-green-50 p-4 rounded-xl border-l-4 border-green-500">
+                  <p class="arabic-text text-lg text-green-800 leading-relaxed">اللَّهُمَّ إِنِّي أَسْأَلُكَ وَأَتَوَجَّهُ إِلَيْكَ. بِحَبِيبِكَ وَرَسُولِكَ وَرَفِيعِ الْقَدْرِ عِنْدَكَ. سَيِّدِنَا مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ. ارْزُقْنِي مَحَبَّةً خَاصَّةً، خَالِصَةً فِيكَ. وَفِي حَبِيبِكَ سَيِّدِنَا مُحَمَّدٍ (صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ). وَاجْعَلْنِي فِي الدُّنْيَا وَالْآخِرَةِ. مِنْ أَهْلِ الْوِلَايَةِ الْخَاصَّةِ. كَامِلَةِ الْعِرْفَةِ الَّتِي لَا شَائِبَةَ فِيهَا لِغَيْرِكَ. إِنَّكَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ</p>
+                </div>
+
+                <div class="text-sm text-gray-600 italic leading-relaxed">
+                  <p><strong>Traduction :</strong> Ô ! Mon Dieu ! je Te Demande et m'Oriente vers Toi par le Biais de Ton Bien-Aimé et Messager, dont la Gradation est Sublime, notre Seigneur Mouhammad (PSL). Accordes-moi Ton Amour (Particulier), Pur (Agrée), par Toi. Ainsi que celui de Ton Bien-Aimé, notre Seigneur Mouhammad (PSL). Accordes-moi ici-bas et dans l'au-delà le Privilège de faire Partie de Tes Saints Privilégiés et Parfaits Exempts de toute Aspérité. Tu Es certes, sur toute chose le Tout Puissant.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Carte 2: Invocation protectrice avant le sommeil -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-[#6A4A3C] mb-4">Invocation protectrice avant le sommeil</h3>
+              <div class="space-y-4">
+                <p class="text-gray-700"><strong>Oraison Protectrice et Punitive contre les ennemis et adversaires.</strong></p>
+                <p class="text-gray-600">Opérez la nuit avant de vous coucher.</p>
+
+                <div class="bg-purple-50 p-4 rounded-xl border-l-4 border-purple-500">
+                  <h4 class="font-semibold text-purple-800 mb-3">Procédure :</h4>
+                  <ol class="list-decimal list-inside space-y-2 text-sm text-purple-700">
+                    <li>Récitez 10 ou 11 fois le Ta'aouôz</li>
+                    <li>1 Fatiha jusqu'à "Iyyâka nâ'boudoû wa Iyyâka nas-ta'în"</li>
+                    <li>1 Salâtoul Fâtihi</li>
+                    <li>Posez la main droite ou gauche sur les yeux</li>
+                    <li>Après le zikr de 6 VT terminer la Fatiha ouvrez les yeux</li>
+                    <li>Répétez 11 fois l'Invocation Suivante :</li>
+                  </ol>
+                </div>
+
+                <div class="bg-red-50 p-4 rounded-xl border-l-4 border-red-500">
+                  <p class="arabic-text text-lg text-red-800 leading-relaxed mb-3">اللَّهُمَّ إِنِّي أَعُوذُ بِكَ رَبِّي وَرَبِّكُمْ مِنْ شَرِّ كُلِّ مُتَكَبِّرٍ لَا يُؤْمِنُ بِيَوْمِ الْحِسَابِ</p>
+                  <p class="text-sm text-red-700 italic">O! Mon Dieu je me Réfugie auprès de Toi! Mon Seigneur et Notre Maître Absolu contre tout prévaricateur plein de gloriole, de surcroît mécréant au Jour du Rendement des Comptes.</p>
+                </div>
+
+                <p class="text-sm text-gray-600">Terminez ensuite la Récitation de la Fatiha.</p>
+
+                <div class="bg-amber-50 p-4 rounded-xl border-l-4 border-amber-500">
+                  <h4 class="font-semibold text-amber-800 mb-2">NB : Sceau de Salomon (paix et salut sur lui)</h4>
+                  <p class="text-sm text-amber-700 mb-2">Si vous êtes sous l'emprise de l'ensorcellement, de la méchanceté, du mauvais œil ou des mauvaises langues, il est recommandé d'utiliser le pentacle suivant :</p>
+                  <ol class="list-decimal list-inside space-y-1 text-sm text-amber-700">
+                    <li>Écrivez le Sceau de Salomon trois fois sur des feuilles ou des tablettes</li>
+                    <li>Autour du pentacle, écrivez le Verset du Trône (Ayat al-Kursi)</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Lectures -->
+      <section data-page="lectures" class="hidden">
+        <div class="card">
+          <h2 class="title text-2xl mb-4">Lectures Spirituelles</h2>
+
+          <!-- Onglets selon l'ancienne version -->
+          <div class="flex flex-wrap gap-3 mb-6" id="lecture-tabs">
+            <button
+              class="tab-btn px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
+              data-lect="kahf"
+              aria-pressed="false"
+            >
+              <div class="flex items-center gap-2">
+                <span class="text-lg">🕌</span>
+                <div class="text-left">
+                  <div class="font-bold">Lecture spéciale Vendredi</div>
+                  <div class="text-xs opacity-80">سورة الكهف</div>
+                </div>
+              </div>
+            </button>
+            <button
+              class="tab-btn px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
+              data-lect="special"
+            >
+              <div class="flex items-center gap-2">
+                <span class="text-lg">✨</span>
+                <div class="text-left">
+                  <div class="font-bold">Lecture Spirituelle Quotidienne</div>
+                  <div class="text-xs opacity-80">القراءة الروحية اليومية</div>
+                </div>
+              </div>
+            </button>
+          </div>
+
+          
+
+          <div id="lect-content" class="max-w-none">
+            <div class="text-center py-12">
+              <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span class="text-white text-2xl">📖</span>
+              </div>
+              <p class="text-slate-500 text-lg">Choisissez une lecture ci-dessus</p>
+              <p class="text-slate-400 text-sm mt-2">اختر قراءة من الأعلى</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Retraite -->
+      <section data-page="retraite" class="hidden">
+        <div class="space-y-8">
+          <!-- Configuration de la Retraite -->
+          <div class="card">
+            <h2 class="title text-2xl mb-3">Configuration de la Retraite</h2>
+            <label class="block text-sm text-slate-600 mb-1"
+              >Date de début (4 semaines)</label
+            >
+            <input
+              id="retreat-start"
+              type="date"
+              class="border rounded-lg px-3 py-2"
+            />
+            <button
+              id="retreat-save"
+              class="ml-2 px-3 py-2 rounded-lg bg-emerald-600 text-white"
+            >
+              Enregistrer
+            </button>
+            <div id="retreat-msg" class="mt-3 text-slate-600">—</div>
+          </div>
+
+          <!-- Grille Quotidienne -->
+          <div class="card">
+            <h2 class="title text-2xl mb-4">Grille Quotidienne de Retraite</h2>
+            <div id="retreat-grid" class="overflow-x-auto">
+              <!-- Contenu généré dynamiquement -->
+            </div>
+          </div>
+
+          <!-- Accents par Semaine -->
+          <div class="card">
+            <h2 class="title text-2xl mb-4">Accents Thématiques par Semaine</h2>
+            <div id="retreat-weeks" class="grid lg:grid-cols-2 xl:grid-cols-4 gap-4">
+              <!-- Contenu généré dynamiquement -->
+            </div>
+          </div>
+
+          <!-- Planning Annuel Allégé -->
+          <div class="card">
+            <h2 class="title text-2xl mb-4">Planning Annuel Allégé</h2>
+            <div id="retreat-annual">
+              <!-- Contenu généré dynamiquement -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Journal -->
+      <section data-page="journal" class="hidden">
+        <div class="space-y-8" id="journal-container">
+
+          <!-- En-tête spirituel -->
+          <div class="text-center mb-8">
+            <h1 class="journal-title">مُذَكِّرَتِي الرُّوحِيَّة</h1>
+            <p class="text-lg text-muted font-medium">Mon Carnet Spirituel Quotidien</p>
+            <div class="mt-4 text-sm text-muted">
+              <span class="arabic-text text-base">﴿وَذَكِّرْ فَإِنَّ الذِّكْرَىٰ تَنفَعُ الْمُؤْمِنِينَ﴾</span>
+              <p class="mt-2 italic">"Et rappelle, car le rappel profite aux croyants"</p>
+            </div>
+          </div>
+
+          <!-- Export/Import des données modernisé -->
+          <div class="journal-section">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-slate-800">Sauvegarde des Données</h3>
+            </div>
+
+            <div class="flex flex-wrap gap-4">
+              <button
+                id="export-data"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl hover:from-blue-600 hover:to-cyan-600 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                </svg>
+                Exporter mes données
+              </button>
+              <div class="flex items-center gap-2">
+                <input
+                  type="file"
+                  id="import-file"
+                  accept=".json"
+                  class="hidden"
+                />
+                <button
+                  id="import-data"
+                  class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-xl hover:from-emerald-600 hover:to-green-600 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                  </svg>
+                  Importer des données
+                </button>
+              </div>
+            </div>
+            <div id="import-status" class="mt-4 text-sm font-medium"></div>
+          </div>
+
+          <!-- Suivi des prières modernisé -->
+          <div class="journal-section">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-12 h-12 bg-gradient-islamic rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-slate-800">الصَّلَوَات الخَمس</h3>
+                <p class="text-muted">Les Cinq Prières Quotidiennes</p>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="checkbox-container">
+                <input type="checkbox" class="jp" value="Fajr" id="prayer-fajr" />
+                <label for="prayer-fajr">
+                  <div class="flex items-center justify-between w-full">
+                    <span class="font-semibold">الفجر - Fajr</span>
+                    <span class="text-sm text-muted">Aube</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="checkbox-container">
+                <input type="checkbox" class="jp" value="Dhuhr" id="prayer-dhuhr" />
+                <label for="prayer-dhuhr">
+                  <div class="flex items-center justify-between w-full">
+                    <span class="font-semibold">الظهر - Dhuhr</span>
+                    <span class="text-sm text-muted">Midi</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="checkbox-container">
+                <input type="checkbox" class="jp" value="Asr" id="prayer-asr" />
+                <label for="prayer-asr">
+                  <div class="flex items-center justify-between w-full">
+                    <span class="font-semibold">العصر - Asr</span>
+                    <span class="text-sm text-muted">Après-midi</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="checkbox-container">
+                <input type="checkbox" class="jp" value="Maghrib" id="prayer-maghrib" />
+                <label for="prayer-maghrib">
+                  <div class="flex items-center justify-between w-full">
+                    <span class="font-semibold">المغرب - Maghrib</span>
+                    <span class="text-sm text-muted">Coucher</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="checkbox-container">
+                <input type="checkbox" class="jp" value="Isha" id="prayer-isha" />
+                <label for="prayer-isha">
+                  <div class="flex items-center justify-between w-full">
+                    <span class="font-semibold">العشاء - Isha</span>
+                    <span class="text-sm text-muted">Nuit</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compteur Tasbih modernisé -->
+          <div class="journal-section">
+            <div class="tasbih-section">
+              <!-- En-tête centré -->
+              <div class="text-center mb-6">
+                <div class="inline-flex items-center gap-3 mb-4">
+                  <div class="w-12 h-12 bg-gradient-warm rounded-full flex items-center justify-center shadow-lg">
+                    <span class="text-2xl">📿</span>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-bold text-slate-800">سُبْحَان اللّهِ</h3>
+                    <p class="text-muted">Compteur de Dhikr</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Compteur centré -->
+              <div class="text-center mb-8">
+                <div class="tasbih-counter" id="tasbih-counter-display">0</div>
+                <p class="text-muted mt-2">invocations comptées</p>
+              </div>
+
+              <!-- Bouton principal centré -->
+              <div class="text-center mb-6">
+                <button id="tasbih-counter-btn" class="tasbih-button">
+                  <div class="text-center">
+                    <div class="text-2xl mb-2">اذْكُر</div>
+                    <div class="text-sm opacity-90">Invoquer</div>
+                  </div>
+                </button>
+              </div>
+
+              <!-- Bouton reset centré -->
+              <div class="text-center">
+                <button id="tasbih-reset-btn" class="inline-flex items-center gap-2 text-muted hover:text-red-500 underline transition-colors duration-300">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                  </svg>
+                  Réinitialiser le compteur
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes personnelles modernisées -->
+          <div class="journal-section">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-slate-800">مُذَكِّرَاتِي</h3>
+                <p class="text-muted">Notes et Réflexions Personnelles</p>
+              </div>
+            </div>
+
+            <div class="relative">
+              <textarea
+                id="note"
+                class="notes-textarea"
+                placeholder="Écris ici les pensées que ton cœur a retenues aujourd'hui... 
+
+« وَقُل رَّبِّ زِدْنِي عِلْمًا » - Et dis : « Ô mon Seigneur, accrois mes connaissances ! »
+
+✨ Moments de gratitude
+🤲 Prières exaucées  
+📚 Enseignements reçus
+💝 Actes de bonté accomplis"
+              ></textarea>
+
+              <!-- Ornement décoratif -->
+              <div class="absolute top-4 right-4 text-2xl text-muted opacity-30">
+                ﴿۞﴾
+              </div>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between text-sm text-muted">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+                <span>Vos notes sont automatiquement sauvegardées</span>
+              </div>
+              <div class="arabic-text text-base opacity-60">
+                الحَمْدُ لِلّهِ
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mois -->
+      <section data-page="mois" class="hidden">
+        <div class="space-y-6">
+          <!-- Alerte du jour si applicable -->
+          <div id="jour-alerte" class="hidden card bg-amber-50 border-amber-200">
+            <h3 class="text-lg font-semibold mb-2 text-amber-800">🌟 Jour spécial aujourd'hui</h3>
+            <div id="jour-alerte-content"></div>
+          </div>
+
+          <!-- Mois en cours -->
+          <div class="card">
+            <h2 class="title text-2xl mb-4">Mois hégirien en cours</h2>
+            <div id="mois-info" class="space-y-4">
+              <div class="text-center text-slate-600">Chargement...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Qibla -->
+      <section data-page="qibla" class="hidden">
+        <div class="card">
+          <h2 class="title text-2xl mb-4">Direction de la Qibla</h2>
+          <div class="qibla-rose">
+            <div id="qibla-arrow" class="qibla-arrow" aria-hidden="true"></div>
+            <span class="sr-only" id="qibla-angle-label"></span>
+          </div>
+          <div class="mt-4 flex items-center gap-3">
+            <button
+              id="btn-geo"
+              class="px-3 py-2 rounded-lg bg-slate-800 text-white"
+            >
+              Utiliser ma position
+            </button>
+            <div id="qibla-text" class="text-slate-600">
+              Par défaut : Bobo-Dioulasso
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="mt-12 pb-10 text-center text-slate-500">
+      Compagnon spirituel pour faciliter la pratique quotidienne.
+    </footer>
+
+    <!-- 1) Service Worker -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js").catch(console.error);
+        });
+      }
+    </script>
+
+    <!-- 2) Bridge: expose window.storageAPI (via bridge.js) -->
+    <script type="module" src="./bridge.js"></script>
+
+    <!-- 3) App Controller (horloge, onglets, prières, charts, qibla) -->
+    <script type="module">
+      // --- Fallback localStorage ---
+      if (!window.storageAPI) {
+        window.storageAPI = {
+          storageGet: async (key, defVal) => {
+            try { const v = localStorage.getItem(key); return v == null ? defVal : JSON.parse(v); }
+            catch { return defVal; }
+          },
+          storageSet: async (key, val) => { localStorage.setItem(key, JSON.stringify(val)); return true; },
+          storageRemove: async (key) => { localStorage.removeItem(key); return true; },
+          storageSubscribe: (key, cb) => {
+            const h = (e) => { if (e.key === key) cb(e.newValue ? JSON.parse(e.newValue) : null); };
+            window.addEventListener('storage', h); return () => window.removeEventListener('storage', h);
+          }
+        };
+        console.log('[Compagnon] fallback storage ready');
+      }
+      // -----------------------------
+
+      // util
+      const $ = (s, r = document) => r.querySelector(s);
+      const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+      // Horloge & Dates
+      moment.locale("fr");
+
+      let lastHijriDate = null;
+
+      function tickClock() {
+        const now = moment();
+        $("#clock").textContent = now.format("HH:mm:ss");
+        $("#date-greg").textContent = now.format("dddd D MMMM YYYY");
+
+        // Ne mettre à jour la date hijri que si elle a changé
+        const hijriDay = now.iDate();
+        const hijriYear = now.iYear();
+        const hijriMonthIndex = now.iMonth();
+
+        // Noms des mois hijri en français
+        const hijriMonthsFr = [
+          'Muharram', 'Safar', 'Rabi\' al-awwal', 'Rabi\' al-thani',
+          'Jumada al-awwal', 'Jumada al-thani', 'Rajab', 'Sha\'ban',
+          'Ramadan', 'Shawwal', 'Dhu al-Qi\'dah', 'Dhu al-Hijjah'
+        ];
+
+        const currentHijriDate = `${hijriDay} ${hijriMonthsFr[hijriMonthIndex]} ${hijriYear}`;
+        if (currentHijriDate !== lastHijriDate) {
+          $("#date-hijri").textContent = currentHijriDate;
+          lastHijriDate = currentHijriDate;
+
+          // Mettre à jour les détails du mois hijri
+          updateHijriMonthDetails(now);
+        }
+      }
+
+      async function updateHijriMonthDetails(now) {
+        try {
+          const response = await fetch('./data/mois.json');
+          if (response.ok) {
+            const data = await response.json();
+            const currentHijriMonth = now.iMonth();
+            const currentMonth = data.mois.find(m => m.i === currentHijriMonth);
+
+            const monthDetailEl = $("#month-detail");
+            if (currentMonth && monthDetailEl) {
+              // Créer le descriptif avec jours clés et pratiques
+              let descriptif = currentMonth.sens;
+
+              // Ajouter les jours clés
+              const joursDesc = currentMonth.cles.length > 0
+                ? `Jours clés: ${currentMonth.cles.join(', ')}`
+                : 'Aucun jour clé';
+
+              // Ajouter les pratiques
+              const pratiquesDesc = `Pratiques: ${currentMonth.pratiques.join(', ')}`;
+
+              // Combiner tout
+              descriptif += ` (${joursDesc}; ${pratiquesDesc})`;
+
+              monthDetailEl.textContent = descriptif;
+            }
+          }
+        } catch (error) {
+          console.log('[Hijri] Erreur chargement détails mois:', error);
+        }
+      }
+
+      tickClock();
+      setInterval(tickClock, 1000);
+
+      // Onglets
+      const pages = $$("section[data-page]");
+      const btns = $$(".tab-btn");
+      function show(tab) {
+        pages.forEach((p) =>
+          p.classList.toggle("hidden", p.dataset.page !== tab),
+        );
+        btns.forEach((b) =>
+          b.setAttribute("aria-selected", String(b.dataset.tab === tab)),
+        );
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      btns.forEach((b) =>
+        b.addEventListener("click", () => show(b.dataset.tab)),
+      );
+      show("accueil");
+
+      // Mode (badge) et retraite - logique complète
+      async function refreshRetreat() {
+        const api = window.storageAPI;
+        if (!api) return;
+
+        const startDate = await api.storageGet("retreatStart", null);
+        const modeBadge = $("#mode-badge");
+        const retreatMsg = $("#retreat-msg");
+
+        if (!startDate) {
+          if (modeBadge) modeBadge.textContent = "Planning Annuel";
+          if (retreatMsg) retreatMsg.textContent = "Aucune retraite configurée.";
+          return;
+        }
+
+        const start = moment(startDate);
+        const today = moment();
+        const diffWeeks = today.diff(start, "weeks");
+        const currentWeek = diffWeeks + 1;
+        const endDate = start.clone().add(28, "days");
+
+        // Mise à jour du badge
+        if (currentWeek > 4 || today.isAfter(endDate)) {
+          if (modeBadge) modeBadge.textContent = "Planning Annuel";
+          if (retreatMsg) retreatMsg.textContent = `Retraite terminée (${start.format("DD/MM/YYYY")} → ${endDate.format("DD/MM/YYYY")})`;
+        } else {
+          const week = Math.max(1, Math.min(currentWeek, 4));
+          if (modeBadge) modeBadge.textContent = `Mode Retraite – Semaine ${week}`;
+          if (retreatMsg) retreatMsg.textContent = `Retraite en cours : ${start.format("DD/MM/YYYY")} → ${endDate.format("DD/MM/YYYY")} (Semaine ${week}/4)`;
+        }
+      }
+
+
+
+      // Charger la date sauvegardée dans l'input
+      async function loadRetreatDate() {
+        const api = window.storageAPI;
+        if (!api) return;
+
+        const savedDate = await api.storageGet("retreatStart", null);
+        if (savedDate) {
+          $("#retreat-start").value = savedDate;
+        }
+      }
+
+      // Initialiser la retraite
+      await refreshRetreat();
+      await loadRetreatDate();
+
+      // Retraite: sauvegarder date
+      $("#retreat-save").addEventListener("click", async () => {
+        const dateValue = $("#retreat-start").value;
+        if (!dateValue) {
+          $("#retreat-msg").textContent = "Veuillez sélectionner une date de début.";
+          return;
+        }
+
+        const api = window.storageAPI;
+        if (!api) return;
+
+        // Sauvegarder avec les deux clés pour compatibilité
+        await api.storageSet("retreatStart", dateValue);
+        localStorage.setItem("retreat_start", dateValue);
+
+        await refreshRetreat();
+
+        // Redémarrer le système Focus avec les nouvelles données
+        startFocus();
+      });
+
+      // Horaires de prière (Bobo-Dioulasso – placeholders statiques pour la démo)
+      const PRAYERS = [
+        { name: "Fajr", time: "05:00" },
+        { name: "Shuruq", time: "06:15" },
+        { name: "Dhuhr", time: "12:30" },
+        { name: "Asr", time: "15:45" },
+        { name: "Maghrib", time: "18:30" },
+        { name: "Isha", time: "19:45" },
+      ];
+      for (const p of PRAYERS) {
+        $("#t-" + p.name).textContent = p.time;
+      }
+      // Tableau de bord spirituel - Mise à jour des métriques
+      async function updateDashboard() {
+        const api = window.storageAPI;
+        if (!api) return;
+
+        const today = moment().format("YYYY-MM-DD");
+
+        try {
+          // 1. Compter les prières accomplies aujourd'hui
+          const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+          let prayersToday = 0;
+
+          for (const prayer of prayers) {
+            const isDone = await api.storageGet(`jp:${today}:${prayer}`, false);
+            if (isDone) prayersToday++;
+          }
+
+          $("#prayers-today").textContent = prayersToday;
+          $("#prayer-fraction").textContent = `${prayersToday}/5`;
+
+          const prayerProgress = (prayersToday / 5) * 100;
+          $("#prayer-progress").style.width = `${prayerProgress}%`;
+
+          // 2. Récupérer le compteur de dhikr
+          const dhikrCount = await api.storageGet("tasbihCount", 0);
+          $("#dhikr-count").textContent = dhikrCount;
+
+          const dhikrTarget = 100; // Objectif quotidien
+          const dhikrProgress = Math.min((dhikrCount / dhikrTarget) * 100, 100);
+          $("#dhikr-progress").style.width = `${dhikrProgress}%`;
+          $("#dhikr-fraction").textContent = `${dhikrCount}/${dhikrTarget}`;
+
+          // 3. Calculer la série de jours consécutifs
+          let streakDays = await calculateStreak();
+          $("#streak-days").textContent = streakDays;
+
+          // 4. Calculer le pourcentage d'accomplissement de la semaine
+          let weeklyProgress = await calculateWeeklyProgress();
+          $("#weekly-progress").textContent = `${weeklyProgress}%`;
+
+          // 5. Mettre à jour la progression Coran (simulation)
+          const hasReadQuran = Math.random() > 0.3; // Simulation
+          if (hasReadQuran) {
+            $("#quran-progress").style.width = "100%";
+            $("#quran-status").textContent = "Accomplie ✓";
+          } else {
+            $("#quran-progress").style.width = "0%";
+            $("#quran-status").textContent = "En attente";
+          }
+
+          console.log('[Dashboard] Métriques mises à jour');
+        } catch (error) {
+          console.error('[Dashboard] Erreur:', error);
+        }
+      }
+
+      // Calculer la série de jours consécutifs
+      async function calculateStreak() {
+        const api = window.storageAPI;
+        if (!api) return 0;
+
+        let streak = 0;
+        let currentDate = moment();
+
+        // Vérifier les 30 derniers jours maximum
+        for (let i = 0; i < 30; i++) {
+          const dateStr = currentDate.format("YYYY-MM-DD");
+          let dayScore = 0;
+
+          // Vérifier les prières de ce jour
+          const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+          for (const prayer of prayers) {
+            const isDone = await api.storageGet(`jp:${dateStr}:${prayer}`, false);
+            if (isDone) dayScore++;
+          }
+
+          // Un jour est considéré "réussi" si au moins 3 prières sont faites
+          if (dayScore >= 3) {
+            streak++;
+          } else {
+            break; // Arrêter la série
+          }
+
+          currentDate.subtract(1, 'day');
+        }
+
+        return streak;
+      }
+
+      // Calculer le pourcentage d'accomplissement de la semaine
+      async function calculateWeeklyProgress() {
+        const api = window.storageAPI;
+        if (!api) return 0;
+
+        const startOfWeek = moment().startOf('isoWeek');
+        const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+        let totalPossible = 0;
+        let totalAccomplished = 0;
+
+        for (let i = 0; i < 7; i++) {
+          const date = startOfWeek.clone().add(i, 'days');
+          const dateStr = date.format("YYYY-MM-DD");
+
+          // Ne compter que les jours déjà passés
+          if (date.isSameOrBefore(moment(), 'day')) {
+            for (const prayer of prayers) {
+              totalPossible++;
+              const isDone = await api.storageGet(`jp:${dateStr}:${prayer}`, false);
+              if (isDone) totalAccomplished++;
+            }
+          }
+        }
+
+        return totalPossible > 0 ? Math.round((totalAccomplished / totalPossible) * 100) : 0;
+      }
+
+      // Initialiser et mettre à jour le tableau de bord
+      updateDashboard();
+      setInterval(updateDashboard, 30000); // Mise à jour toutes les 30 secondes
+
+      // Focus du jour - système basé sur l'ancienne version
+      const dailySchedule = [
+        { start: "03:00", end: "04:30", name: "Dernier tiers de la nuit", activities: "Tahajjud (2–8 rakʿāt), duʿā' sincère, dhikr profond." },
+        { start: "04:30", end: "05:00", name: "Prière du Fajr", activities: "Ṣalāt al‑Faǧr et recueillement." },
+        { start: "05:00", end: "07:00", name: "Après al-faǧr", activities: "Adhkār du matin, lecture/mémorisation du Coran, méditation." },
+        { start: "08:00", end: "10:00", name: "Milieu de la matinée", activities: "Ṣalāt ad‑Ḍuḥā (2–8 rakʿāt), étude du Coran ou des ḥadiths." },
+        { start: "10:00", end: "12:30", name: "Journée", activities: "Travaux personnels, œuvres caritatives, service." },
+        { start: "12:30", end: "13:30", name: "Prière du Dhuhr", activities: "Ṣalāt aẓ‑Ẓuhr, dhikr et relecture." },
+        { start: "14:00", end: "15:30", name: "Après-midi", activities: "Lecture spirituelle, étude des maîtres soufis, repos." },
+        { start: "15:30", end: "16:30", name: "Prière de l'Asr", activities: "Ṣalāt al‑ʿAṣr, dhikr, marche méditative." },
+        { start: "17:00", end: "19:00", name: "Après al-maghrib", activities: "Ṣalāt al‑Maghrib, dhikr, salawat sur le Prophète." },
+        { start: "20:00", end: "21:30", name: "Après al-'isha'", activities: "Ṣalāt al‑ʿIshāʾ, dhikr collectif, litanies." },
+        { start: "21:30", end: "03:00", name: "Soir et Nuit", activities: "Étude, repos, protection nocturne (Āyat al‑Kursī, etc.)." }
+      ];
+
+      function updateDailyFocus() {
+        const currentTime = moment();
+        const currentTimeStr = currentTime.format("HH:mm");
+        let currentSlot = dailySchedule.find(slot => {
+          const start = slot.start;
+          const end = slot.end;
+          if (start > end) { // Overnight slot
+            return (currentTimeStr >= start && currentTimeStr <= "23:59") || (currentTimeStr >= "00:00" && currentTimeStr < end);
+          }
+          return currentTimeStr >= start && currentTimeStr < end;
+        });
+
+        if (currentSlot) {
+          $("#daily-focus-time").textContent = `Maintenant (${currentSlot.name})`;
+          $("#daily-focus-content").innerHTML = `<p>${currentSlot.activities}</p>`;
+        } else {
+          $("#daily-focus-time").textContent = "Repos";
+          $("#daily-focus-content").innerHTML = `<p>C'est un moment de transition entre les activités planifiées.</p>`;
+        }
+
+        // Ajouter les zikrs personnalisés avec design moderne
+        const dayOfWeek = currentTime.day(); // 0=Sunday, 1=Monday...
+        const hijriDay = currentTime.iDate();
+        const weeklyFocusContainer = $("#weekly-special-focus");
+        let weeklyHTML = '';
+
+        // Toujours afficher l'istighfar quotidien
+        weeklyHTML += `
+          <div class="special-notification">
+            <div class="flex items-center">
+              <div class="notification-icon bg-gradient-to-r from-gray-400 to-gray-600 text-white">📿</div>
+              <div>
+                <p class="font-bold text-gray-800">Zikr quotidien</p>
+                <p class="text-gray-600">1261× Istighfār</p>
+              </div>
+            </div>
+          </div>`;
+
+        if (dayOfWeek === 1 || dayOfWeek === 4) { // Monday or Thursday
+          weeklyHTML += `
+            <div class="special-notification">
+              <div class="flex items-center">
+                <div class="notification-icon bg-gradient-to-r from-blue-400 to-blue-600 text-white">🌙</div>
+                <div>
+                  <p class="font-bold text-blue-800">Rappel du jour</p>
+                  <p class="text-blue-600">C'est lundi/jeudi, un jour propice au jeûne surérogatoire.</p>
+                </div>
+              </div>
+            </div>`;
+        }
+        if (dayOfWeek === 5) { // Friday
+          weeklyHTML += `
+            <div class="special-notification">
+              <div class="flex items-center">
+                <div class="notification-icon bg-gradient-to-r from-green-400 to-green-600 text-white">🕌</div>
+                <div>
+                  <p class="font-bold text-green-800">Rappel du Vendredi</p>
+                  <p class="text-green-600">313× Ṣalāt sur le Prophète + Duʿāʾ pour les défunts après chaque prière</p>
+                </div>
+              </div>
+            </div>`;
+        }
+        if (hijriDay >= 13 && hijriDay <= 15) {
+          weeklyHTML += `
+            <div class="special-notification">
+              <div class="flex items-center">
+                <div class="notification-icon bg-gradient-to-r from-yellow-400 to-yellow-600 text-white">⭐</div>
+                <div>
+                  <p class="font-bold text-yellow-800">Jours Blancs</p>
+                  <p class="text-yellow-600">Nous sommes dans la période des jours blancs (${hijriDay}e jour), propice au jeûne.</p>
+                </div>
+              </div>
+            </div>`;
+        }
+
+        // Nuit du mercredi (Hasbunallah)
+        const isWednesdayNight = (dayOfWeek === 3 && currentTimeStr >= "19:00") || (dayOfWeek === 4 && currentTimeStr < "04:30");
+        if (isWednesdayNight) {
+          weeklyHTML += `
+            <div class="special-notification">
+              <div class="flex items-center">
+                <div class="notification-icon bg-gradient-to-r from-purple-400 to-purple-600 text-white">✨</div>
+                <div>
+                  <p class="font-bold text-purple-800">Nuit du mercredi</p>
+                  <p class="text-purple-600">450× Ḥasbunallāh wa niʿmal-wakīl</p>
+                </div>
+              </div>
+            </div>`;
+        }
+
+        weeklyFocusContainer.innerHTML = weeklyHTML;
+      }
+
+      // Helper pour créer une date "aujourd'hui" à partir de HH:mm
+      function todayAt(hhmm) {
+        const [H, M] = hhmm.split(":").map(Number);
+        return moment().clone().hours(H).minutes(M).seconds(0).milliseconds(0);
+      }
+
+      function nextPrayer() {
+        const now = moment();
+        for (const p of PRAYERS) {
+          const t = todayAt(p.time);
+          if (now.isBefore(t)) return { p, t };
+        }
+        return { p: PRAYERS[0], t: todayAt(PRAYERS[0].time).add(1, 'day') };
+      }
+
+      function updateCountdown() {
+        const { p, t } = nextPrayer();
+        $("#next-prayer-name").textContent = p.name;
+
+        const now = moment();
+        const diffMs = t.diff(now);
+
+        // S'assurer que le temps restant est positif
+        if (diffMs > 0) {
+          const totalSeconds = Math.floor(diffMs / 1000);
+          const hours = Math.floor(totalSeconds / 3600);
+          const minutes = Math.floor((totalSeconds % 3600) / 60);
+          const seconds = totalSeconds % 60;
+
+          const hh = String(hours).padStart(2, "0");
+          const mm = String(minutes).padStart(2, "0");
+          const ss = String(seconds).padStart(2, "0");
+
+          $("#next-prayer-eta").textContent = `${hh}:${mm}:${ss}`;
+        } else {
+          // Si le temps est écoulé, afficher 00:00:00 et recalculer
+          $("#next-prayer-eta").textContent = "00:00:00";
+        }
+
+        // surbrillance
+        PRAYERS.forEach((x) => {
+          const el = $("#p-" + x.name);
+          if (el) {
+            el.classList.toggle("ring", x.name === p.name);
+            el.classList.toggle("ring-emerald-500", x.name === p.name);
+            el.classList.toggle("ring-offset-2", x.name === p.name);
+          }
+        });
+      }
+
+      // updateCountdown est maintenant appelé dans tick()
+      updateCountdown();
+
+      // Journal - fonctions utilitaires et d'initialisation
+      let journalInitialized = false;
+
+      async function loadJournalData() {
+        const api = window.storageAPI;
+        if (!api) return;
+
+        try {
+          const today = moment().format("YYYY-MM-DD");
+
+          // Charger le compteur tasbih
+          const $count = $("#tasbih-counter-display");
+          if ($count) {
+            const count = await api.storageGet("tasbihCount", 0);
+            $count.textContent = count;
+          }
+
+          // Charger les cases de prières (individuellement)
+          const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+          for (const prayer of prayers) {
+            const checkbox = $(`input.jp[value="${prayer}"]`);
+            if (checkbox) {
+              const isChecked = await api.storageGet(`jp:${today}:${prayer}`, false);
+              checkbox.checked = isChecked;
+            }
+          }
+
+          // Charger la note du jour
+          const $note = $("#note");
+          if ($note) {
+            const noteContent = await api.storageGet(`note:${today}`, "");
+            $note.value = noteContent;
+          }
+
+          // Charger les cases Duʿāʾ al-Mayyit si vendredi
+          if (isFriday(moment())) {
+            await loadMayyitCases(today);
+          }
+
+          console.log('[Journal] Données chargées avec succès');
+        } catch (error) {
+          console.error("[Journal] Erreur lors du chargement:", error);
+        }
+      }
+
+      async function loadMayyitCases(today) {
+        const api = window.storageAPI;
+        if (!api) return;
+
+        const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+        for (const prayer of prayers) {
+          const checkbox = $(`#mayyit-${prayer}`);
+          if (checkbox) {
+            const isChecked = await api.storageGet(`zikrDone:${today}:mayyit${prayer}`, false);
+            checkbox.checked = isChecked;
+          }
+        }
+      }
+
+      function setupJournalEventListeners() {
+        // Event listeners pour le tasbih avec garde-fous
+        const $tasbihBtn = $("#tasbih-counter-btn");
+        const $tasbihReset = $("#tasbih-reset-btn");
+        const $tasbihValue = $("#tasbih-counter-display");
+
+        if ($tasbihBtn) {
+          $tasbihBtn.addEventListener("click", async () => {
+            let currentCount = parseInt($tasbihValue.textContent || '0', 10);
+            currentCount++;
+            $tasbihValue.textContent = currentCount;
+            const api = window.storageAPI;
+            if (api) await api.storageSet("tasbihCount", currentCount);
+          });
+        }
+
+        if ($tasbihReset) {
+          $tasbihReset.addEventListener("click", async () => {
+            $tasbihValue.textContent = '0';
+            const api = window.storageAPI;
+            if (api) await api.storageSet("tasbihCount", 0);
+          });
+        }
+
+        // Event listeners pour les cases de prières (individuelles)
+        const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+        prayers.forEach(prayer => {
+          const checkbox = $(`input.jp[value="${prayer}"]`);
+          if (checkbox) {
+            checkbox.addEventListener("change", async () => {
+              const api = window.storageAPI;
+              if (api) {
+                const today = moment().format("YYYY-MM-DD");
+                await api.storageSet(`jp:${today}:${prayer}`, checkbox.checked);
+              }
+            });
+          }
+        });
+
+        // Event listener pour la note
+        const $note = $("#note");
+        if ($note) {
+          $note.addEventListener("input", async () => {
+            const api = window.storageAPI;
+            if (api) {
+              const today = moment().format("YYYY-MM-DD");
+              await api.storageSet(`note:${today}`, $note.value);
+            }
+          });
+        }
+
+        // Event listeners pour les cases Duʿāʾ al-Mayyit
+        const mayyitPrayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+        mayyitPrayers.forEach((prayer) => {
+          const checkbox = $(`#mayyit-${prayer}`);
+          if (checkbox) {
+            checkbox.addEventListener("change", async () => {
+              const api = window.storageAPI;
+              if (api) {
+                const today = moment().format("YYYY-MM-DD");
+                await api.storageSet(`zikrDone:${today}:mayyit${prayer}`, checkbox.checked);
+              }
+            });
+          }
+        });
+      }
+
+      async function initJournal() {
+        if (journalInitialized) return;
+
+        if (!window.storageAPI) {
+          setTimeout(initJournal, 100);
+          return;
+        }
+
+        try {
+          // Ajouter la section Duʿāʾ al-Mayyit si vendredi
+          if (isFriday(moment())) {
+            addMayyitSection();
+          }
+
+          setupJournalEventListeners();
+          setupExportImportListeners();
+          await loadJournalData();
+          journalInitialized = true;
+          console.log('[Journal] Initialisation réussie');
+        } catch (error) {
+          console.error('[Journal] Erreur d\'initialisation:', error);
+        }
+      }
+
+      function addMayyitSection() {
+        const journalContainer = $('#journal-container');
+        if (!journalContainer || $("#journal-zikr")) return;
+
+        const mayyitHtml = `
+          <div class="card" id="journal-zikr">
+            <h3 class="font-semibold mb-2">Duʿāʾ al-Mayyit (Vendredi)</h3>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-fajr">
+                <span>Fajr</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-dhuhr">
+                <span>Ẓuhr</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-asr">
+                <span>ʿAṣr</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-maghrib">
+                <span>Maghrib</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-isha">
+                <span>ʿIshāʾ</span>
+              </label>
+            </div>
+          </div>
+        `;
+
+        journalContainer.insertAdjacentHTML('beforeend', mayyitHtml);
+      }
+
+      // Initialisation au chargement de la page et à l'ouverture de l'onglet
+      document.addEventListener("DOMContentLoaded", initJournal);
+
+      // Fonctions Export/Import des données
+      async function exportUserData() {
+        const api = window.storageAPI;
+        if (!api) {
+          showImportStatus("Erreur : API de stockage non disponible", "error");
+          return;
+        }
+
+        try {
+          const prefixes = ['tasbihCount', 'retreatStart', 'jp:', 'note:', 'zikrDone:', 'mayyit:'];
+          const exportData = {};
+          let exportCount = 0;
+
+          // Parcourir localStorage pour trouver les clés correspondantes
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && prefixes.some(prefix => key.startsWith(prefix))) {
+              try {
+                const value = JSON.parse(localStorage.getItem(key));
+                exportData[key] = value;
+                exportCount++;
+              } catch (e) {
+                // Ignorer les valeurs qui ne sont pas du JSON valide
+                console.warn(`Impossible d'exporter la clé ${key}:`, e);
+              }
+            }
+          }
+
+          // Créer et télécharger le fichier
+          const dataStr = JSON.stringify(exportData, null, 2);
+          const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(dataBlob);
+          link.download = `compagnon-spirituel-${moment().format('YYYY-MM-DD-HHmm')}.json`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          showImportStatus(`✅ ${exportCount} entrées exportées avec succès`, "success");
+        } catch (error) {
+          console.error('[Export] Erreur:', error);
+          showImportStatus("❌ Erreur lors de l'export", "error");
+        }
+      }
+
+      async function importUserData(file) {
+        const api = window.storageAPI;
+        if (!api) {
+          showImportStatus("Erreur : API de stockage non disponible", "error");
+          return;
+        }
+
+        try {
+          const text = await file.text();
+          const importData = JSON.parse(text);
+
+          if (typeof importData !== 'object' || importData === null) {
+            throw new Error('Format de fichier invalide');
+          }
+
+          const prefixes = ['tasbihCount', 'retreatStart', 'jp:', 'note:', 'zikrDone:', 'mayyit:'];
+          let importCount = 0;
+          let skippedCount = 0;
+
+          for (const [key, value] of Object.entries(importData)) {
+            // Vérifier que la clé correspond aux préfixes autorisés
+            if (prefixes.some(prefix => key.startsWith(prefix))) {
+              try {
+                await api.storageSet(key, value);
+                importCount++;
+              } catch (e) {
+                console.warn(`Impossible d'importer la clé ${key}:`, e);
+                skippedCount++;
+              }
+            } else {
+              skippedCount++;
+            }
+          }
+
+          showImportStatus(`✅ ${importCount} entrées importées${skippedCount > 0 ? `, ${skippedCount} ignorées` : ''}`, "success");
+
+          // Recharger la page après un court délai pour appliquer les changements
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+
+        } catch (error) {
+          console.error('[Import] Erreur:', error);
+          if (error.name === 'SyntaxError') {
+            showImportStatus("❌ Fichier JSON invalide", "error");
+          } else {
+            showImportStatus("❌ Erreur lors de l'import", "error");
+          }
+        }
+      }
+
+      function showImportStatus(message, type) {
+        const statusEl = $("#import-status");
+        if (!statusEl) return;
+
+        statusEl.textContent = message;
+        statusEl.className = `mt-3 text-sm ${type === 'error' ? 'text-red-600' : 'text-green-600'}`;
+
+        // Effacer le message après 5 secondes
+        setTimeout(() => {
+          statusEl.textContent = '';
+          statusEl.className = 'mt-3 text-sm';
+        }, 5000);
+      }
+
+      // Event listeners pour Export/Import
+      function setupExportImportListeners() {
+        const exportBtn = $("#export-data");
+        const importBtn = $("#import-data");
+        const importFile = $("#import-file");
+
+        if (exportBtn) {
+          exportBtn.addEventListener("click", exportUserData);
+        }
+
+        if (importBtn) {
+          importBtn.addEventListener("click", () => {
+            if (importFile) importFile.click();
+          });
+        }
+
+        if (importFile) {
+          importFile.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              importUserData(file);
+              // Réinitialiser l'input pour permettre la sélection du même fichier
+              e.target.value = '';
+            }
+          });
+        }
+      }
+
+
+
+
+
+      // Système de lectures arabes avec drop-in files
+      /*
+      DOCUMENTATION: Ajouter une nouvelle sourate
+      ============================================
+      1. Créer un fichier JSON dans data/lectures/ avec le nom : surah-XX-name.ar.json
+         Format: { "ayahs": [{"n":1,"ar":"نص الآية"}, {"n":2,"ar":"نص الآية"}] }
+
+      2. Ajouter une entrée dans data/lectures/manifest.json :
+         "cle": { "title":"اسم السورة", "file":"surah-XX-name.ar.json" }
+
+      3. L'application détectera automatiquement la nouvelle sourate
+      */
+
+      let availableSurahs = {};
+      let currentSurahData = null;
+
+      // Charger le manifeste des sourates disponibles
+      async function loadSurahManifest() {
+        try {
+          const response = await fetch('./data/lectures/manifest.json');
+          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+          const manifestData = await response.json();
+          if (!manifestData || typeof manifestData !== 'object') {
+            throw new Error('Manifeste invalide');
+          }
+
+          availableSurahs = manifestData;
+          console.log('[Lectures] Manifeste chargé:', Object.keys(availableSurahs).length, 'sourates');
+        } catch (error) {
+          console.error('[Lectures] Erreur manifeste:', error);
+          const selectEl = $("#surah-select");
+          if (selectEl) {
+            selectEl.innerHTML = '<option value="">خطأ في تحميل القائمة</option>';
+          }
+        }
+      }
+
+      // Remplir le sélecteur de sourates (appelé seulement quand le sélecteur existe)
+      function populateSurahSelector() {
+        const select = $("#surah-select");
+        if (!select) {
+          // Ne pas afficher d'avertissement car c'est normal si le contenu spécial n'est pas encore rendu
+          return false;
+        }
+
+        let html = '<option value="">— Sélectionnez une sourate —</option>';
+
+        // Mapping des noms français pour les sourates
+        const frenchNames = {
+          'fatiha': 'Al-Fatiha (L\'Ouverture)',
+          'kahf': 'Al-Kahf (La Caverne)',
+          'yasin': 'Ya-Sin',
+          'dukhan': 'Ad-Dukhan (La Fumée)',
+          'waqiah': 'Al-Waqiah (L\'Événement)',
+          'mulk': 'Al-Mulk (La Royauté)',
+          'insan': 'Al-Insan (L\'Homme)',
+          'buruj': 'Al-Buruj (Les Constellations)'
+        };
+
+        if (availableSurahs && typeof availableSurahs === 'object') {
+          Object.entries(availableSurahs).forEach(([key, surah]) => {
+            if (surah && surah.title) {
+              const frenchName = frenchNames[key] || key;
+              html += `<option value="${key}">${frenchName} - ${surah.title}</option>`;
+            }
+          });
+        }
+
+        select.innerHTML = html;
+        return true;
+      }
+
+      // Convertit 123 -> ١٢٣
+      function toArabicDigits(n){
+        return String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+      }
+
+      // Rendu mushaf : titre + basmala + bloc justifié avec pastilles
+      function renderSurahMushaf(container, data, title){
+        if(!container || !data || !Array.isArray(data.ayahs)) return;
+
+        const showBasmala = (data.surah !== 9); // pas de basmala en sourate 9
+
+        const htmlAyahs = data.ayahs
+          .map(a => `${a.ar}<span class="ayah-badge">${toArabicDigits(a.n || a.numberInSurah || a.number || 0)}</span>`)
+          .join(' ');
+
+        container.innerHTML = `
+          <div id="surah-wrap">
+            <div id="surah-title">${title}</div>
+            ${showBasmala ? '<span class="bismillah">﷽</span>' : ''}
+            <p class="ayahs-block" dir="rtl" lang="ar">${htmlAyahs}</p>
+          </div>
+        `;
+      }
+
+      // Charger une sourate spécifique
+      async function loadSurah(surahKey) {
+        const contentEl = $("#lect-content");
+
+        try {
+          // Affichage du chargement
+          contentEl.innerHTML = `
+            <div class="text-center py-8">
+              <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-slate-600 rounded-full mb-4"></div>
+              <p class="text-slate-600">Chargement en cours...</p>
+              <p class="text-slate-400 text-sm mt-1">جاري التحميل...</p>
+            </div>
+          `;
+
+          const surah = availableSurahs[surahKey];
+          if (!surah) throw new Error('Sourate non trouvée');
+
+          const response = await fetch(`./data/lectures/${surah.file}?v=${Date.now()}`);
+          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+          currentSurahData = await response.json();
+          renderSurahMushaf(contentEl, currentSurahData, surah.title);
+          console.log('[Lectures] Sourate chargée:', surah.title);
+        } catch (error) {
+          console.error('[Lectures] Erreur chargement sourate:', error);
+          contentEl.innerHTML = `
+            <div class="text-red-600 p-6 rounded-xl bg-red-50 text-center border border-red-200">
+              <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-red-600 text-xl">⚠️</span>
+              </div>
+              <p class="font-semibold text-red-800 mb-2">Erreur de chargement</p>
+              <p class="text-red-600">Impossible de charger cette sourate</p>
+              <p class="text-red-500 text-sm mt-2">لا يمكن تحميل هذه السورة</p>
+            </div>
+          `;
+        }
+      }
+
+      // Charger le contenu spécial quotidien (conservé de l'ancien système)
+      async function loadSpecialContent() {
+        try {
+          const response = await fetch('./data/special.json');
+          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+          const data = await response.json();
+          renderSpecialContent(data);
+        } catch (error) {
+          console.error('[Lectures] Erreur contenu spécial:', error);
+          $("#lect-content").innerHTML = `
+            <div class="text-red-600 p-4 rounded-xl bg-red-50">
+              <p><strong>Erreur de chargement</strong></p>
+              <p>Impossible de charger le contenu spécial.</p>
+            </div>
+          `;
+        }
+      }
+
+      // Rendre le contenu spécial quotidien avec sélecteur de sourates
+      function renderSpecialContent() {
+        const contentEl = $("#lect-content");
+        if (!contentEl) {
+          console.warn('[Lectures] Conteneur de lectures non trouvé');
+          return;
+        }
+
+        // Créer la liste des sourates disponibles (toutes sauf Al-Kahf)
+        const availableSurahsForSpecial = availableSurahs && typeof availableSurahs === 'object'
+          ? Object.entries(availableSurahs)
+              .filter(([key]) => key !== 'kahf')
+              .map(([key, surah]) => {
+                const frenchNames = {
+                  'fatiha': 'Al-Fatiha (L\'Ouverture)',
+                  'yasin': 'Ya-Sin',
+                  'dukhan': 'Ad-Dukhan (La Fumée)',
+                  'waqiah': 'Al-Waqiah (L\'Événement)',
+                  'mulk': 'Al-Mulk (La Royauté)',
+                  'insan': 'Al-Insan (L\'Homme)',
+                  'buruj': 'Al-Buruj (Les Constellations)'
+                };
+                return { key, surah, frenchName: frenchNames[key] || key };
+              })
+          : [];
+
+        let html = `
+          <div class="mb-6">
+            <h3 class="text-2xl font-semibold mb-2 title">Lecture Spirituelle Quotidienne</h3>
+            <p class="text-slate-600 mb-4">Sélectionnez une sourate parmi les lectures recommandées pour votre pratique spirituelle quotidienne.</p>
+          </div>
+
+          <div class="mb-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-gradient-islamic rounded-full flex items-center justify-center shadow-lg">
+                <span class="text-white text-lg">📚</span>
+              </div>
+              <div>
+                <h4 class="font-semibold text-slate-800">Sourates recommandées</h4>
+                <p class="text-sm text-slate-600">Choisissez votre lecture spirituelle</p>
+              </div>
+            </div>
+            <select id="special-surah-select" class="w-full border-2 border-slate-200 rounded-xl px-4 py-3 text-lg font-medium focus:border-islamic-green focus:ring-4 focus:ring-emerald-100 transition-all duration-300">
+              <option value="">— Sélectionnez une sourate —</option>
+        `;
+
+        availableSurahsForSpecial.forEach(({ key, surah, frenchName }) => {
+          html += `<option value="${key}">${frenchName} - ${surah.title}</option>`;
+        });
+
+        html += `
+            </select>
+          </div>
+
+          <div id="special-surah-content">
+            <div class="text-center py-12">
+              <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span class="text-white text-2xl">📖</span>
+              </div>
+              <p class="text-slate-500 text-lg">Choisissez une sourate ci-dessus</p>
+              <p class="text-slate-400 text-sm mt-2">اختر سورة من القائمة أعلاه</p>
+            </div>
+          </div>
+        `;
+
+        contentEl.innerHTML = html;
+
+        // Maintenant que le sélecteur existe, le remplir avec les sourates
+        populateSurahSelector();
+
+        // Ajouter l'event listener pour la sélection
+        const specialSelect = $("#special-surah-select");
+        if (specialSelect) {
+          specialSelect.addEventListener('change', (e) => {
+            const selectedSurah = e.target.value;
+            const contentContainer = $("#special-surah-content");
+            
+            if (!contentContainer) {
+              console.warn('[Lectures] Conteneur de contenu spécial non trouvé');
+              return;
+            }
+            
+            if (selectedSurah) {
+              // Afficher un état de chargement
+              contentContainer.innerHTML = `
+                <div class="text-center py-8">
+                  <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-slate-600 rounded-full mb-4"></div>
+                  <p class="text-slate-600">Chargement en cours...</p>
+                </div>
+              `;
+
+              // Charger la sourate sélectionnée
+              loadSurahForSpecial(selectedSurah, contentContainer);
+            } else {
+              contentContainer.innerHTML = `
+                <div class="text-center py-12">
+                  <div class="w-16 h-16 bg-gradient-islamic rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-white text-2xl">📖</span>
+                  </div>
+                  <p class="text-slate-500 text-lg">Choisissez une sourate ci-dessus</p>
+                  <p class="text-slate-400 text-sm mt-2">اختر سورة من القائمة أعلاه</p>
+                </div>
+              `;
+            }
+          });
+        }
+      }
+
+      // Charger une sourate pour la section spéciale
+      async function loadSurahForSpecial(surahKey, container) {
+        try {
+          const surah = availableSurahs[surahKey];
+          if (!surah) throw new Error('Sourate non trouvée');
+
+          const response = await fetch(`./data/lectures/${surah.file}?v=${Date.now()}`);
+          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+          const surahData = await response.json();
+          renderSurahMushaf(container, surahData, surah.title);
+        } catch (error) {
+          console.error('[Lectures Special] Erreur chargement sourate:', error);
+          container.innerHTML = `
+            <div class="text-red-600 p-6 rounded-xl bg-red-50 text-center border border-red-200">
+              <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-red-600 text-xl">⚠️</span>
+              </div>
+              <p class="font-semibold text-red-800 mb-2">Erreur de chargement</p>
+              <p class="text-red-600">Impossible de charger cette sourate</p>
+            </div>
+          `;
+        }
+      }
+
+      // Gestion des onglets de lectures
+      function setupLecturesTabs() {
+        // Attendre que les éléments soient dans le DOM
+        setTimeout(() => {
+          const lectureButtons = $$('[data-lect]');
+          console.log('[Lectures] Boutons trouvés:', lectureButtons.length);
+          
+          // Supprimer les anciens event listeners s'ils existent
+          lectureButtons.forEach(btn => {
+            const clone = btn.cloneNode(true);
+            btn.parentNode.replaceChild(clone, btn);
+          });
+          
+          // Récupérer les nouveaux éléments après clonage
+          const newLectureButtons = $$('[data-lect]');
+          
+          newLectureButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              console.log('[Lectures] Clic sur:', btn.dataset.lect);
+              
+              // Mise à jour visuelle des boutons
+              newLectureButtons.forEach(b => {
+                b.setAttribute('aria-pressed', 'false');
+              });
+              btn.setAttribute('aria-pressed', 'true');
+
+              const lectureType = btn.dataset.lect;
+
+              if (lectureType === 'kahf') {
+                // Charger directement la sourate Al-Kahf
+                console.log('[Lectures] Chargement Al-Kahf');
+                loadSurah('kahf');
+              } else if (lectureType === 'special') {
+                // Charger le contenu spécial quotidien avec les autres sourates
+                console.log('[Lectures] Chargement contenu spécial');
+                renderSpecialContent();
+              }
+            });
+          });
+        }, 50);
+      }
+
+      // Charger les lectures lors de l'ouverture de l'onglet
+      async function initLectures() {
+        await loadSurahManifest();
+        
+        // Attendre que les éléments soient dans le DOM
+        setTimeout(() => {
+          setupLecturesTabs();
+
+          // État initial : onglet Al-Kahf sélectionné par défaut après setup
+          setTimeout(() => {
+            const kahfBtn = $('[data-lect="kahf"]');
+            if (kahfBtn) {
+              kahfBtn.setAttribute('aria-pressed', 'true');
+              loadSurah('kahf');
+              console.log('[Lectures] État initial Al-Kahf configuré');
+            }
+          }, 100);
+          
+          console.log('[Lectures] Initialisation terminée');
+        }, 100);
+      }
+
+      // Helpers pour les zikrs (simplifiés, maintenant intégrés dans le nouveau système Focus)
+      function isFriday(now) {
+        return now.isoWeekday() === 5; // 5 = vendredi
+      }
+
+      function isWedNight(now) {
+        const hour = now.hour();
+        const isWednesday = now.isoWeekday() === 3 && hour >= 18; // Mercredi après 18h
+        const isThursday = now.isoWeekday() === 4 && hour < 4; // Jeudi avant 4h
+        return isWednesday || isThursday;
+      }
+
+      // todayItems maintenant remplacé par le système Focus dynamique
+      async function todayItems(now) {
+        // Fonction conservée pour compatibilité mais remplacée par renderFocus
+        return [];
+      }
+
+      // Données des zikrs personnalisés
+      const personalZikr = [
+        {
+          id: 'istighfar',
+          title: 'Istighfār Quotidien',
+          count: 1261,
+          periodicity: 'Tous les jours',
+          arabic: 'أستغفرُ الله',
+          condition: 'daily'
+        },
+        {
+          id: 'salat-prophet',
+          title: 'Ṣalāt sur le Prophète (ﷺ)',
+          count: 313,
+          periodicity: 'Chaque vendredi',
+          arabic: 'اللهم صلِّ على سيدِنا محمدٍ وعلى آله وصحبه وسلم',
+          condition: 'friday'
+        },
+        {
+          id: 'hasbunallah',
+          title: 'Hasbunallah',
+          count: 450,
+          periodicity: 'Chaque mercredi (nuit)',
+          arabic: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',
+          condition: 'wednesday'
+        },
+        {
+          id: 'dua-defunts',
+          title: 'Duʿā pour les défunts',
+          periodicity: 'Après chaque prière du vendredi',
+          arabic: 'اللَّهُمَّ اغْفِرْ لِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ الأَحْيَاءِ مِنْهُمْ وَالأَمْوَاتِ',
+          condition: 'friday-every-prayer'
+        }
+      ];
+
+      // Programme quotidien détaillé
+      const dailyProgram = [
+        {
+          day: 'Dimanche',
+          night: '4 rakʿat (1 Fātiḥa + 3 Ikhlāṣ) | Zikr : 70 Istighfār.',
+          day_content: '4 rakʿat (1 Fātiḥa + 1 Kāfirūn) | Zikr : 10 Ikhlāṣ.'
+        },
+        {
+          day: 'Lundi',
+          night: '2 rakʿat (1 Fātiḥa + 15 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās).',
+          day_content: '2 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 10 Istighfār + 10 Ṣalāt.'
+        },
+        {
+          day: 'Mardi',
+          night: '6 rakʿat (1 Fātiḥa + 1 Ikhlāṣ + 1 Falaq + 1 Nās) | Zikr : 70 Tawḥīd.',
+          day_content: '10 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ).'
+        },
+        {
+          day: 'Mercredi',
+          night: '4 rakʿat (1 Fātiḥa + 40 Ikhlāṣ) | Zikr : 70 Istighfār.',
+          day_content: '4 rakʿat (1 Fātiḥa + 1 Āyat al-Kursī + 3 Ikhlāṣ + 1 Falaq + 1 Nās).'
+        },
+        {
+          day: 'Jeudi',
+          night: '8 rakʿat (1 Fātiḥa + 10 Ikhlāṣ) | Zikr : 100 Formule du Jeudi.',
+          day_content: '4 rakʿat (1 Fātiḥa + 5 Naṣr + 50 Kawthar) | Zikr : 10 Istighfār.'
+        },
+        {
+          day: 'Vendredi',
+          night: '4 rakʿat (1 Fātiḥa + 50 Zalzalah).',
+          day_content: '2 rakʿat (1ʳᵉ : 1 Fātiḥa + 1 Āyat al-Kursī + 25 Falaq ; 2ᵉ : 1 Fātiḥa + 1 Ikhlāṣ + 25 Nās) | Zikr : 50 Formule du Vendredi.'
+        },
+        {
+          day: 'Samedi',
+          night: '6 rakʿat (1 Fātiḥa + 3 Ikhlāṣ).',
+          day_content: '4 rakʿat (1 Fātiḥa + 3 Kāfirūn) | Zikr : 3 Āyat al-Kursī.'
+        }
+      ];
+
+      // Fonction de rendu du programme détaillé
+      let programmeLoaded = false;
+      async function renderProgramme() {
+        if (programmeLoaded) return;
+
+        // 1. Programme quotidien
+        const dailyGrid = $("#program-daily-grid");
+        if (dailyGrid) {
+          dailyGrid.innerHTML = '';
+          dailyProgram.forEach(program => {
+            const cardHtml = `
+              <div class="bg-white rounded-2xl shadow-lg p-6 space-y-3">
+                <h3 class="text-2xl font-bold text-[#6A4A3C]">${program.day}</h3>
+                <div>
+                  <h4 class="font-semibold text-gray-700 mb-1">🌙 Nuit</h4>
+                  <p class="text-sm text-gray-600">${program.night}</p>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-700 mb-1">☀️ Jour</h4>
+                  <p class="text-sm text-gray-600">${program.day_content}</p>
+                </div>
+              </div>
+            `;
+            dailyGrid.insertAdjacentHTML('beforeend', cardHtml);
+          });
+        }
+
+        // 2. Zikrs personnalisés
+        const zikrGrid = $("#personal-zikr-grid");
+        if (zikrGrid) {
+          zikrGrid.innerHTML = '';
+          const currentDay = moment().day(); // 0=dimanche, 1=lundi, ..., 5=vendredi, 6=samedi
+
+          personalZikr.forEach(zikr => {
+            let badge = '';
+
+            // Générer le badge conditionnel
+            if (zikr.condition === 'daily') {
+              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Quotidien</span>';
+            } else if (zikr.condition === 'friday' && currentDay === 5) {
+              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Aujourd\'hui</span>';
+            } else if (zikr.condition === 'wednesday' && currentDay === 3) {
+              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">Ce soir</span>';
+            } else if (zikr.condition === 'friday-every-prayer' && currentDay === 5) {
+              badge = '<span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">À chaque ṣalāt</span>';
+            }
+
+            const countDisplay = zikr.count ? `<div class="text-3xl font-bold text-[#6A4A3C]">${zikr.count}×</div>` : '';
+
+            const cardHtml = `
+              <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-start justify-between mb-3">
+                    <h3 class="text-lg font-bold text-[#6A4A3C]">${zikr.title}</h3>
+                    ${badge}
+                  </div>
+                  ${countDisplay}
+                  <p class="text-sm text-gray-500 mb-3">${zikr.periodicity}</p>
+                  <p class="arabic-text text-lg mt-2">${zikr.arabic}</p>
+                </div>
+              </div>
+            `;
+            zikrGrid.insertAdjacentHTML('beforeend', cardHtml);
+          });
+        }
+
+        programmeLoaded = true;
+        console.log('[Programme] Contenu chargé avec succès');
+      }
+
+      // Fonction de rendu de la retraite
+      let retraiteLoaded = false;
+      async function renderRetraite() {
+        if (retraiteLoaded) return;
+
+        try {
+          const response = await fetch('./data/retraite.json');
+          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+          const data = await response.json();
+
+          // 1. Grille quotidienne
+          const gridContainer = $("#retreat-grid");
+          let gridHtml = `
+            <table class="w-full border-collapse border border-slate-300">
+              <thead>
+                <tr class="bg-slate-100">
+                  <th class="border border-slate-300 p-3 text-left font-semibold">Créneaux</th>
+                  <th class="border border-slate-300 p-3 text-left font-semibold">Activités Constantes</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          data.grilleQuotidienne.forEach(item => {
+            gridHtml += `
+              <tr>
+                <td class="border border-slate-300 p-3 font-medium">${item.creneau}</td>
+                <td class="border border-slate-300 p-3">${item.constant}</td>
+              </tr>
+            `;
+          });
+
+          gridHtml += '</tbody></table>';
+          gridContainer.innerHTML = gridHtml;
+
+          // 2. Accents par semaine
+          const weeksContainer = $("#retreat-weeks");
+          let weeksHtml = '';
+
+          Object.entries(data.themes).forEach(([semaine, theme]) => {
+            const accent = data.accentsHebdo[semaine];
+            weeksHtml += `
+              <div class="border rounded-lg p-4">
+                <h3 class="font-semibold mb-2">Semaine ${semaine}</h3>
+                <h4 class="text-emerald-600 font-medium mb-3">${theme}</h4>
+
+                <div class="space-y-3">
+                  <div>
+                    <h5 class="font-medium text-sm mb-1">Notes :</h5>
+                    <ul class="text-sm text-slate-600 space-y-1">
+                      ${accent.notes.map(note => `<li>• ${note}</li>`).join('')}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h5 class="font-medium text-sm mb-1">Exemples :</h5>
+                    <ul class="text-sm text-slate-600 space-y-1">
+                      ${accent.exemples.map(exemple => `<li>• ${exemple}</li>`).join('')}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+          weeksContainer.innerHTML = weeksHtml;
+
+          // 3. Planning annuel allégé
+          const annualContainer = $("#retreat-annual");
+          const annual = data.annuelAllege;
+          let annualHtml = `
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="border rounded-lg p-4">
+                <h3 class="font-semibold mb-3">Routine Hebdomadaire</h3>
+                <div class="space-y-3">
+                  <div>
+                    <h4 class="font-medium text-slate-700 mb-1">🌙 Matin</h4>
+                    <p class="text-sm text-slate-600">${annual.semaine.matin}</p>
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-slate-700 mb-1">🌞 Midi</h4>
+                    <p class="text-sm text-slate-600">${annual.semaine.midi}</p>
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-slate-700 mb-1">🌆 Soir</h4>
+                    <p class="text-sm text-slate-600">${annual.semaine.soir}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border rounded-lg p-4">
+                <h3 class="font-semibold mb-3">Avant le Sommeil</h3>
+                <p class="text-sm text-slate-600">${annual.avantSommeil}</p>
+              </div>
+            </div>
+          `;
+          annualContainer.innerHTML = annualHtml;
+
+          retraiteLoaded = true;
+          console.log('[Retraite] Contenu chargé avec succès');
+
+        } catch (error) {
+          console.error('[Retraite] Erreur de chargement:', error);
+          $("#retreat-grid").innerHTML = '<p class="text-red-600">Erreur de chargement de la retraite</p>';
+        }
+      }
+
+      // Fonction de rendu des mois
+      let moisLoaded = false;
+      async function renderMois() {
+        if (moisLoaded) return;
+
+        try {
+          const response = await fetch('./data/mois.json');
+          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+          const data = await response.json();
+          const now = moment();
+          const currentHijriMonth = now.iMonth(); // Index du mois hijri (0-11)
+          const currentHijriDay = now.iDate(); // Jour du mois hijri
+
+          // Trouver le mois actuel
+          const currentMonth = data.mois.find(m => m.i === currentHijriMonth);
+
+          // Vérifier s'il y a un jour spécial aujourd'hui
+          const specialDay = data.jours.find(j => j.m === currentHijriMonth && j.d === currentHijriDay);
+
+          // Afficher l'alerte si jour spécial
+          const alerteEl = $("#jour-alerte");
+          const alerteContentEl = $("#jour-alerte-content");
+
+          if (specialDay) {
+            alerteEl.classList.remove("hidden");
+            alerteContentEl.innerHTML = `
+              <h4 class="font-semibold mb-2 text-amber-800">${specialDay.titre}</h4>
+              <div class="space-y-2">
+                <p class="text-sm text-amber-700">Recommandations :</p>
+                <ul class="text-sm text-amber-700 space-y-1">
+                  ${specialDay.reco.map(r => `<li>• ${r}</li>`).join('')}
+                </ul>
+              </div>
+            `;
+          } else {
+            alerteEl.classList.add("hidden");
+          }
+
+          // Afficher les informations du mois
+          const moisInfoEl = $("#mois-info");
+          let moisHtml = '';
+
+          if (currentMonth) {
+            moisHtml = `
+              <div class="text-center mb-6">
+                <h3 class="text-3xl font-semibold mb-2 title">${currentMonth.nom}</h3>
+                <p class="text-slate-600 text-lg">${currentMonth.sens}</p>
+                <p class="text-sm text-slate-500 mt-1">${now.format('iMMMM iYYYY')}</p>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="border rounded-lg p-4">
+                  <h4 class="font-semibold mb-3 text-emerald-600">✨ Jours clés ce mois-ci</h4>
+                  ${currentMonth.cles.length > 0
+                    ? `<ul class="space-y-2">${currentMonth.cles.map(c => `<li class="text-sm">• ${c}</li>`).join('')}</ul>`
+                    : '<p class="text-sm text-slate-500">Aucun jour particulier ce mois-ci</p>'
+                  }
+                </div>
+
+                <div class="border rounded-lg p-4">
+                  <h4 class="font-semibold mb-3 text-blue-600">🤲 Pratiques recommandées</h4>
+                  <ul class="space-y-2">
+                    ${currentMonth.pratiques.map(p => `<li class="text-sm">• ${p}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mt-6 bg-slate-50 rounded-lg p-4">
+                <h4 class="font-semibold mb-3">📅 Autres jours importants de l'année</h4>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                  ${data.jours.map(j => {
+                    const mois = data.mois.find(m => m.i === j.m);
+                    return `
+                      <div class="p-3 border rounded-lg">
+                        <div class="font-medium">${j.titre}</div>
+                        <div class="text-slate-500">${j.d} ${mois?.nom || ''}</div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `;
+          } else {
+            moisHtml = '<p class="text-red-600 text-center">Erreur : mois hijri non trouvé</p>';
+          }
+
+          moisInfoEl.innerHTML = moisHtml;
+          moisLoaded = true;
+          console.log('[Mois] Contenu chargé avec succès');
+
+        } catch (error) {
+          console.error('[Mois] Erreur de chargement:', error);
+          $("#mois-info").innerHTML = '<p class="text-red-600 text-center">Erreur de chargement des données du mois</p>';
+        }
+      }
+
+      // Charger le contenu lors de l'ouverture des onglets
+      $$('[data-tab="programme"]')[0].addEventListener("click", renderProgramme);
+      $$('[data-tab="lectures"]')[0].addEventListener("click", () => {
+        initLectures();
+      });
+      $$('[data-tab="retraite"]')[0].addEventListener("click", renderRetraite);
+      $$('[data-tab="journal"]')[0].addEventListener("click", initJournal); // Assure l'initialisation si l'onglet Journal est ouvert
+      $$('[data-tab="mois"]')[0].addEventListener("click", renderMois);
+
+      // Initialiser les lectures immédiatement pour que les onglets fonctionnent
+      initLectures();
+
+      // Icônes lucide
+      window.lucide?.createIcons();
+
+
+      // Horloge générale et mise à jour du focus du jour
+      function tick() {
+        const now = moment();
+        $("#clock").textContent = now.format("HH:mm:ss");
+        $("#date-greg").textContent = now.format("dddd D MMMM YYYY");
+        // Ne pas écraser la date hijri ici, elle est gérée par tickClock()
+
+        // Utiliser la fonction updateCountdown existante qui calcule le temps restant dynamiquement
+        updateCountdown();
+      }
+      setInterval(tick, 1000);
+      tick();
+
+      // Initialisation du Focus du jour
+      updateDailyFocus();
+      setInterval(updateDailyFocus, 60000); // Update focus every minute
+
+    </script>
+  </body>
+</html>
