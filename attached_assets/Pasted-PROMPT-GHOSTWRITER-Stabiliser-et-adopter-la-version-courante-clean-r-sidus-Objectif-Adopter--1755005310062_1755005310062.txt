@@ -1,0 +1,151 @@
+PROMPT GHOSTWRITER — Stabiliser et “adopter” la version courante (clean + résidus)
+Objectif
+Adopter la version de code actuellement présente dans ce Repl comme référence. Ne rien réécrire fonctionnellement. Faire uniquement un nettoyage technique : fichiers dupliqués, chemins cassés, Service Worker/caches, références mortes. Le but : que l’app tourne proprement, sans erreurs console, et qu’un prochain déploiement parte sur cette base.
+
+Contraintes (très importantes)
+
+Ne change pas l’UX, les textes, ni l’architecture.
+
+Ne migre aucune lib, ne “modernise” rien.
+
+Ne touche pas aux données (JSON, contenus).
+
+Corrige seulement ce qui cause erreurs, doublons, incohérences.
+
+Si un choix est ambigu : préserver le comportement actuel.
+
+1) Arborescence & chemins
+À la racine du Repl, on doit avoir un seul index.html, un seul sw.js, un seul manifest.json (PWA), icons/, data/…, bridge.js, storage.js, etc.
+
+Supprimer (ou renommer .bak) tout doublon : service-worker.js, sw-old.js, sw copy.js, index_old.html, etc.
+
+Dans index.html, vérifier tous les <script src> et <link href> :
+
+Utiliser chemins relatifs cohérents : ./… (pas de mélange avec /… si le site n’est pas toujours servi à la racine).
+
+Aucune référence vers un fichier inexistant. Si une référence ne mène à rien → la retirer proprement.
+
+S’il y a des scripts de test/empreinte/canvas genre test.js, fingerprint*.js, inject_canvas, etc. non indispensables à l’app, les retirer (et leurs balises <script>).
+
+But : éliminer les “bruits” en Console sans impacter l’app.
+
+2) Service Worker (nettoyage & anti-cache)
+Un seul sw.js valide (JS pur, sans HTML/Markdown).
+
+Incrémente CACHE_NAME (ex. compagnon-spirituel-v20).
+
+Pré-cache uniquement :
+
+./, ./index.html, ./manifest.json (PWA), ./icons/*
+
+./data/lectures/manifest.json + les 8 sourates présentes
+
+autres assets locaux réellement utilisés (pas de fichiers fantômes)
+
+Activation : self.skipWaiting() à l’install, clients.claim() à l’activate, et suppression des vieux caches ≠ CACHE_NAME.
+
+fetch handler simple et robuste :
+
+cache-then-network pour assets statiques ;
+
+pour JSON de lectures (/data/lectures/*.json), autoriser no-store (on veut éviter le vieux JSON en cache).
+
+Dans index.html, enregistrement propre :
+
+html
+Copier
+Modifier
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js?ver=' + Date.now());
+    });
+  }
+</script>
+Le ?ver=… force l’update du SW quand on redéploie.
+
+3) bridge.js & stockage local
+bridge.js doit définir une seule fois window.storageAPI :
+
+js
+Copier
+Modifier
+window.storageAPI = window.storageAPI || {
+  storageGet: async (k, def=null) => {
+    try { const v = localStorage.getItem(k); return v==null ? def : JSON.parse(v); }
+    catch(e){ console.error('[storageGet]', k, e); return def; }
+  },
+  storageSet: async (k, v) => {
+    try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){ console.error('[storageSet]', k, e); }
+  },
+  storageRemove: async (k) => { try { localStorage.removeItem(k); } catch(e){} },
+  storageSubscribe: () => {} // no-op offline
+};
+Vérifier dans index.html que bridge.js est importé une seule fois :
+
+html
+Copier
+Modifier
+<script type="module" src="./bridge.js"></script>
+Si storage.js existe déjà et double des fonctions, choisir une seule source (garder bridge.js), et retirer l’autre référence dans index.html.
+
+4) Lectures : manifest + garde-fou JSON
+Vérifier ./data/lectures/manifest.json : ne référencer que des fichiers existants (les 8 sourates).
+
+Ajouter une petite fonction utilitaire (si pas déjà) pour éviter le “Unexpected token ‘<’” en cas de 404/HTML :
+
+js
+Copier
+Modifier
+async function fetchJSONStrict(url){
+  const res = await fetch(url, { cache: 'no-store' });
+  const txt = await res.clone().text();
+  if (txt.trim().startsWith('<')) throw new Error('HTML reçu au lieu de JSON: ' + url);
+  return JSON.parse(txt);
+}
+Et l’utiliser pour charger le manifest + sourates.
+
+Pas de transformation fonctionnelle du rendu : garder la présentation actuelle.
+
+5) Nettoyage Console & erreurs
+Au chargement, aucune erreur rouge dans la Console.
+
+S’il reste un warning Tailwind CDN : normal (on n’installe pas la CLI).
+
+Retirer seulement les logs de debug bruyants (sans supprimer les logs utiles).
+
+6) Exécution locale (Replit)
+package.json → s’il y a un script start, le garder simple :
+
+json
+Copier
+Modifier
+"scripts": { "start": "npx serve -s -l 3000 ." }
+et ne pas ajouter d’outils inutiles.
+
+.replit : si besoin, pointer sur le script start ou serve -s . — ne rien complexifier.
+
+Lancer Run et vérifier :
+
+Page charge ;
+
+SW installé (onglet Application) ;
+
+window.storageAPI dispo ;
+
+Lectures OK (manifest/sourates chargés) ;
+
+Journal/Tasbih OK ;
+
+Plus d’“exceptions” en rouge.
+
+7) Ce que tu me rends (résumé)
+Liste brève des fichiers modifiés/supprimés (ex.: sw.js, index.html imports, bridge.js, refs retirées).
+
+Confirmation que la Console est propre (pas d’erreur rouge).
+
+Confirmation que les 8 sourates se chargent.
+
+Confirmation que Tasbih persiste après reload.
+
+Ne fais aucune refonte ni “amélioration” non demandée. Le but est de figer cette version proprement, pour en faire notre nouvelle base de départ stable.
