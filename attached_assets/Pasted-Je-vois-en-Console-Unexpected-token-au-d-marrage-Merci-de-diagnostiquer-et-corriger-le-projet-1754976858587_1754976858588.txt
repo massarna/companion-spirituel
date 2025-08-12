@@ -1,0 +1,97 @@
+Je vois en Console “Unexpected token ‘<’” au démarrage. Merci de diagnostiquer et corriger le projet. Fais exactement ceci :
+
+Trouver la source précise de l’erreur
+
+Ouvre la Console/Network et identifie le fichier qui provoque “Unexpected token ‘<’” (souvent un JS qui contient du HTML ou un 404 qui renvoie une page HTML).
+
+En particulier, vérifie /sw.js (Service Worker). Si son contenu commence par <!-- ou contient des blocs javascript (Markdown), c’est la cause.
+
+Unifier et réparer sw.js
+
+Il peut y avoir plusieurs versions de sw.js dans le repo. Garde un seul sw.js à la racine et remplace tout son contenu par ce JS minimal et valide (sans HTML/Markdown) :
+
+js
+Copier
+Modifier
+// sw.js — Service Worker propre
+const CACHE_NAME = "compagnon-spirituel-v18";
+const urlsToCache = [
+  "/",
+  "/index.html",
+  "/data/invocations.json",
+  "/data/lectures/manifest.json",
+  "/data/lectures/surah-1-al-fatiha.ar.json",
+  "/data/lectures/surah-18-al-kahf.ar.json",
+  "/data/lectures/surah-36-yasin.ar.json",
+  "/data/lectures/surah-44-dukhan.ar.json",
+  "/data/lectures/surah-56-waqiah.ar.json",
+  "/data/lectures/surah-67-mulk.ar.json",
+  "/data/lectures/surah-76-insan.ar.json",
+  "/data/lectures/surah-85-buruj.ar.json",
+  "https://cdn.tailwindcss.com",
+  "https://cdn.jsdelivr.net/npm/chart.js",
+  "https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js",
+  "https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/fr.js",
+  "https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.min.js",
+  "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lato:wght@300;400;700&display=swap",
+];
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(urlsToCache)));
+  self.skipWaiting();
+});
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null))),
+    ),
+  );
+  self.clients.claim();
+});
+self.addEventListener("fetch", (event) => {
+  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+});
+Supprime toute autre copie de sw.js ou de brouillon Markdown.
+
+Vérifier l’enregistrement du SW
+
+Dans index.html, garde un enregistrement simple :
+
+html
+Copier
+Modifier
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/sw.js");
+    });
+  }
+</script>
+Force un nouveau SW : après modification, fais “Hard Reload” (Ctrl/Cmd+Shift+R) et vider le cache de l’application (Application → Service Workers → “Unregister” puis recharger).
+
+Écarter l’autre cause classique (“JSON → <”)
+
+Ajoute un petit garde-fou sur les fetch JSON pour logguer si on reçoit du HTML :
+
+js
+Copier
+Modifier
+async function fetchJSON(url) {
+  const res = await fetch(url);
+  const txt = await res.clone().text();
+  if (txt.trim().startsWith("<")) {
+    console.error("[fetchJSON] Le serveur renvoie du HTML pour", url, "→ probable 404");
+    throw new Error("JSON attendu, HTML reçu: " + url);
+  }
+  return JSON.parse(txt);
+}
+Remplace les fetch(...).then(r=>r.json()) critiques par fetchJSON(...) pour data/lectures/manifest.json, data/programme.json, etc., et loggue l’URL problématique s’il y en a une.
+
+Corriger si besoin le CSS dans index.html
+
+Vérifie que tout CSS est bien dans <style>…</style> (et pas dans un <script>). Si tu vois des règles qui commencent par body { … } hors <style>, entoure-les d’un <style> valide.
+
+Test final
+
+Relance (npm start), recharge la Preview avec cache vidé. Confirme que l’erreur “Unexpected token ‘<’” a disparu et que le Service Worker s’installe sans message d’échec.
+
+Merci d’appliquer ces changements automatiquement et de me coller un court résumé des fichiers modifiés.
