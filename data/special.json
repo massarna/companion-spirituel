@@ -1,21 +1,74 @@
 
 {
-  "sourates": [
-    "Al-Fatiha (L'Ouverture)",
-    "Yasin (Ya-Sin)",
-    "Ad-Dukhan (La Fumée)",
-    "Al-Waqiah (L'Événement)",
-    "Al-Mulk (La Royauté)",
-    "Al-Insan (L'Homme)",
-    "Al-Buruj (Les Constellations)"
+  "titre": "Lecture Spirituelle Quotidienne",
+  "description": "Sélection de sourates recommandées pour la pratique spirituelle quotidienne et l'élévation de l'âme.",
+  "sourates_recommandees": [
+    {
+      "cle": "fatiha",
+      "nom_fr": "Al-Fatiha (L'Ouverture)",
+      "nom_ar": "سورة الفاتحة",
+      "benefices": "Ouverture du cœur, guérison spirituelle"
+    },
+    {
+      "cle": "yasin",
+      "nom_fr": "Ya-Sin",
+      "nom_ar": "سورة يس",
+      "benefices": "Paix intérieure, bénédictions"
+    },
+    {
+      "cle": "dukhan",
+      "nom_fr": "Ad-Dukhan (La Fumée)",
+      "nom_ar": "سورة الدخان",
+      "benefices": "Protection, méditation"
+    },
+    {
+      "cle": "waqiah",
+      "nom_fr": "Al-Waqiah (L'Événement)",
+      "nom_ar": "سورة الواقعة",
+      "benefices": "Prospérité spirituelle, préparation à l'au-delà"
+    },
+    {
+      "cle": "mulk",
+      "nom_fr": "Al-Mulk (La Royauté)",
+      "nom_ar": "سورة الملك",
+      "benefices": "Protection nocturne, méditation sur la création"
+    },
+    {
+      "cle": "insan",
+      "nom_fr": "Al-Insan (L'Homme)",
+      "nom_ar": "سورة الإنسان",
+      "benefices": "Réflexion sur la condition humaine, gratitude"
+    },
+    {
+      "cle": "buruj",
+      "nom_fr": "Al-Buruj (Les Constellations)",
+      "nom_ar": "سورة البروج",
+      "benefices": "Renforcement de la foi, persévérance"
+    }
   ],
-  "dua": "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
-  "dua_fr": "Ô Allah, aide-moi à T'invoquer, à Te remercier et à T'adorer de la meilleure manière.",
-  "description": "Lecture spirituelle quotidienne recommandée pour l'élévation de l'âme et la proximité avec Allah.",
-  "recommendations": [
+  "invocations": {
+    "ouverture": {
+      "arabe": "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+      "traduction": "Je cherche refuge auprès d'Allah contre Satan le lapidé",
+      "moment": "Avant la récitation"
+    },
+    "cloture": {
+      "arabe": "صَدَقَ اللَّهُ الْعَظِيمُ",
+      "traduction": "Allah le Très Grand dit la vérité",
+      "moment": "Après la récitation"
+    }
+  },
+  "recommandations": [
     "Réciter ces sourates avec méditation et présence du cœur",
     "Préférer les moments de calme (après Fajr ou avant Maghrib)",
     "Accompagner la récitation d'invocations et de dhikr",
-    "Réfléchir aux enseignements et messages contenus"
+    "Réfléchir aux enseignements et messages contenus",
+    "Maintenir la régularité dans la pratique quotidienne"
+  ],
+  "timing_optimal": [
+    "Après la prière de Fajr",
+    "Entre Maghrib et Isha",
+    "Avant le coucher",
+    "Pendant les moments de recueillement"
   ]
 }
