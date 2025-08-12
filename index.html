@@ -1985,6 +1985,116 @@
               </div>
             </div>
           </div>
+
+          <!-- Analyse des habitudes - Graphiques 30 jours -->
+          <div class="card">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center shadow-lg">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="title text-2xl">Analyse des Habitudes</h2>
+                  <p class="text-slate-600">Progression sur 30 jours</p>
+                </div>
+              </div>
+              
+              <!-- Sélecteur de métrique -->
+              <div class="flex items-center gap-2">
+                <label for="habit-metric-select" class="text-sm font-medium text-slate-700">Métrique :</label>
+                <select id="habit-metric-select" class="border border-slate-300 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                  <option value="prayers">Prières quotidiennes</option>
+                  <option value="dhikr">Dhikr (invocations)</option>
+                  <option value="overall">Score global</option>
+                  <option value="consistency">Régularité</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Métriques rapides -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div class="text-center p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl">
+                <div class="text-2xl font-bold text-emerald-700" id="habit-avg-prayers">4.2</div>
+                <div class="text-sm text-emerald-600">Prières/jour</div>
+                <div class="text-xs text-emerald-500">moyenne 30j</div>
+              </div>
+
+              <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
+                <div class="text-2xl font-bold text-blue-700" id="habit-avg-dhikr">87</div>
+                <div class="text-sm text-blue-600">Dhikr/jour</div>
+                <div class="text-xs text-blue-500">moyenne 30j</div>
+              </div>
+
+              <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
+                <div class="text-2xl font-bold text-purple-700" id="habit-best-streak">12</div>
+                <div class="text-sm text-purple-600">Meilleure série</div>
+                <div class="text-xs text-purple-500">jours consécutifs</div>
+              </div>
+
+              <div class="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl">
+                <div class="text-2xl font-bold text-orange-700" id="habit-consistency">76%</div>
+                <div class="text-sm text-orange-600">Régularité</div>
+                <div class="text-xs text-orange-500">sur 30 jours</div>
+              </div>
+            </div>
+
+            <!-- Graphique principal -->
+            <div class="bg-white rounded-xl p-4 border border-slate-200 mb-6">
+              <canvas id="habits-chart" height="300"></canvas>
+            </div>
+
+            <!-- Calendrier visuel des habitudes -->
+            <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4">
+              <h3 class="font-semibold text-slate-700 mb-4">Calendrier des Pratiques (30 derniers jours)</h3>
+              <div id="habits-calendar" class="grid grid-cols-10 gap-1">
+                <!-- Généré dynamiquement -->
+              </div>
+              <div class="flex items-center justify-between mt-4 text-xs text-slate-600">
+                <div class="flex items-center gap-4">
+                  <div class="flex items-center gap-1">
+                    <div class="w-3 h-3 bg-gray-200 rounded-sm"></div>
+                    <span>Aucune pratique</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <div class="w-3 h-3 bg-emerald-200 rounded-sm"></div>
+                    <span>Pratique légère</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <div class="w-3 h-3 bg-emerald-400 rounded-sm"></div>
+                    <span>Pratique moyenne</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <div class="w-3 h-3 bg-emerald-600 rounded-sm"></div>
+                    <span>Pratique intensive</span>
+                  </div>
+                </div>
+                <div>
+                  <span id="calendar-tooltip" class="font-medium"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Insights et recommandations -->
+            <div class="mt-6 grid md:grid-cols-2 gap-4">
+              <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-xl">
+                <h4 class="font-semibold text-blue-800 mb-2">📊 Analyse</h4>
+                <div id="habit-insights" class="text-sm text-blue-700 space-y-1">
+                  <p>Vos pratiques sont les plus régulières le vendredi (+32%).</p>
+                  <p>Amélioration de 18% par rapport au mois dernier.</p>
+                </div>
+              </div>
+              
+              <div class="bg-emerald-50 border-l-4 border-emerald-400 p-4 rounded-r-xl">
+                <h4 class="font-semibold text-emerald-800 mb-2">💡 Recommandations</h4>
+                <div id="habit-recommendations" class="text-sm text-emerald-700 space-y-1">
+                  <p>Fixez-vous un rappel pour les prières du dimanche.</p>
+                  <p>Votre régularité dhikr pourrait être améliorée le matin.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
 
@@ -2789,6 +2899,354 @@
       // Initialiser et mettre à jour le tableau de bord
       updateDashboard();
       setInterval(updateDashboard, 30000); // Mise à jour toutes les 30 secondes
+
+      // Système d'analyse des habitudes sur 30 jours
+      let habitsChart = null;
+      let habitsData = {};
+
+      // Générer des données de test pour les habitudes sur 30 jours
+      async function generateHabitsData() {
+        const api = window.storageAPI;
+        if (!api) return;
+
+        const data = {
+          prayers: [],
+          dhikr: [],
+          overall: [],
+          consistency: [],
+          dates: []
+        };
+
+        // Générer les 30 derniers jours
+        for (let i = 29; i >= 0; i--) {
+          const date = moment().subtract(i, 'days');
+          const dateStr = date.format('YYYY-MM-DD');
+          data.dates.push(date.format('DD/MM'));
+
+          // Simuler ou récupérer les vraies données de prières
+          let prayersCount = 0;
+          const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+          for (const prayer of prayers) {
+            const isDone = await api.storageGet(`jp:${dateStr}:${prayer}`, Math.random() > 0.3);
+            if (isDone) prayersCount++;
+          }
+          data.prayers.push(prayersCount);
+
+          // Simuler les données de dhikr
+          const dhikrCount = await api.storageGet(`dhikr:${dateStr}`, Math.floor(Math.random() * 150 + 20));
+          data.dhikr.push(dhikrCount);
+
+          // Calculer le score global (sur 100)
+          const overallScore = Math.round((prayersCount / 5) * 70 + (Math.min(dhikrCount, 100) / 100) * 30);
+          data.overall.push(overallScore);
+
+          // Calculer la régularité (1 si objectifs atteints, 0 sinon)
+          const isConsistent = prayersCount >= 3 && dhikrCount >= 50 ? 100 : 0;
+          data.consistency.push(isConsistent);
+        }
+
+        return data;
+      }
+
+      // Initialiser le graphique des habitudes
+      async function initHabitsChart() {
+        const canvas = $("#habits-chart");
+        if (!canvas) return;
+
+        habitsData = await generateHabitsData();
+        
+        const ctx = canvas.getContext('2d');
+        
+        if (habitsChart) {
+          habitsChart.destroy();
+        }
+
+        habitsChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: habitsData.dates,
+            datasets: [{
+              label: 'Prières quotidiennes',
+              data: habitsData.prayers,
+              borderColor: 'rgb(16, 185, 129)',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              tension: 0.4,
+              fill: true
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                text: 'Progression des Prières Quotidiennes (30 jours)',
+                font: {
+                  size: 16,
+                  weight: 'bold'
+                },
+                color: '#374151'
+              },
+              legend: {
+                position: 'top',
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 5,
+                title: {
+                  display: true,
+                  text: 'Nombre de prières'
+                },
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.1)'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Date'
+                },
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.1)'
+                }
+              }
+            },
+            interaction: {
+              intersect: false,
+              mode: 'index'
+            }
+          }
+        });
+
+        console.log('[Habits] Graphique initialisé');
+      }
+
+      // Mettre à jour le graphique selon la métrique sélectionnée
+      function updateHabitsChart(metric) {
+        if (!habitsChart || !habitsData[metric]) return;
+
+        let config = {
+          label: 'Métrique',
+          data: habitsData[metric],
+          borderColor: 'rgb(16, 185, 129)',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        };
+
+        let yAxisConfig = {
+          beginAtZero: true,
+          title: { display: true, text: 'Valeur' }
+        };
+
+        switch(metric) {
+          case 'prayers':
+            config.label = 'Prières quotidiennes';
+            config.borderColor = 'rgb(16, 185, 129)';
+            config.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+            yAxisConfig.max = 5;
+            yAxisConfig.title.text = 'Nombre de prières';
+            break;
+          case 'dhikr':
+            config.label = 'Dhikr (invocations)';
+            config.borderColor = 'rgb(59, 130, 246)';
+            config.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            yAxisConfig.max = 150;
+            yAxisConfig.title.text = 'Nombre d\'invocations';
+            break;
+          case 'overall':
+            config.label = 'Score global';
+            config.borderColor = 'rgb(139, 92, 246)';
+            config.backgroundColor = 'rgba(139, 92, 246, 0.1)';
+            yAxisConfig.max = 100;
+            yAxisConfig.title.text = 'Score (%)';
+            break;
+          case 'consistency':
+            config.label = 'Régularité';
+            config.borderColor = 'rgb(249, 115, 22)';
+            config.backgroundColor = 'rgba(249, 115, 22, 0.1)';
+            yAxisConfig.max = 100;
+            yAxisConfig.title.text = 'Régularité (%)';
+            break;
+        }
+
+        habitsChart.data.datasets[0] = { ...config, tension: 0.4, fill: true };
+        habitsChart.options.plugins.title.text = `Progression - ${config.label} (30 jours)`;
+        habitsChart.options.scales.y = { ...yAxisConfig, grid: { color: 'rgba(0, 0, 0, 0.1)' } };
+        habitsChart.update();
+      }
+
+      // Générer le calendrier visuel des habitudes
+      async function generateHabitsCalendar() {
+        const calendarContainer = $("#habits-calendar");
+        if (!calendarContainer) return;
+
+        let html = '';
+        
+        for (let i = 29; i >= 0; i--) {
+          const date = moment().subtract(i, 'days');
+          const dayScore = habitsData.overall[29 - i] || 0;
+          
+          let colorClass = 'bg-gray-200';
+          if (dayScore > 75) colorClass = 'bg-emerald-600';
+          else if (dayScore > 50) colorClass = 'bg-emerald-400';
+          else if (dayScore > 25) colorClass = 'bg-emerald-200';
+          
+          html += `
+            <div class="w-8 h-8 ${colorClass} rounded-sm flex items-center justify-center text-xs font-medium text-white cursor-pointer hover:scale-110 transition-transform" 
+                 title="${date.format('DD/MM/YYYY')} - Score: ${dayScore}%"
+                 data-date="${date.format('YYYY-MM-DD')}"
+                 data-score="${dayScore}">
+              ${date.format('DD')}
+            </div>
+          `;
+        }
+        
+        calendarContainer.innerHTML = html;
+
+        // Ajouter les événements hover
+        calendarContainer.querySelectorAll('[data-date]').forEach(cell => {
+          cell.addEventListener('mouseenter', (e) => {
+            const date = moment(e.target.dataset.date).format('DD/MM/YYYY');
+            const score = e.target.dataset.score;
+            $("#calendar-tooltip").textContent = `${date} - Score: ${score}%`;
+          });
+          
+          cell.addEventListener('mouseleave', () => {
+            $("#calendar-tooltip").textContent = '';
+          });
+        });
+      }
+
+      // Calculer et afficher les métriques moyennes
+      async function updateHabitsMetrics() {
+        if (!habitsData.prayers) return;
+
+        // Moyenne des prières
+        const avgPrayers = (habitsData.prayers.reduce((a, b) => a + b, 0) / 30).toFixed(1);
+        $("#habit-avg-prayers").textContent = avgPrayers;
+
+        // Moyenne du dhikr
+        const avgDhikr = Math.round(habitsData.dhikr.reduce((a, b) => a + b, 0) / 30);
+        $("#habit-avg-dhikr").textContent = avgDhikr;
+
+        // Meilleure série de jours consécutifs
+        let currentStreak = 0;
+        let bestStreak = 0;
+        habitsData.overall.forEach(score => {
+          if (score >= 50) {
+            currentStreak++;
+            bestStreak = Math.max(bestStreak, currentStreak);
+          } else {
+            currentStreak = 0;
+          }
+        });
+        $("#habit-best-streak").textContent = bestStreak;
+
+        // Régularité globale
+        const consistencyDays = habitsData.consistency.filter(c => c > 0).length;
+        const consistencyPercent = Math.round((consistencyDays / 30) * 100);
+        $("#habit-consistency").textContent = `${consistencyPercent}%`;
+
+        console.log('[Habits] Métriques mises à jour');
+      }
+
+      // Générer des insights personnalisés
+      function updateHabitsInsights() {
+        const insights = [];
+        const recommendations = [];
+
+        // Analyser les jours de la semaine
+        const dayStats = {};
+        habitsData.overall.forEach((score, index) => {
+          const dayOfWeek = moment().subtract(29 - index, 'days').format('dddd');
+          dayStats[dayOfWeek] = dayStats[dayOfWeek] || [];
+          dayStats[dayOfWeek].push(score);
+        });
+
+        // Trouver le meilleur jour
+        let bestDay = '';
+        let bestAvg = 0;
+        Object.entries(dayStats).forEach(([day, scores]) => {
+          const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+          if (avg > bestAvg) {
+            bestDay = day;
+            bestAvg = avg;
+          }
+        });
+
+        if (bestDay) {
+          insights.push(`Vos pratiques sont les plus régulières le ${bestDay.toLowerCase()} (+${Math.round(bestAvg - 60)}%).`);
+        }
+
+        // Tendance générale
+        const firstWeek = habitsData.overall.slice(0, 7).reduce((a, b) => a + b, 0) / 7;
+        const lastWeek = habitsData.overall.slice(-7).reduce((a, b) => a + b, 0) / 7;
+        const trend = lastWeek - firstWeek;
+        
+        if (trend > 0) {
+          insights.push(`Amélioration de ${Math.round(trend)}% par rapport à la semaine dernière.`);
+        } else if (trend < -5) {
+          recommendations.push('Votre régularité a diminué récemment. Essayez de retrouver votre rythme.');
+        }
+
+        // Recommandations basées sur les données
+        const avgDhikr = habitsData.dhikr.reduce((a, b) => a + b, 0) / 30;
+        if (avgDhikr < 70) {
+          recommendations.push('Votre pratique du dhikr pourrait être renforcée le matin.');
+        }
+
+        const avgPrayers = habitsData.prayers.reduce((a, b) => a + b, 0) / 30;
+        if (avgPrayers < 4) {
+          recommendations.push('Fixez-vous un rappel pour les prières manquées.');
+        }
+
+        // Afficher les insights
+        const insightsContainer = $("#habit-insights");
+        const recommendationsContainer = $("#habit-recommendations");
+        
+        if (insightsContainer) {
+          insightsContainer.innerHTML = insights.map(i => `<p>• ${i}</p>`).join('');
+        }
+        
+        if (recommendationsContainer) {
+          recommendationsContainer.innerHTML = recommendations.length > 0 
+            ? recommendations.map(r => `<p>• ${r}</p>`).join('')
+            : '<p>• Continuez ainsi, vous êtes sur la bonne voie !</p>';
+        }
+      }
+
+      // Initialisation complète du système d'analyse des habitudes
+      async function initHabitsAnalysis() {
+        console.log('[Habits] Initialisation de l\'analyse des habitudes...');
+        
+        await initHabitsChart();
+        await generateHabitsCalendar();
+        await updateHabitsMetrics();
+        updateHabitsInsights();
+
+        // Event listener pour le sélecteur de métrique
+        const metricSelect = $("#habit-metric-select");
+        if (metricSelect) {
+          metricSelect.addEventListener('change', (e) => {
+            updateHabitsChart(e.target.value);
+          });
+        }
+
+        console.log('[Habits] Analyse des habitudes initialisée');
+      }
+
+      // Déclencher l'initialisation quand Chart.js est disponible
+      function waitForChartJS() {
+        if (typeof Chart !== 'undefined') {
+          initHabitsAnalysis();
+        } else {
+          setTimeout(waitForChartJS, 100);
+        }
+      }
+
+      // Démarrer l'initialisation
+      setTimeout(waitForChartJS, 1000);
 
       // Focus du jour - système basé sur l'ancienne version
       const dailySchedule = [
