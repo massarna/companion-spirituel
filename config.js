@@ -1,3 +1,4 @@
+
 // Active Firebase en mettant true quand tu es prêt
 export const USE_FIREBASE = true;
 

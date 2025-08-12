@@ -1,0 +1,1657 @@
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compagnon Spirituel</title>
+
+    <!-- Styles & Librairies externes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Configuration Tailwind pour supprimer l'avertissement
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'islamic-green': '#00a86b',
+              'warm-white': '#fefcf9'
+            }
+          }
+        }
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/fr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.min.js"></script>
+
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Lato:wght@300;400;700&family=Orbitron:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CSS uniquement -->
+    <style>
+      :root {
+        --bg: linear-gradient(135deg, #fdfbf7 0%, #f7f3ed 100%);
+        --card: rgba(255, 255, 255, 0.95);
+        --card-hover: rgba(255, 255, 255, 0.98);
+        --ink: #2c1810;
+        --muted: #8b7355;
+        --brand: #d97706;
+        --ring: #059669;
+        --gold: #f59e0b;
+        --islamic-green: #00a86b;
+        --warm-white: #fefcf9;
+        --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.08);
+        --shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.15);
+        --gradient-islamic: linear-gradient(135deg, #00a86b 0%, #059669 100%);
+        --gradient-warm: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --border-soft: rgba(139, 115, 85, 0.2);
+      }
+
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        background-attachment: fixed;
+        font-family:
+          "Lato",
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          "Helvetica Neue",
+          Arial,
+          "Noto Sans",
+          "Liberation Sans",
+          sans-serif;
+        color: var(--ink);
+      }
+
+      .title {
+        font-family: "Amiri", serif;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .clock {
+        font-family: "Orbitron", monospace;
+        letter-spacing: 0.06em;
+        background: var(--gradient-warm);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .card {
+        background: var(--card);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--border-soft);
+        padding: 2rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-islamic);
+        border-radius: 24px 24px 0 0;
+      }
+
+      .card:hover {
+        background: var(--card-hover);
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-2px);
+      }
+
+      .tab-btn {
+        position: relative;
+        padding: 0.75rem 1.5rem;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        color: var(--muted);
+        border: 1px solid transparent;
+      }
+
+      .tab-btn[aria-selected="true"] {
+        background: var(--gradient-islamic);
+        color: white;
+        box-shadow: 0 8px 25px rgba(0, 168, 107, 0.3);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .tab-btn:hover:not([aria-selected="true"]) {
+        background: rgba(0, 168, 107, 0.1);
+        color: var(--islamic-green);
+        border-color: rgba(0, 168, 107, 0.2);
+      }
+
+      .badge {
+        background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+        color: #92400e;
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .arabic-text {
+        font-family: "Amiri Quran", "Amiri", serif;
+        font-size: 1.75rem;
+        line-height: 2.5;
+        direction: rtl;
+        text-align: justify;
+        color: var(--ink);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      @media (max-width: 768px) {
+        .card {
+          padding: 1.5rem;
+          margin: 0.5rem;
+          border-radius: 16px;
+        }
+
+        /* Navigation sticky optimisée mobile */
+        nav {
+          position: fixed;
+          bottom: 0;
+          top: auto;
+          background: rgba(253, 250, 246, 0.95);
+          backdrop-filter: blur(20px);
+          border-top: 1px solid rgba(139, 115, 85, 0.2);
+          border-bottom: none;
+          padding: 0.5rem 0;
+          z-index: 30;
+        }
+
+        nav ul {
+          justify-content: center;
+          gap: 0.25rem;
+          padding: 0 0.5rem;
+        }
+
+        .tab-btn {
+          padding: 0.5rem 0.75rem;
+          font-size: 0.75rem;
+          border-radius: 12px;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.25rem;
+        }
+
+        /* Ajouter des icônes aux onglets mobile */
+        .tab-btn[data-tab="accueil"]::before { content: "🏠"; font-size: 1rem; }
+        .tab-btn[data-tab="programme"]::before { content: "📋"; font-size: 1rem; }
+        .tab-btn[data-tab="lectures"]::before { content: "📖"; font-size: 1rem; }
+        .tab-btn[data-tab="retraite"]::before { content: "🕌"; font-size: 1rem; }
+        .tab-btn[data-tab="journal"]::before { content: "📝"; font-size: 1rem; }
+        .tab-btn[data-tab="mois"]::before { content: "🌙"; font-size: 1rem; }
+        .tab-btn[data-tab="qibla"]::before { content: "🧭"; font-size: 1rem; }
+
+        /* Ajuster le contenu principal pour la nav bottom */
+        main {
+          padding-bottom: 6rem;
+        }
+
+        /* Header plus compact sur mobile */
+        header {
+          padding: 2rem 1rem;
+        }
+
+        header h1 {
+          font-size: 2.5rem;
+        }
+
+        .arabic-text {
+          font-size: 1.5rem;
+          line-height: 2.2;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="text-slate-800">
+    <!-- Header -->
+    <header class="max-w-5xl mx-auto px-4 py-10">
+      <h1 class="title text-center text-5xl sm:text-6xl text-slate-800">
+        Compagnon Spirituel
+      </h1>
+      <p class="text-center text-[var(--brand)] mt-2">
+        Votre guide spirituel quotidien
+      </p>
+
+      <!-- Horloge & Dates -->
+      <div class="mt-8 card max-w-xl mx-auto text-center">
+        <div id="clock" class="clock text-5xl sm:text-6xl text-slate-700">
+          --:--:--
+        </div>
+        <div class="mt-5">
+          <div id="date-greg" class="font-semibold text-sky-600">—</div>
+          <div id="date-hijri" class="text-slate-500 font-medium">—</div>
+          <div id="month-detail" class="text-sm text-slate-400 mt-2 italic max-w-md mx-auto">—</div>
+        </div>
+        <div class="mt-4">
+          <span id="mode-badge" class="badge">Planning Annuel</span>
+        </div>
+      </div>
+
+      <!-- Focus du jour -->
+      <div class="mt-8 max-w-4xl mx-auto">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-blue-50 to-indigo-100 shadow-2xl border border-white/50">
+          <div class="relative p-8 md:p-12">
+            <div class="text-center mb-6">
+              <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Focus du Jour
+              </h2>
+              <p id="daily-focus-time" class="text-lg text-slate-600 font-medium"></p>
+            </div>
+
+            <div class="relative">
+              <div class="relative bg-white/70 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/50 shadow-lg">
+                <div id="daily-focus-content" class="text-lg md:text-xl text-slate-700 leading-relaxed text-center font-medium">
+                  Chargement du focus du jour...
+                </div>
+              </div>
+            </div>
+
+            <div id="weekly-special-focus" class="mt-8 space-y-4"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-20 bg-[var(--bg)] border-y border-slate-200/70">
+      <div class="max-w-5xl mx-auto px-4">
+        <ul class="flex flex-wrap gap-2 sm:gap-3 py-3">
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="accueil"
+              aria-selected="true"
+            >
+              Accueil
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="programme"
+            >
+              Programme
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="lectures"
+            >
+              Lectures
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="retraite"
+            >
+              Retraite
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="journal"
+            >
+              Journal
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="mois"
+            >
+              Mois
+            </button>
+          </li>
+          <li>
+            <button
+              class="tab-btn px-3 py-2 rounded-xl text-sm"
+              data-tab="qibla"
+            >
+              Qibla
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Pages -->
+    <main class="max-w-5xl mx-auto px-4 py-8 space-y-10" id="main-content">
+      <!-- Page d'accueil avec toutes les sections -->
+      <section data-page="accueil">
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Prochaine prière -->
+          <div class="relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-3xl shadow-xl border border-white/50">
+            <div class="relative p-6">
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Prochaine Prière</h3>
+              </div>
+
+              <div class="text-center space-y-4">
+                <div>
+                  <div id="next-prayer-name" class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Fajr
+                  </div>
+                  <p class="text-slate-600 mt-1">dans</p>
+                </div>
+                
+                <div id="next-prayer-eta" class="text-4xl font-mono font-bold text-slate-800 bg-white/50 rounded-2xl py-4 px-6 border border-white/70">
+                  --:--:--
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tasbih Counter -->
+          <div class="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 rounded-3xl shadow-xl border border-white/50">
+            <div class="relative p-6">
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center shadow-lg">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Tasbih</h3>
+              </div>
+
+              <div class="text-center space-y-6">
+                <div id="tasbih-count" class="text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                  0
+                </div>
+
+                <button 
+                  id="tasbih-btn"
+                  class="w-24 h-24 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-full font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 active:scale-95"
+                >
+                  تسبيح
+                </button>
+
+                <div class="flex gap-2 justify-center">
+                  <button 
+                    id="reset-tasbih"
+                    class="px-4 py-2 bg-white/70 hover:bg-white/90 text-slate-700 rounded-xl border border-slate-200 text-sm font-medium transition-all"
+                  >
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Programme détaillé -->
+      <section data-page="programme" class="hidden">
+        <div class="space-y-6">
+          <div class="card">
+            <h2 class="title text-3xl mb-6 text-center">Programme Spirituel Détaillé</h2>
+            <div id="detailed-program">
+              <p class="text-center text-slate-600">Chargement du programme...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Lectures -->
+      <section data-page="lectures" class="hidden">
+        <div class="space-y-6">
+          <div class="card">
+            <h2 class="title text-3xl mb-6 text-center">Lectures Spirituelles</h2>
+            
+            <!-- Sélecteur de sourate -->
+            <div class="mb-8">
+              <label for="surah-select" class="block text-lg font-semibold mb-3">Choisir une sourate :</label>
+              <select id="surah-select" class="w-full p-3 border border-slate-300 rounded-xl bg-white shadow-sm text-lg">
+                <option value="">Sélectionner une sourate...</option>
+              </select>
+            </div>
+
+            <!-- Invocations d'ouverture et fermeture -->
+            <div id="invocations-section" class="mb-8 hidden">
+              <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100 mb-4">
+                <h4 class="font-semibold text-blue-800 mb-3">🤲 Invocation d'ouverture</h4>
+                <div id="opening-invocation" class="arabic-text text-blue-900"></div>
+                <div id="opening-translation" class="text-sm text-blue-700 mt-3 italic"></div>
+              </div>
+              
+              <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100">
+                <h4 class="font-semibold text-green-800 mb-3">🤲 Invocation de clôture</h4>
+                <div id="closing-invocation" class="arabic-text text-green-900"></div>
+                <div id="closing-translation" class="text-sm text-green-700 mt-3 italic"></div>
+              </div>
+            </div>
+
+            <!-- Contenu de la sourate -->
+            <div id="surah-content" class="text-center">
+              <p class="text-slate-600">Sélectionnez une sourate pour commencer la lecture.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ma retraite -->
+      <section data-page="retraite" class="hidden">
+        <div class="space-y-6">
+          <div class="card">
+            <h2 class="title text-3xl mb-6 text-center">Ma Retraite Spirituelle</h2>
+            
+            <div class="mb-6 p-4 bg-slate-50 rounded-xl">
+              <label for="retreat-start" class="block text-sm font-medium text-slate-700 mb-2">
+                Date de début de retraite :
+              </label>
+              <div class="flex gap-3">
+                <input 
+                  type="date" 
+                  id="retreat-start" 
+                  class="flex-1 p-3 border border-slate-300 rounded-lg"
+                />
+                <button 
+                  id="retreat-save" 
+                  class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium transition-colors"
+                >
+                  Sauvegarder
+                </button>
+              </div>
+              <p id="retreat-msg" class="text-sm text-slate-600 mt-2"></p>
+            </div>
+
+            <div id="retreat-content">
+              <p class="text-center text-slate-600">Chargement des données de retraite...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Journal spirituel -->
+      <section data-page="journal" class="hidden">
+        <div class="space-y-6">
+          <div class="card">
+            <h2 class="title text-3xl mb-6 text-center">Mon Journal Spirituel</h2>
+            
+            <!-- Export/Import -->
+            <div class="mb-6 p-4 bg-slate-50 rounded-xl">
+              <div class="flex flex-wrap gap-4 items-center justify-between">
+                <div class="flex gap-2">
+                  <button 
+                    id="export-data"
+                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors text-sm"
+                  >
+                    📥 Exporter
+                  </button>
+                  <button 
+                    id="import-data" 
+                    onclick="document.getElementById('import-file').click()"
+                    class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors text-sm"
+                  >
+                    📤 Importer
+                  </button>
+                  <input 
+                    type="file" 
+                    id="import-file" 
+                    accept=".json" 
+                    class="hidden"
+                  />
+                </div>
+                <div id="import-status" class="text-sm"></div>
+              </div>
+            </div>
+
+            <div id="journal-container" class="space-y-4">
+              <p class="text-center text-slate-600">Chargement du journal...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mois hégirien -->
+      <section data-page="mois" class="hidden">
+        <div class="space-y-6">
+          <div class="card">
+            <h2 class="title text-3xl mb-6 text-center">Calendrier Hégirien</h2>
+            <div id="hijri-calendar">
+              <p class="text-center text-slate-600">Chargement des informations du mois...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Direction de la Qibla -->
+      <section data-page="qibla" class="hidden">
+        <div class="space-y-6">
+          <div class="card">
+            <h2 class="title text-3xl mb-6 text-center">Direction de la Qibla</h2>
+            
+            <div class="text-center space-y-6">
+              <div class="relative w-64 h-64 mx-auto">
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-full border-4 border-emerald-200"></div>
+                <div id="qibla-compass" class="absolute inset-4 bg-white rounded-full border-2 border-slate-200 flex items-center justify-center">
+                  <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div id="qibla-direction" class="text-2xl font-bold text-slate-800 mb-2">
+                  Calcul en cours...
+                </div>
+                <button 
+                  id="find-qibla" 
+                  class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium transition-colors"
+                >
+                  🧭 Trouver la Qibla
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="mt-12 pb-10 text-center text-slate-500">
+      <p>Compagnon spirituel - Votre guide quotidien</p>
+      <p class="text-xs mt-2">Développé avec ❤️ pour la communauté</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module">
+      console.log('[Compagnon] Application démarrant...');
+
+      // Import de l'API de stockage depuis bridge.js
+      import './bridge.js';
+
+      // Attendre que l'API soit prête
+      const waitForAPI = () => {
+        return new Promise((resolve) => {
+          const checkAPI = () => {
+            if (window.storageAPI) {
+              resolve(window.storageAPI);
+            } else {
+              setTimeout(checkAPI, 50);
+            }
+          };
+          checkAPI();
+        });
+      };
+
+      // Configuration
+      moment.locale("fr");
+      let focusSystemInitialized = false;
+      let journalInitialized = false;
+
+      const $ = (s) => document.querySelector(s);
+      const $$ = (s) => [...document.querySelectorAll(s)];
+
+      // Données des prières (horaires exemple)
+      const PRAYERS = [
+        { name: "Fajr", time: "05:30" },
+        { name: "Dhuhr", time: "12:45" },
+        { name: "Asr", time: "16:15" },
+        { name: "Maghrib", time: "19:00" },
+        { name: "Isha", time: "20:30" }
+      ];
+
+      // Fonction utilitaire pour créer une date aujourd'hui avec une heure spécifique
+      function todayAt(hhmm) {
+        const [H, M] = hhmm.split(":").map(Number);
+        return moment().clone().hours(H).minutes(M).seconds(0).milliseconds(0);
+      }
+
+      // Trouver la prochaine prière
+      function nextPrayer() {
+        const now = moment();
+        for (const p of PRAYERS) {
+          const t = todayAt(p.time);
+          if (now.isBefore(t)) return { p, t };
+        }
+        return { p: PRAYERS[0], t: todayAt(PRAYERS[0].time).add(1, 'day') };
+      }
+
+      // Mettre à jour le countdown des prières
+      function updateCountdown() {
+        const { p, t } = nextPrayer();
+        $("#next-prayer-name").textContent = p.name;
+
+        const now = moment();
+        const diffMs = t.diff(now);
+
+        if (diffMs > 0) {
+          const totalSeconds = Math.floor(diffMs / 1000);
+          const hours = Math.floor(totalSeconds / 3600);
+          const minutes = Math.floor((totalSeconds % 3600) / 60);
+          const seconds = totalSeconds % 60;
+
+          const hh = String(hours).padStart(2, "0");
+          const mm = String(minutes).padStart(2, "0");
+          const ss = String(seconds).padStart(2, "0");
+
+          $("#next-prayer-eta").textContent = `${hh}:${mm}:${ss}`;
+        } else {
+          $("#next-prayer-eta").textContent = "00:00:00";
+        }
+      }
+
+      // Horloge principale
+      function updateClock() {
+        const now = moment();
+        const clockEl = $("#clock");
+        const gregEl = $("#date-greg");
+        const hijriEl = $("#date-hijri");
+        const monthDetailEl = $("#month-detail");
+
+        if (clockEl) clockEl.textContent = now.format("HH:mm:ss");
+        if (gregEl) gregEl.textContent = now.format("dddd D MMMM YYYY");
+        if (hijriEl) {
+          const hijriDate = `${now.iDate()} ${now.format('iMMMM')} ${now.iYear()}`;
+          hijriEl.textContent = hijriDate;
+        }
+        
+        // Ajouter le détail du mois
+        if (monthDetailEl) {
+          const monthNumber = now.iMonth() + 1;
+          monthDetailEl.textContent = `${monthNumber}e mois de l'année hégirienne`;
+        }
+      }
+
+      // Système de Focus du jour
+      async function initFocusSystem() {
+        if (focusSystemInitialized) return;
+
+        try {
+          const api = await waitForAPI();
+          const retreatStart = await api.storageGet("retreatStart", null);
+
+          await updateFocusContent(retreatStart);
+          
+          focusSystemInitialized = true;
+          console.log('[Focus] Système initialisé');
+        } catch (error) {
+          console.error('[Focus] Erreur d\'initialisation:', error);
+        }
+      }
+
+      async function updateFocusContent(retreatStartDate = null) {
+        const now = moment();
+        const currentTime = now.format("HH:mm");
+        const focusTimeEl = $("#daily-focus-time");
+        const focusContentEl = $("#daily-focus-content");
+        const weeklyFocusContainer = $("#weekly-special-focus");
+
+        if (focusTimeEl) {
+          focusTimeEl.textContent = `Maintenant - ${currentTime}`;
+        }
+
+        if (focusContentEl) {
+          const hour = now.hour();
+          let message = "";
+
+          if (hour >= 3 && hour < 5) {
+            message = "⭐ Temps du Tahajjud et de la prière nocturne";
+          } else if (hour >= 5 && hour < 7) {
+            message = "🌅 Adhkār du matin, lecture du Coran, méditation";
+          } else if (hour >= 8 && hour < 10) {
+            message = "☀️ Ṣalāt ad-Ḍuḥā, étude du Coran";
+          } else if (hour >= 12 && hour < 14) {
+            message = "🕐 Temps de la prière de Dhuhr et dhikr";
+          } else if (hour >= 17 && hour < 19) {
+            message = "🌆 Temps de Maghrib, dhikr et salawat";
+          } else if (hour >= 20 && hour < 22) {
+            message = "🌙 Temps d'Isha, dhikr collectif";
+          } else {
+            message = "📚 Temps d'étude, de repos ou d'activités personnelles";
+          }
+
+          focusContentEl.textContent = message;
+        }
+
+        // Focus spécial selon les jours
+        let weeklyHTML = "";
+        const dayOfWeek = now.day();
+
+        if (dayOfWeek === 1 || dayOfWeek === 4) { // Lundi ou Jeudi
+          weeklyHTML += `
+            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-700 p-4 rounded-r-lg">
+              <p class="font-bold">🌙 Rappel du jour :</p>
+              <p>C'est ${dayOfWeek === 1 ? 'lundi' : 'jeudi'}, un jour propice au jeûne surérogatoire.</p>
+            </div>
+          `;
+        }
+
+        if (dayOfWeek === 5) { // Vendredi
+          weeklyHTML += `
+            <div class="bg-green-50 border-l-4 border-green-400 text-green-700 p-4 rounded-r-lg">
+              <p class="font-bold">🕌 Rappel du Vendredi :</p>
+              <p>N'oubliez pas de lire la sourate Al-Kahf et de multiplier les prières sur le Prophète (ﷺ).</p>
+            </div>
+          `;
+        }
+
+        if (weeklyFocusContainer) {
+          weeklyFocusContainer.innerHTML = weeklyHTML;
+        }
+      }
+
+      // Gestion des onglets
+      function setupTabs() {
+        const pages = $$("section[data-page]");
+        const btns = $$(".tab-btn");
+
+        function showTab(tabName) {
+          // Masquer toutes les pages
+          pages.forEach(page => {
+            if (page.dataset.page === tabName) {
+              page.classList.remove("hidden");
+            } else {
+              page.classList.add("hidden");
+            }
+          });
+
+          // Mettre à jour les boutons
+          btns.forEach(btn => {
+            if (btn.dataset.tab === tabName) {
+              btn.setAttribute("aria-selected", "true");
+            } else {
+              btn.setAttribute("aria-selected", "false");
+            }
+          });
+
+          // Initialiser les sections spécifiques
+          if (tabName === "journal") {
+            initJournal();
+          } else if (tabName === "lectures") {
+            initLectures();
+          } else if (tabName === "programme") {
+            loadDetailedProgram();
+          } else if (tabName === "retraite") {
+            loadRetreatData();
+          } else if (tabName === "mois") {
+            loadHijriCalendar();
+          }
+
+          // Scroll vers le haut
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        btns.forEach(btn => {
+          btn.addEventListener("click", () => {
+            showTab(btn.dataset.tab);
+          });
+        });
+
+        // Afficher l'accueil par défaut
+        showTab("accueil");
+      }
+
+      // Tasbih Counter
+      let tasbihCount = 0;
+
+      async function initTasbih() {
+        const api = await waitForAPI();
+        
+        // Charger le count sauvegardé
+        tasbihCount = await api.storageGet("tasbihCount", 0);
+        updateTasbihDisplay();
+
+        $("#tasbih-btn").addEventListener("click", async () => {
+          tasbihCount++;
+          updateTasbihDisplay();
+          await api.storageSet("tasbihCount", tasbihCount);
+          
+          // Animation
+          $("#tasbih-btn").style.transform = "scale(0.95)";
+          setTimeout(() => {
+            $("#tasbih-btn").style.transform = "scale(1)";
+          }, 100);
+        });
+
+        $("#reset-tasbih").addEventListener("click", async () => {
+          tasbihCount = 0;
+          updateTasbihDisplay();
+          await api.storageSet("tasbihCount", tasbihCount);
+        });
+      }
+
+      function updateTasbihDisplay() {
+        $("#tasbih-count").textContent = tasbihCount;
+      }
+
+      // Système de lectures
+      async function initLectures() {
+        try {
+          console.log('[Lectures] Initialisation...');
+          
+          // Charger le manifest des sourates
+          const manifestResponse = await fetch('/data/lectures/manifest.json');
+          if (!manifestResponse.ok) {
+            throw new Error('Impossible de charger le manifest des sourates');
+          }
+          
+          const manifest = await manifestResponse.json();
+          const select = $("#surah-select");
+          
+          if (!select) return;
+          
+          // Vider et remplir le sélecteur
+          select.innerHTML = '<option value="">Sélectionner une sourate...</option>';
+          
+          manifest.sourates.forEach(sourate => {
+            const option = document.createElement('option');
+            option.value = sourate.file;
+            option.textContent = `${sourate.numero}. ${sourate.nom}`;
+            select.appendChild(option);
+          });
+
+          // Charger les invocations
+          const invocationsResponse = await fetch('/data/invocations.json');
+          if (invocationsResponse.ok) {
+            const invocations = await invocationsResponse.json();
+            
+            $("#opening-invocation").textContent = invocations.ouverture.arabe;
+            $("#opening-translation").textContent = invocations.ouverture.traduction;
+            $("#closing-invocation").textContent = invocations.cloture.arabe;
+            $("#closing-translation").textContent = invocations.cloture.traduction;
+          }
+
+          // Event listener pour la sélection
+          select.addEventListener('change', async (e) => {
+            const filename = e.target.value;
+            if (!filename) {
+              $("#surah-content").innerHTML = '<p class="text-slate-600">Sélectionnez une sourate pour commencer la lecture.</p>';
+              $("#invocations-section").classList.add('hidden');
+              return;
+            }
+
+            try {
+              const response = await fetch(`/data/lectures/${filename}`);
+              if (!response.ok) {
+                throw new Error('Impossible de charger la sourate');
+              }
+              
+              const sourate = await response.json();
+              
+              // Afficher les invocations
+              $("#invocations-section").classList.remove('hidden');
+              
+              // Afficher la sourate
+              displaySourate(sourate);
+              
+            } catch (error) {
+              console.error('[Lectures] Erreur:', error);
+              $("#surah-content").innerHTML = '<p class="text-red-600">Erreur lors du chargement de la sourate.</p>';
+            }
+          });
+
+          console.log('[Lectures] Initialisé avec succès');
+          
+        } catch (error) {
+          console.error('[Lectures] Erreur d\'initialisation:', error);
+          const select = $("#surah-select");
+          if (select) {
+            select.innerHTML = '<option value="">Erreur de chargement des sourates</option>';
+          }
+        }
+      }
+
+      function displaySourate(sourate) {
+        const container = $("#surah-content");
+        if (!container) return;
+
+        // Créer le contenu avec bismillah + titre + texte continu
+        const bismillah = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
+        const showBismillah = sourate.numero !== 1 && sourate.numero !== 9;
+
+        let html = `
+          <div class="space-y-8">
+            <div class="text-center">
+              <h3 class="text-2xl font-bold text-slate-800 mb-2">${sourate.nom}</h3>
+              <p class="text-slate-600">Sourate ${sourate.numero}</p>
+            </div>
+        `;
+
+        if (showBismillah) {
+          html += `
+            <div class="text-center">
+              <div class="arabic-text text-3xl font-bold text-emerald-700 mb-4">
+                ${bismillah}
+              </div>
+            </div>
+          `;
+        }
+
+        // Texte continu de la sourate (tous les versets concaténés)
+        const texteContinu = sourate.versets.map(v => v.arabe).join(' ۞ ');
+        
+        html += `
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-8 border border-amber-100 shadow-inner">
+              <div class="arabic-text text-slate-800 leading-loose">
+                ${texteContinu}
+              </div>
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = html;
+      }
+
+      // Système de programme détaillé
+      async function loadDetailedProgram() {
+        try {
+          const response = await fetch('/data/programme.json');
+          if (!response.ok) throw new Error('Impossible de charger le programme');
+          
+          const data = await response.json();
+          const container = $("#detailed-program");
+          
+          if (!container) return;
+
+          let html = `
+            <div class="space-y-6">
+              <div class="text-center mb-8">
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">Planning Quotidien</h3>
+                <p class="text-slate-600">Rythme spirituel structuré pour une journée bénie</p>
+              </div>
+          `;
+
+          // Affichage du programme quotidien sous forme de timeline
+          html += `
+            <div class="relative">
+              <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-emerald-400 to-blue-400"></div>
+              
+              <div class="space-y-6">
+          `;
+
+          data.quotidien.forEach((item, index) => {
+            const colors = [
+              'from-purple-400 to-pink-400',
+              'from-blue-400 to-cyan-400', 
+              'from-emerald-400 to-teal-400',
+              'from-amber-400 to-orange-400',
+              'from-red-400 to-rose-400',
+              'from-indigo-400 to-purple-400'
+            ];
+            
+            const colorClass = colors[index % colors.length];
+            
+            html += `
+              <div class="relative flex items-start gap-6">
+                <div class="relative z-10 w-8 h-8 bg-gradient-to-r ${colorClass} rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                  <div class="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                
+                <div class="flex-1 bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+                  <div class="flex flex-col md:flex-row md:items-center gap-4 mb-3">
+                    <div class="text-lg font-bold text-slate-800">${item.horaire}</div>
+                    <div class="flex-1 text-lg font-semibold text-slate-700">${item.activite}</div>
+                  </div>
+                  <p class="text-slate-600">${item.details}</p>
+                </div>
+              </div>
+            `;
+          });
+
+          html += `
+              </div>
+            </div>
+          </div>
+          `;
+
+          container.innerHTML = html;
+          
+        } catch (error) {
+          console.error('[Programme] Erreur:', error);
+          const container = $("#detailed-program");
+          if (container) {
+            container.innerHTML = '<p class="text-center text-red-600">Erreur lors du chargement du programme.</p>';
+          }
+        }
+      }
+
+      // Système de retraite
+      async function loadRetreatData() {
+        try {
+          const api = await waitForAPI();
+          const response = await fetch('/data/retraite.json');
+          if (!response.ok) throw new Error('Impossible de charger les données de retraite');
+          
+          const data = await response.json();
+          await refreshRetreat();
+          await loadRetreatDate();
+          
+          // Setup event listeners
+          $("#retreat-save").addEventListener("click", async () => {
+            const dateValue = $("#retreat-start").value;
+            if (!dateValue) {
+              $("#retreat-msg").textContent = "Veuillez sélectionner une date de début.";
+              return;
+            }
+
+            await api.storageSet("retreatStart", dateValue);
+            await refreshRetreat();
+            await updateFocusContent(dateValue);
+          });
+
+          // Afficher le contenu de la retraite
+          displayRetreatContent(data);
+          
+        } catch (error) {
+          console.error('[Retraite] Erreur:', error);
+        }
+      }
+
+      async function refreshRetreat() {
+        const api = await waitForAPI();
+        const savedDate = await api.storageGet("retreatStart", null);
+        const modeBadge = $("#mode-badge");
+        const retreatMsg = $("#retreat-msg");
+
+        if (!savedDate) {
+          if (modeBadge) modeBadge.textContent = "Planning Annuel";
+          if (retreatMsg) retreatMsg.textContent = "Aucune retraite configurée.";
+          return;
+        }
+
+        const start = moment(savedDate);
+        const now = moment();
+        const daysSinceStart = now.diff(start, 'days');
+        const currentWeek = Math.floor(daysSinceStart / 7) + 1;
+        const endDate = start.clone().add(28, 'days');
+
+        if (daysSinceStart < 0) {
+          if (modeBadge) modeBadge.textContent = "Retraite Programmée";
+          if (retreatMsg) retreatMsg.textContent = `Retraite programmée pour le ${start.format("DD/MM/YYYY")}`;
+        } else if (daysSinceStart >= 28) {
+          if (modeBadge) modeBadge.textContent = "Retraite Terminée";
+          if (retreatMsg) retreatMsg.textContent = `Retraite terminée (${start.format("DD/MM/YYYY")} → ${endDate.format("DD/MM/YYYY")})`;
+        } else {
+          const week = Math.max(1, Math.min(currentWeek, 4));
+          if (modeBadge) modeBadge.textContent = `Mode Retraite – Semaine ${week}`;
+          if (retreatMsg) retreatMsg.textContent = `Retraite en cours : ${start.format("DD/MM/YYYY")} → ${endDate.format("DD/MM/YYYY")} (Semaine ${week}/4)`;
+        }
+      }
+
+      async function loadRetreatDate() {
+        const api = await waitForAPI();
+        const savedDate = await api.storageGet("retreatStart", null);
+        if (savedDate) {
+          $("#retreat-start").value = savedDate;
+        }
+      }
+
+      function displayRetreatContent(data) {
+        const container = $("#retreat-content");
+        if (!container) return;
+
+        // Affichage du contenu de retraite selon la structure des données
+        let html = `
+          <div class="space-y-8">
+            <!-- Vue d'ensemble -->
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+              <h3 class="text-xl font-bold text-blue-800 mb-4">🎯 Vue d'ensemble</h3>
+              <p class="text-blue-700">${data.vueEnsemble}</p>
+            </div>
+
+            <!-- Semaines détaillées -->
+            <div id="retreat-weeks" class="space-y-6"></div>
+            
+            <!-- Planning annuel allégé -->
+            <div id="retreat-annual" class="space-y-6"></div>
+          </div>
+        `;
+
+        container.innerHTML = html;
+
+        // Afficher les semaines
+        const weeksContainer = $("#retreat-weeks");
+        let weeksHtml = '<h3 class="text-2xl font-bold text-slate-800 mb-4">📅 Programme par semaines</h3>';
+        
+        data.semaines.forEach((semaine, index) => {
+          weeksHtml += `
+            <div class="border rounded-2xl p-6 bg-gradient-to-br from-white to-slate-50">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold">
+                  ${index + 1}
+                </div>
+                <h4 class="text-xl font-bold text-slate-800">${semaine.titre}</h4>
+              </div>
+              
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5 class="font-semibold text-emerald-700 mb-2">🎯 Objectif</h5>
+                  <p class="text-slate-700 mb-4">${semaine.objectif}</p>
+                  
+                  <h5 class="font-semibold text-blue-700 mb-2">📚 Pratiques principales</h5>
+                  <ul class="text-slate-700 space-y-1">
+                    ${semaine.pratiques.map(pratique => `<li>• ${pratique}</li>`).join('')}
+                  </ul>
+                </div>
+                
+                <div>
+                  <h5 class="font-semibold text-purple-700 mb-2">⭐ Accent spécial</h5>
+                  <p class="text-slate-700">${semaine.accent}</p>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        
+        weeksContainer.innerHTML = weeksHtml;
+      }
+
+      // Journal spirituel
+      async function initJournal() {
+        if (journalInitialized) return;
+
+        try {
+          const api = await waitForAPI();
+          const container = $("#journal-container");
+          if (!container) return;
+
+          console.log('[Journal] Initialisation...');
+
+          // Structure du journal
+          let html = `
+            <!-- Prières obligatoires -->
+            <div class="card">
+              <h3 class="font-semibold mb-4">🕌 Prières Quotidiennes</h3>
+              <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                ${PRAYERS.map(prayer => `
+                  <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                    <input type="checkbox" class="form-checkbox text-emerald-500" id="prayer-${prayer.name.toLowerCase()}">
+                    <span class="text-sm">${prayer.name}</span>
+                  </label>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Dhikr personnalisé -->
+            <div class="card">
+              <h3 class="font-semibold mb-4">📿 Adhkar & Dhikr</h3>
+              <div class="space-y-3">
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                  <input type="checkbox" class="form-checkbox text-emerald-500" id="dhikr-morning">
+                  <span class="text-sm">Adhkar du matin (100x Subhan Allah, Al-hamdulillah, Allahu Akbar)</span>
+                </label>
+                
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                  <input type="checkbox" class="form-checkbox text-emerald-500" id="dhikr-evening">
+                  <span class="text-sm">Adhkar du soir (100x chacun)</span>
+                </label>
+                
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                  <input type="checkbox" class="form-checkbox text-emerald-500" id="dhikr-salawat">
+                  <span class="text-sm">Salawat sur le Prophète (ﷺ) - 100x</span>
+                </label>
+                
+                <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                  <input type="checkbox" class="form-checkbox text-emerald-500" id="dhikr-istighfar">
+                  <span class="text-sm">Istighfar (Astaghfiru Allah) - 100x</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Notes personnelles -->
+            <div class="card">
+              <h3 class="font-semibold mb-4">📝 Réflexions du jour</h3>
+              <textarea 
+                id="daily-notes" 
+                placeholder="Vos réflexions, enseignements reçus, émotions spirituelles..."
+                class="w-full p-3 border border-slate-300 rounded-lg resize-none h-24"
+              ></textarea>
+              <div class="mt-2 flex justify-end">
+                <button 
+                  id="save-notes" 
+                  class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-sm font-medium transition-colors"
+                >
+                  💾 Sauvegarder
+                </button>
+              </div>
+            </div>
+          `;
+
+          // Ajouter la section Mayyit le vendredi
+          if (moment().day() === 5) {
+            addMayyitSection();
+          }
+
+          container.innerHTML = html;
+
+          // Charger les données sauvegardées
+          await loadJournalData();
+
+          // Event listeners
+          setupJournalListeners();
+
+          // Event listeners pour Export/Import
+          setupExportImportListeners();
+
+          journalInitialized = true;
+          console.log('[Journal] Initialisation réussie');
+        } catch (error) {
+          console.error('[Journal] Erreur d\'initialisation:', error);
+        }
+      }
+
+      function addMayyitSection() {
+        const journalContainer = $('#journal-container');
+        if (!journalContainer || $("#journal-zikr")) return;
+
+        const mayyitHtml = `
+          <div class="card" id="journal-zikr">
+            <h3 class="font-semibold mb-2">Duʿāʾ al-Mayyit (Vendredi)</h3>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-fajr">
+                <span>Fajr</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-dhuhr">
+                <span>Ẓuhr</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-asr">
+                <span>ʿAṣr</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-maghrib">
+                <span>Maghrib</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" id="mayyit-isha">
+                <span>ʿIshāʾ</span>
+              </label>
+            </div>
+          </div>
+        `;
+
+        journalContainer.insertAdjacentHTML('beforeend', mayyitHtml);
+      }
+
+      async function loadJournalData() {
+        const api = await waitForAPI();
+        const today = moment().format('YYYY-MM-DD');
+
+        // Charger les checkboxes
+        const checkboxes = $$('#journal-container input[type="checkbox"]');
+        for (const cb of checkboxes) {
+          const key = `${today}:${cb.id}`;
+          const checked = await api.storageGet(key, false);
+          cb.checked = checked;
+        }
+
+        // Charger les notes
+        const notes = await api.storageGet(`note:${today}`, '');
+        const notesEl = $('#daily-notes');
+        if (notesEl) notesEl.value = notes;
+      }
+
+      function setupJournalListeners() {
+        const api = window.storageAPI;
+        const today = moment().format('YYYY-MM-DD');
+
+        // Event listeners pour les checkboxes
+        const checkboxes = $$('#journal-container input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+          cb.addEventListener('change', async () => {
+            const key = `${today}:${cb.id}`;
+            await api.storageSet(key, cb.checked);
+          });
+        });
+
+        // Event listener pour sauvegarder les notes
+        $('#save-notes')?.addEventListener('click', async () => {
+          const notes = $('#daily-notes')?.value || '';
+          await api.storageSet(`note:${today}`, notes);
+          
+          // Feedback visuel
+          const btn = $('#save-notes');
+          const originalText = btn.textContent;
+          btn.textContent = '✅ Sauvegardé !';
+          btn.classList.add('bg-green-500');
+          btn.classList.remove('bg-emerald-500');
+          
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.classList.remove('bg-green-500');
+            btn.classList.add('bg-emerald-500');
+          }, 2000);
+        });
+      }
+
+      // Export/Import des données
+      async function exportUserData() {
+        const api = window.storageAPI;
+        if (!api) {
+          showImportStatus("Erreur : API de stockage non disponible", "error");
+          return;
+        }
+
+        try {
+          const prefixes = ['tasbihCount', 'retreatStart', 'jp:', 'note:', 'zikrDone:', 'mayyit:'];
+          const exportData = {};
+          let exportCount = 0;
+
+          // Parcourir localStorage pour trouver les clés correspondantes
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && prefixes.some(prefix => key.startsWith(prefix))) {
+              try {
+                const value = JSON.parse(localStorage.getItem(key));
+                exportData[key] = value;
+                exportCount++;
+              } catch (e) {
+                console.warn(`Impossible d'exporter la clé ${key}:`, e);
+              }
+            }
+          }
+
+          // Créer et télécharger le fichier
+          const dataStr = JSON.stringify(exportData, null, 2);
+          const dataBlob = new Blob([dataStr], { type: 'application/json' });
+          
+          const url = URL.createObjectURL(dataBlob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `compagnon-spirituel-backup-${moment().format('YYYY-MM-DD')}.json`;
+          a.click();
+          
+          URL.revokeObjectURL(url);
+          
+          showImportStatus(`✅ ${exportCount} entrées exportées`, "success");
+
+        } catch (error) {
+          console.error('[Export] Erreur:', error);
+          showImportStatus("❌ Erreur lors de l'export", "error");
+        }
+      }
+
+      async function importUserData(file) {
+        const api = window.storageAPI;
+        if (!api) {
+          showImportStatus("Erreur : API de stockage non disponible", "error");
+          return;
+        }
+
+        try {
+          const text = await file.text();
+          const data = JSON.parse(text);
+          
+          let importCount = 0;
+          let skippedCount = 0;
+
+          for (const [key, value] of Object.entries(data)) {
+            if (typeof value !== 'undefined' && value !== null) {
+              try {
+                localStorage.setItem(key, JSON.stringify(value));
+                importCount++;
+              } catch (e) {
+                console.warn(`Impossible d'importer la clé ${key}:`, e);
+                skippedCount++;
+              }
+            } else {
+              skippedCount++;
+            }
+          }
+
+          showImportStatus(`✅ ${importCount} entrées importées${skippedCount > 0 ? `, ${skippedCount} ignorées` : ''}`, "success");
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+
+        } catch (error) {
+          console.error('[Import] Erreur:', error);
+          if (error.name === 'SyntaxError') {
+            showImportStatus("❌ Fichier JSON invalide", "error");
+          } else {
+            showImportStatus("❌ Erreur lors de l'import", "error");
+          }
+        }
+      }
+
+      function showImportStatus(message, type) {
+        const statusEl = $("#import-status");
+        if (!statusEl) return;
+
+        statusEl.textContent = message;
+        statusEl.className = `mt-3 text-sm ${type === 'error' ? 'text-red-600' : 'text-green-600'}`;
+
+        setTimeout(() => {
+          statusEl.textContent = '';
+          statusEl.className = 'mt-3 text-sm';
+        }, 5000);
+      }
+
+      function setupExportImportListeners() {
+        const exportBtn = $("#export-data");
+        const importBtn = $("#import-data");
+        const importFile = $("#import-file");
+
+        if (exportBtn) {
+          exportBtn.addEventListener("click", exportUserData);
+        }
+
+        if (importFile) {
+          importFile.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              importUserData(file);
+            }
+          });
+        }
+      }
+
+      // Calendrier hégirien  
+      async function loadHijriCalendar() {
+        try {
+          const response = await fetch('/data/mois.json');
+          if (!response.ok) throw new Error('Impossible de charger les données du mois');
+          
+          const data = await response.json();
+          const container = $("#hijri-calendar");
+          if (!container) return;
+
+          const now = moment();
+          const currentHijriMonth = now.iMonth() + 1;
+          const currentMonth = data.mois.find(m => m.i === currentHijriMonth);
+
+          if (!currentMonth) {
+            container.innerHTML = '<p class="text-center text-red-600">Données du mois non trouvées.</p>';
+            return;
+          }
+
+          let html = `
+            <div class="space-y-6">
+              <div class="text-center bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-100">
+                <h3 class="text-2xl font-bold text-purple-800 mb-2">${currentMonth.nom}</h3>
+                <p class="text-lg">${currentMonth.sens}</p>
+                <p class="text-sm text-slate-500 mt-1">${now.format('iMMMM iYYYY')}</p>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="border rounded-lg p-4">
+                  <h4 class="font-semibold mb-3 text-emerald-600">✨ Jours clés ce mois-ci</h4>
+                  ${currentMonth.cles.length > 0
+                    ? `<ul class="space-y-2">${currentMonth.cles.map(c => `<li class="text-sm">• ${c}</li>`).join('')}</ul>`
+                    : '<p class="text-sm text-slate-500">Aucun jour particulier ce mois-ci</p>'
+                  }
+                </div>
+
+                <div class="border rounded-lg p-4">
+                  <h4 class="font-semibold mb-3 text-blue-600">🤲 Pratiques recommandées</h4>
+                  <ul class="space-y-2">
+                    ${currentMonth.pratiques.map(p => `<li class="text-sm">• ${p}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mt-6 bg-slate-50 rounded-lg p-4">
+                <h4 class="font-semibold mb-3">📅 Autres jours importants de l'année</h4>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                  ${data.jours.map(j => {
+                    const mois = data.mois.find(m => m.i === j.m);
+                    return `
+                      <div class="p-3 border rounded-lg">
+                        <div class="font-medium text-slate-800">${j.nom}</div>
+                        <div class="text-slate-600">${j.j} ${mois ? mois.nom : j.m}</div>
+                        <div class="text-xs text-slate-500 mt-1">${j.desc}</div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+
+          container.innerHTML = html;
+
+        } catch (error) {
+          console.error('[Mois] Erreur:', error);
+          const container = $("#hijri-calendar");
+          if (container) {
+            container.innerHTML = '<p class="text-center text-red-600">Erreur lors du chargement du calendrier.</p>';
+          }
+        }
+      }
+
+      // Direction Qibla
+      function initQibla() {
+        $("#find-qibla").addEventListener("click", () => {
+          if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                
+                // Calcul simplifié de la direction de la Qibla (vers La Mecque)
+                const meccaLat = 21.4225;
+                const meccaLon = 39.8262;
+                
+                const qiblaAngle = calculateQiblaDirection(lat, lon, meccaLat, meccaLon);
+                
+                $("#qibla-direction").innerHTML = `
+                  <div>Direction: ${Math.round(qiblaAngle)}°</div>
+                  <div class="text-sm text-slate-600 mt-1">Orientez-vous vers cette direction</div>
+                `;
+                
+                // Rotation visuelle de la boussole
+                const compass = $("#qibla-compass");
+                if (compass) {
+                  compass.style.transform = `rotate(${qiblaAngle}deg)`;
+                }
+              },
+              (error) => {
+                $("#qibla-direction").innerHTML = `
+                  <div class="text-red-600">Impossible d'accéder à la géolocalisation</div>
+                  <div class="text-sm text-slate-500 mt-1">Veuillez autoriser l'accès à votre position</div>
+                `;
+              }
+            );
+          } else {
+            $("#qibla-direction").innerHTML = `
+              <div class="text-red-600">Géolocalisation non supportée</div>
+              <div class="text-sm text-slate-500 mt-1">Votre navigateur ne supporte pas cette fonctionnalité</div>
+            `;
+          }
+        });
+      }
+
+      function calculateQiblaDirection(lat1, lon1, lat2, lon2) {
+        // Conversion en radians
+        const φ1 = lat1 * Math.PI / 180;
+        const φ2 = lat2 * Math.PI / 180;
+        const Δλ = (lon2 - lon1) * Math.PI / 180;
+        
+        const y = Math.sin(Δλ) * Math.cos(φ2);
+        const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+        
+        const θ = Math.atan2(y, x);
+        
+        // Conversion en degrés et normalisation
+        return ((θ * 180 / Math.PI) + 360) % 360;
+      }
+
+      // Initialisation principale
+      async function init() {
+        try {
+          console.log('[Compagnon] Initialisation principale...');
+
+          // Attendre l'API de stockage
+          await waitForAPI();
+
+          // Initialiser les modules
+          setupTabs();
+          await initFocusSystem();
+          await initTasbih();
+          initQibla();
+          
+          // Mettre à jour les horloges
+          updateClock();
+          updateCountdown();
+
+          // Intervalles de mise à jour
+          setInterval(updateClock, 1000);
+          setInterval(updateCountdown, 1000);
+          setInterval(() => updateFocusContent(), 60000); // Chaque minute
+
+          console.log('[Compagnon] Application initialisée avec succès !');
+
+        } catch (error) {
+          console.error('[Compagnon] Erreur d\'initialisation:', error);
+        }
+      }
+
+      // Démarrage
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    </script>
+  </body>
+</html>
