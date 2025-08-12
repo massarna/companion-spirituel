@@ -1,0 +1,94 @@
+Contexte
+- L’app charge des fichiers JSON (manifest + sourates) depuis /data/lectures/.
+- L’erreur `Unexpected token '<'` vient du fait qu’on attend du JSON mais on reçoit de l’HTML (fallback sur index.html en 404 ou mauvais chemin).
+- Objectif : fiabiliser le loader (vérifier Content-Type/texte), corriger les chemins, synchroniser le manifest avec les fichiers existants et mettre à jour le Service Worker. AUCUNE régression ailleurs.
+
+Tâches à exécuter, dans l’ordre
+
+1) Vérifier/Uniformiser les chemins
+   - Scanner le repo et remplacer toute utilisation ambiguë de manifest par :
+     - PWA manifest : "./manifest.json" (racine)
+     - Lectures manifest : "./data/lectures/manifest.json"
+   - Dans le code Lectures, interdire les chemins absolus commençant par "/" ; utiliser **toujours** "./data/lectures/...".
+   - Si un endroit fait `fetch('manifest.json')` pour les lectures, le corriger en `fetch('./data/lectures/manifest.json')`.
+
+2) Créer un fetch strict pour le JSON (défense contre le HTML retourné)
+   - Dans le script Lectures (index.html ou le fichier JS concerné), ajouter cette fonction et l’utiliser partout où on lit du JSON des lectures :
+
+   async function fetchJsonStrict(url){
+     const u = url + (url.includes('?') ? '&' : '?') + 'v=' + Date.now(); // anticache
+     const res = await fetch(u, { cache: 'no-store' });
+     if (!res.ok) {
+       const body = await res.text().catch(()=> '');
+       throw new Error(`[HTTP ${res.status}] ${url} -> ${body.slice(0,120)}`);
+     }
+     const ct = (res.headers.get('content-type') || '').toLowerCase();
+     const txt = await res.text();
+     const head = txt.trim().slice(0,1);
+     if (ct.includes('json')) return JSON.parse(txt);
+     if (head === '<') {
+       // probablement index.html renvoyé (404 SPA)
+       throw new Error(`[HTML fallback] ${url} a renvoyé du HTML (chemin/méthode erroné)`);
+     }
+     try { return JSON.parse(txt); }
+     catch(e){ throw new Error(`[JSON parse error] ${url} -> ${txt.slice(0,120)}`); }
+   }
+
+3) Utiliser fetchJsonStrict pour les lectures
+   - Remplacer dans le loader :
+     * lecture du manifest : `const manifest = await fetchJsonStrict('./data/lectures/manifest.json');`
+     * lecture d’une sourate : `const data = await fetchJsonStrict('./data/lectures/' + fileName);`
+   - Ajouter des logs clairs :
+     console.log('[Lectures] manifest OK:', Object.keys(manifest));
+     console.log('[Lectures] loaded:', fileName, data?.ayahs?.length);
+
+   - En cas d’erreur, afficher un message propre dans le conteneur des lectures (ex. #lect-content) :
+     host.innerHTML = `<div class="p-4 rounded bg-red-50 text-red-700">
+       Erreur de chargement : ${err.message}. Vérifie l’existence du fichier demandé.
+     </div>`;
+
+4) Aligner le manifest avec les fichiers présents
+   - Ouvrir le dossier ./data/lectures/ et lister les fichiers existants.
+   - Mettre à jour ./data/lectures/manifest.json pour qu’il ne référence **QUE** des fichiers réellement présents.
+     Exemple attendu :
+     {
+       "fatiha": {"title":"سورة الفاتحة","file":"surah-1-al-fatiha.ar.json"},
+       "kahf":   {"title":"سورة الكهف","file":"surah-18-al-kahf.ar.json"},
+       "yasin":  {"title":"سورة يس","file":"surah-36-yasin.ar.json"},
+       "dukhan": {"title":"سورة الدخان","file":"surah-44-dukhan.ar.json"},
+       "waqiah": {"title":"سورة الواقعة","file":"surah-56-waqiah.ar.json"},
+       "mulk":   {"title":"سورة الملك","file":"surah-67-mulk.ar.json"},
+       "insan":  {"title":"سورة الإنسان","file":"surah-76-insan.ar.json"},
+       "buruj":  {"title":"سورة البروج","file":"surah-85-buruj.ar.json"}
+     }
+
+   - S’assurer que chacun de ces 8 fichiers existe bien dans ./data/lectures/. Si un nom ne matche pas exactement (typo), corriger le manifest pour pointer sur le vrai nom.
+
+5) Service Worker (sw.js)
+   - Incrémenter CACHE_NAME (ex. passer à 'compagnon-spirituel-v18').
+   - Dans la liste de pré-cache (si elle existe), inclure **uniquement** :
+     - "./data/lectures/manifest.json"
+     - les 8 fichiers de sourates réellement présents
+     - garder les autres assets déjà précachés valides
+   - Ne précacher **aucun** fichier qui n’existe pas (sinon install peut échouer).
+   - Conserver le reste de la logique SW comme avant.
+
+6) Tests intégrés (automatiques et manuels)
+   - Au chargement de l’onglet Lectures, log :
+     `[Lectures] manifest OK: …` et `[Lectures] loaded: <fichier> <nAyahs>`
+   - Si erreur, afficher le message propre (pas de trace brute).
+   - Ajouter un petit bouton “Recharger Lectures” near debug (optionnel) qui refait la séquence (pour toi).
+
+7) Nettoyage runtime
+   - Vérifier que **le code du Journal n’injecte rien** dans l’onglet Lectures (garde-fous : si conteneur #journal-root absent, ne rien faire).
+   - Ne rien changer au reste de l’app.
+
+Livrables attendus
+- index.html (ou le fichier JS du loader Lectures) : ajout de fetchJsonStrict + usage + gestion d’erreur propre + logs.
+- ./data/lectures/manifest.json : synchronisé avec les vrais fichiers.
+- sw.js : CACHE_NAME incrémenté + precache ajusté (aucun fichier fantôme).
+- Liste des fichiers modifiés + 2–3 lignes de logs à me montrer.
+
+Critère de réussite
+- Plus aucune erreur `Unexpected token '<'`.
+- Les lectures s’affichent; en cas de mauvais fichier/chemin, un message explicite apparaît (et la console montre exactement l’URL fautive).
