@@ -1,15 +1,15 @@
 
 {
-  "name": "compagnon-spirituel",
+  "name": "compagnon-spirituel", 
   "version": "1.0.0",
   "description": "Une application spirituelle complète",
   "main": "index.html",
   "scripts": {
-    "start": "serve -s . -l 3000",
+    "start": "serve -s . -l 3000 --no-clipboard",
     "fetch:surahs": "node scripts/fetch_surahs.js"
   },
   "keywords": ["spirituel", "islam", "pwa"],
-  "author": "Compagnon Spirituel",
+  "author": "Compagnon Spirituel", 
   "license": "MIT",
   "dependencies": {
     "serve": "^14.2.0"

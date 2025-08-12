@@ -1,22 +1,121 @@
 
 {
   "mois": [
-    { "i":0, "nom":"Muharram", "sens":"Sacré", "cles":["ʿĀshūrāʾ (10)"], "pratiques":["Jeûner 9-10 ou 10-11","Dhikr, sadaqa, repentir"] },
-    { "i":1, "nom":"Ṣafar", "sens":"Patience & confiance", "cles":[], "pratiques":["Sadaqa","Ziyārah, patience"] },
-    { "i":2, "nom":"Rabīʿ al-Awwal", "sens":"Joie & Mawlid", "cles":["Mawlid"], "pratiques":["Sīra, ṣalawāt"] },
-    { "i":3, "nom":"Rabīʿ al-Thānī", "sens":"Constante", "cles":[], "pratiques":["Rattrapages, qiyām"] },
-    { "i":4, "nom":"Jumādā al-Ūlā", "sens":"Persévérance", "cles":[], "pratiques":["Charité, qiyām"] },
-    { "i":5, "nom":"Jumādā al-Thāniyah", "sens":"Famille", "cles":[], "pratiques":["Lien familial"] },
-    { "i":6, "nom":"Rajab", "sens":"Mois sacré", "cles":["27 : Isrāʾ & Miʿrāj"], "pratiques":["Jeûnes volontaires","Dhikr & pardon"] },
-    { "i":7, "nom":"Shaʿbān", "sens":"Pont vers Ramaḍān", "cles":["15 : Laylat al-Barāʾah"], "pratiques":["Jeûnes, réconciliation"] },
-    { "i":8, "nom":"Ramaḍān", "sens":"Révélation & jeûne", "cles":["Laylat al-Qadr"], "pratiques":["Sawm, tarāwīḥ, Coran"] },
-    { "i":9, "nom":"Shawwāl", "sens":"Gratitude", "cles":["6 jours de jeûne"], "pratiques":["Continuer les bonnes œuvres"] },
-    { "i":10,"nom":"Dhū al-Qiʿdah", "sens":"Trêve (sacré)", "cles":[], "pratiques":["Préparer le Hajj"] },
-    { "i":11,"nom":"Dhū al-Ḥijjah", "sens":"Hajj & sacrifice (sacré)", "cles":["Jour dʾArafat (9)","ʿĪd al-Adḥā (10)"], "pratiques":["Dhikr intensif","Jeûne dʾArafat (non-pèlerin)"] }
+    {
+      "i": 0,
+      "nom": "Muharram",
+      "sens": "Le mois sacré, période de réflexion et de repentir",
+      "cles": ["1er Muharram (Nouvel An hijri)", "10 Muharram (Achoura)"],
+      "pratiques": ["Jeûne d'Achoura", "Istighfar intensif", "Lecture du Coran"]
+    },
+    {
+      "i": 1,
+      "nom": "Safar",
+      "sens": "Le mois du voyage spirituel",
+      "cles": [],
+      "pratiques": ["Duʿā pour la protection", "Lecture spirituelle", "Dhikr du matin et soir"]
+    },
+    {
+      "i": 2,
+      "nom": "Rabi' al-Awwal",
+      "sens": "Le mois de la naissance du Prophète (PSL)",
+      "cles": ["12 Rabi' al-Awwal (Mawlid)"],
+      "pratiques": ["Salawat sur le Prophète", "Étude de la Sira", "Récitation de qasidas"]
+    },
+    {
+      "i": 3,
+      "nom": "Rabi' al-Thani",
+      "sens": "Poursuite de l'amour prophétique",
+      "cles": [],
+      "pratiques": ["Salawat quotidiennes", "Méditation sur les qualités prophétiques"]
+    },
+    {
+      "i": 4,
+      "nom": "Jumada al-Awwal",
+      "sens": "Mois de la patience et de l'endurance",
+      "cles": [],
+      "pratiques": ["Sabr (patience)", "Dhikr de la persévérance", "Duʿā pour la constance"]
+    },
+    {
+      "i": 5,
+      "nom": "Jumada al-Thani",
+      "sens": "Continuation de l'effort spirituel",
+      "cles": [],
+      "pratiques": ["Révision du Coran", "Renouvellement de l'intention", "Istighfar"]
+    },
+    {
+      "i": 6,
+      "nom": "Rajab",
+      "sens": "Le mois sacré de la purification",
+      "cles": ["27 Rajab (Isra et Mi'raj)"],
+      "pratiques": ["Jeûne surérogatoire", "Prières nocturnes", "Invocations de purification"]
+    },
+    {
+      "i": 7,
+      "nom": "Sha'ban",
+      "sens": "Le mois de préparation à Ramadan",
+      "cles": ["15 Sha'ban (Nuit du Pardon)"],
+      "pratiques": ["Jeûne préparatoire", "Istighfar intensif", "Duʿā pour le pardon"]
+    },
+    {
+      "i": 8,
+      "nom": "Ramadan",
+      "sens": "Le mois béni du jeûne et de la révélation",
+      "cles": ["Nuit du Destin (27 Ramadan)", "Derniers 10 jours"],
+      "pratiques": ["Jeûne obligatoire", "Tahajjud", "Récitation complète du Coran", "Zakât al-Fitr"]
+    },
+    {
+      "i": 9,
+      "nom": "Shawwal",
+      "sens": "Le mois de la célébration et de la gratitude",
+      "cles": ["1er Shawwal (Aïd al-Fitr)"],
+      "pratiques": ["6 jours de jeûne de Shawwal", "Gratitude pour Ramadan", "Maintien des acquis"]
+    },
+    {
+      "i": 10,
+      "nom": "Dhu al-Qi'dah",
+      "sens": "Le mois sacré de la préparation au Hajj",
+      "cles": [],
+      "pratiques": ["Préparation spirituelle", "Dhikr de Tahlil", "Duʿā pour le Hajj"]
+    },
+    {
+      "i": 11,
+      "nom": "Dhu al-Hijjah",
+      "sens": "Le mois sacré du pèlerinage",
+      "cles": ["8-13 Dhu al-Hijjah (Hajj)", "10 Dhu al-Hijjah (Aïd al-Adha)"],
+      "pratiques": ["Dhikr de Takbir", "Jeûne d'Arafat", "Sacrifice (Udhiya)", "Pèlerinage"]
+    }
   ],
   "jours": [
-    { "code":"ashura", "m":0, "d":10, "titre":"ʿĀshūrāʾ", "reco":["Jeûne 9-10 ou 10-11","Dhikr et aumône"] },
-    { "code":"nisf-shaban", "m":7, "d":15, "titre":"Nuit du pardon", "reco":["Qiyām et repentir"] },
-    { "code":"arafat", "m":11, "d":9, "titre":"Jour dʾArafat", "reco":["Jeûne (non-pèlerin)","Dhikr & duʿāʾ"] }
+    {
+      "m": 0,
+      "d": 1,
+      "titre": "Nouvel An Hijri",
+      "reco": ["Gratitude pour l'année écoulée", "Renouvellement des intentions", "Duʿā pour la nouvelle année"]
+    },
+    {
+      "m": 0,
+      "d": 10,
+      "titre": "Jour d'Achoura",
+      "reco": ["Jeûne recommandé", "Istighfar intensif", "Méditation sur l'histoire de Musa (AS)"]
+    },
+    {
+      "m": 2,
+      "d": 12,
+      "titre": "Mawlid an-Nabi",
+      "reco": ["Salawat abondantes sur le Prophète", "Lecture de la Sira", "Récitation de qasidas"]
+    },
+    {
+      "m": 6,
+      "d": 27,
+      "titre": "Isra wa Mi'raj",
+      "reco": ["Prières nocturnes", "Méditation sur le voyage nocturne", "Duʿā d'élévation spirituelle"]
+    },
+    {
+      "m": 7,
+      "d": 15,
+      "titre": "Nuit du Pardon",
+      "reco": ["Veillée spirituelle", "Istighfar jusqu'à l'aube", "Duʿā pour les défunts"]
+    }
   ]
 }
