@@ -2809,27 +2809,51 @@
       3. L'application détectera automatiquement la nouvelle sourate
       */
 
+      // Fonction fetch strict pour éviter de recevoir du HTML au lieu de JSON
+      async function fetchJsonStrict(url) {
+        const u = url + (url.includes('?') ? '&' : '?') + 'v=' + Date.now(); // anticache
+        const res = await fetch(u, { cache: 'no-store' });
+        if (!res.ok) {
+          const body = await res.text().catch(() => '');
+          throw new Error(`[HTTP ${res.status}] ${url} -> ${body.slice(0,120)}`);
+        }
+        const ct = (res.headers.get('content-type') || '').toLowerCase();
+        const txt = await res.text();
+        const head = txt.trim().slice(0,1);
+        if (ct.includes('json')) return JSON.parse(txt);
+        if (head === '<') {
+          // probablement index.html renvoyé (404 SPA)
+          throw new Error(`[HTML fallback] ${url} a renvoyé du HTML (chemin/méthode erroné)`);
+        }
+        try { return JSON.parse(txt); }
+        catch(e){ throw new Error(`[JSON parse error] ${url} -> ${txt.slice(0,120)}`); }
+      }
+
       let availableSurahs = {};
       let currentSurahData = null;
 
       // Charger le manifeste des sourates disponibles
       async function loadSurahManifest() {
         try {
-          const response = await fetch('./data/lectures/manifest.json');
-          if (!response.ok) throw new Error(`Erreur ${response.status}`);
-
-          const manifestData = await response.json();
+          const manifestData = await fetchJsonStrict('./data/lectures/manifest.json');
           if (!manifestData || typeof manifestData !== 'object') {
             throw new Error('Manifeste invalide');
           }
 
           availableSurahs = manifestData;
-          console.log('[Lectures] Manifeste chargé:', Object.keys(availableSurahs).length, 'sourates');
+          console.log('[Lectures] manifest OK:', Object.keys(availableSurahs));
         } catch (error) {
           console.error('[Lectures] Erreur manifeste:', error);
           const selectEl = $("#surah-select");
           if (selectEl) {
             selectEl.innerHTML = '<option value="">خطأ في تحميل القائمة</option>';
+          }
+          // Afficher l'erreur dans le conteneur principal si disponible
+          const contentEl = $("#lect-content");
+          if (contentEl) {
+            contentEl.innerHTML = `<div class="p-4 rounded bg-red-50 text-red-700">
+              Erreur de chargement du manifeste : ${error.message}. Vérifie l'existence du fichier demandé.
+            </div>`;
           }
         }
       }
@@ -2910,12 +2934,9 @@
           const surah = availableSurahs[surahKey];
           if (!surah) throw new Error('Sourate non trouvée');
 
-          const response = await fetch(`./data/lectures/${surah.file}?v=${Date.now()}`);
-          if (!response.ok) throw new Error(`Erreur ${response.status}`);
-
-          currentSurahData = await response.json();
+          currentSurahData = await fetchJsonStrict(`./data/lectures/${surah.file}`);
           renderSurahMushaf(contentEl, currentSurahData, surah.title);
-          console.log('[Lectures] Sourate chargée:', surah.title);
+          console.log('[Lectures] loaded:', surah.file, currentSurahData?.ayahs?.length);
         } catch (error) {
           console.error('[Lectures] Erreur chargement sourate:', error);
           contentEl.innerHTML = `
@@ -2924,7 +2945,7 @@
                 <span class="text-red-600 text-xl">⚠️</span>
               </div>
               <p class="font-semibold text-red-800 mb-2">Erreur de chargement</p>
-              <p class="text-red-600">Impossible de charger cette sourate</p>
+              <p class="text-red-600">Erreur de chargement : ${error.message}. Vérifie l'existence du fichier demandé.</p>
               <p class="text-red-500 text-sm mt-2">لا يمكن تحميل هذه السورة</p>
             </div>
           `;
@@ -3241,15 +3262,13 @@
           const surah = availableSurahs[surahKey];
           if (!surah) throw new Error('Sourate non trouvée');
 
-          const [surahResponse, invocations] = await Promise.all([
-            fetch(`./data/lectures/${surah.file}?v=${Date.now()}`),
+          const [surahData, invocations] = await Promise.all([
+            fetchJsonStrict(`./data/lectures/${surah.file}`),
             loadInvocations()
           ]);
 
-          if (!surahResponse.ok) throw new Error(`Erreur ${surahResponse.status}`);
-
-          const surahData = await surahResponse.json();
           renderSurahWithInvocations(container, surahData, surah.title, invocations);
+          console.log('[Lectures Special] loaded:', surah.file, surahData?.ayahs?.length);
         } catch (error) {
           console.error('[Lectures Special] Erreur chargement sourate:', error);
           container.innerHTML = `
@@ -3258,7 +3277,7 @@
                 <span class="text-red-600 text-xl">⚠️</span>
               </div>
               <p class="font-semibold text-red-800 mb-2">Erreur de chargement</p>
-              <p class="text-red-600">Impossible de charger cette sourate</p>
+              <p class="text-red-600">Erreur de chargement : ${error.message}. Vérifie l'existence du fichier demandé.</p>
             </div>
           `;
         }
@@ -4340,10 +4359,7 @@
             if (!surah) continue;
 
             try {
-              const response = await fetch(`./data/lectures/${surah.file}?v=${Date.now()}`);
-              if (!response.ok) continue;
-
-              const surahData = await response.json();
+              const surahData = await fetchJsonStrict(`./data/lectures/${surah.file}`);
               const showBasmala = (surahData.surah !== 9);
               const htmlAyahs = surahData.ayahs
                 .map(a => `${a.ar}<span class="ayah-badge">${toArabicDigits(a.n || a.numberInSurah || a.number || 0)}</span>`)
@@ -4357,6 +4373,7 @@
                 </div>
               `;
 
+              console.log('[Lectures Continuous] loaded:', surah.file, surahData?.ayahs?.length);
             } catch (error) {
               console.error(`Erreur chargement ${surahKey}:`, error);
             }
