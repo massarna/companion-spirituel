@@ -786,438 +786,6 @@
           font-size: 1.25rem;
         }
 
-        .ayahs-block {
-          font-size: 1.6rem;
-          line-height: 3.2rem;
-          padding: 2.5rem 1.5rem;
-          word-spacing: 0.08em;
-          letter-spacing: 0.01em;
-        }
-      }
-
-      /* Styles spéciaux pour la page Journal */
-      .journal-section {
-        background: var(--card);
-        backdrop-filter: blur(20px);
-        border-radius: 24px;
-        padding: 2.5rem;
-        margin-bottom: 2rem;
-        border: 1px solid var(--border-soft);
-        box-shadow: var(--shadow-soft);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .journal-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--gradient-islamic);
-        border-radius: 24px 24px 0 0;
-      }
-
-      .journal-section:hover {
-        box-shadow: var(--shadow-hover);
-        transform: translateY(-2px);
-      }
-
-      .journal-title {
-        font-family: "Amiri", serif;
-        font-size: 2rem;
-        font-weight: 700;
-        background: var(--gradient-islamic);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-align: center;
-        margin-bottom: 2rem;
-        position: relative;
-      }
-
-      .journal-title::after {
-        content: '';
-        position: absolute;
-        bottom: -0.5rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 3px;
-        background: var(--gradient-warm);
-        border-radius: 2px;
-      }
-
-      .checkbox-container {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1rem 1.5rem;
-        background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.9) 100%);
-        border-radius: 16px;
-        border: 1px solid var(--border-soft);
-        transition: all 0.3s ease;
-        margin-bottom: 0.75rem;
-      }
-
-      .checkbox-container:hover {
-        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(0,168,107,0.02) 100%);
-        border-color: var(--islamic-green);
-        box-shadow: 0 8px 25px rgba(0, 168, 107, 0.1);
-      }
-
-      .checkbox-container input[type="checkbox"] {
-        width: 1.25rem;
-        height: 1.25rem;
-        accent-color: var(--islamic-green);
-        border-radius: 4px;
-      }
-
-      .checkbox-container label {
-        font-weight: 500;
-        color: var(--ink);
-        cursor: pointer;
-        flex: 1;
-      }
-
-      .tasbih-section {
-        text-align: center;
-        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(245,158,11,0.05) 100%);
-        border-radius: 24px;
-        padding: 3rem;
-        border: 1px solid var(--border-soft);
-        position: relative;
-        overflow: hidden;
-      }
-
-      .tasbih-section::before {
-        content: '﷽';
-        position: absolute;
-        top: 1rem;
-        right: 1.5rem;
-        font-size: 1.5rem;
-        color: var(--islamic-green);
-        opacity: 0.3;
-      }
-
-      .tasbih-counter {
-        font-family: "Orbitron", monospace;
-        font-size: 6rem;
-        font-weight: 700;
-        background: var(--gradient-islamic);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin: 2rem 0;
-        text-shadow: 0 4px 20px rgba(0, 168, 107, 0.3);
-      }
-
-      .tasbih-button {
-        width: 12rem;
-        height: 12rem;
-        border-radius: 50%;
-        background: var(--gradient-islamic);
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 20px 60px rgba(0, 168, 107, 0.3);
-        margin: 2rem auto;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .tasbih-button::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-        transform: scale(0);
-        transition: transform 0.6s ease;
-      }
-
-      .tasbih-button:active::before {
-        transform: scale(1);
-      }
-
-      .tasbih-button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 30px 80px rgba(0, 168, 107, 0.4);
-      }
-
-      .tasbih-button:active {
-        transform: scale(0.95);
-      }
-
-      .notes-textarea {
-        width: 100%;
-        min-height: 200px;
-        padding: 2rem;
-        border: 2px solid var(--border-soft);
-        border-radius: 16px;
-        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
-        font-family: "Lato", sans-serif;
-        font-size: 1rem;
-        line-height: 1.6;
-        color: var(--ink);
-        resize: vertical;
-        transition: all 0.3s ease;
-      }
-
-      .notes-textarea:focus {
-        outline: none;
-        border-color: var(--islamic-green);
-        box-shadow: 0 0 0 4px rgba(0, 168, 107, 0.1);
-        background: rgba(255, 255, 255, 0.98);
-      }
-
-      .notes-textarea::placeholder {
-        color: var(--muted);
-        font-style: italic;
-      }
-
-      @media (max-width: 768px) {
-        .card {
-          padding: 1.5rem;
-        }
-
-        .journal-section {
-          padding: 2rem;
-        }
-
-        .tasbih-counter {
-          font-size: 4rem;
-        }
-
-        .tasbih-button {
-          width: 10rem;
-          height: 10rem;
-          font-size: 1.25rem;
-        }
-
-        .ayahs-block {
-          font-size: 1.6rem;
-          line-height: 3.2rem;
-          padding: 2.5rem 1.5rem;
-          word-spacing: 0.08em;
-          letter-spacing: 0.01em;
-        }
-      }
-
-      /* Styles spéciaux pour la page Journal */
-      .journal-section {
-        background: var(--card);
-        backdrop-filter: blur(20px);
-        border-radius: 24px;
-        padding: 2.5rem;
-        margin-bottom: 2rem;
-        border: 1px solid var(--border-soft);
-        box-shadow: var(--shadow-soft);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .journal-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--gradient-islamic);
-        border-radius: 24px 24px 0 0;
-      }
-
-      .journal-section:hover {
-        box-shadow: var(--shadow-hover);
-        transform: translateY(-2px);
-      }
-
-      .journal-title {
-        font-family: "Amiri", serif;
-        font-size: 2rem;
-        font-weight: 700;
-        background: var(--gradient-islamic);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-align: center;
-        margin-bottom: 2rem;
-        position: relative;
-      }
-
-      .journal-title::after {
-        content: '';
-        position: absolute;
-        bottom: -0.5rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 3px;
-        background: var(--gradient-warm);
-        border-radius: 2px;
-      }
-
-      .checkbox-container {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1rem 1.5rem;
-        background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.9) 100%);
-        border-radius: 16px;
-        border: 1px solid var(--border-soft);
-        transition: all 0.3s ease;
-        margin-bottom: 0.75rem;
-      }
-
-      .checkbox-container:hover {
-        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(0,168,107,0.02) 100%);
-        border-color: var(--islamic-green);
-        box-shadow: 0 8px 25px rgba(0, 168, 107, 0.1);
-      }
-
-      .checkbox-container input[type="checkbox"] {
-        width: 1.25rem;
-        height: 1.25rem;
-        accent-color: var(--islamic-green);
-        border-radius: 4px;
-      }
-
-      .checkbox-container label {
-        font-weight: 500;
-        color: var(--ink);
-        cursor: pointer;
-        flex: 1;
-      }
-
-      .tasbih-section {
-        text-align: center;
-        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(245,158,11,0.05) 100%);
-        border-radius: 24px;
-        padding: 3rem;
-        border: 1px solid var(--border-soft);
-        position: relative;
-        overflow: hidden;
-      }
-
-      .tasbih-section::before {
-        content: '﷽';
-        position: absolute;
-        top: 1rem;
-        right: 1.5rem;
-        font-size: 1.5rem;
-        color: var(--islamic-green);
-        opacity: 0.3;
-      }
-
-      .tasbih-counter {
-        font-family: "Orbitron", monospace;
-        font-size: 6rem;
-        font-weight: 700;
-        background: var(--gradient-islamic);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin: 2rem 0;
-        text-shadow: 0 4px 20px rgba(0, 168, 107, 0.3);
-      }
-
-      .tasbih-button {
-        width: 12rem;
-        height: 12rem;
-        border-radius: 50%;
-        background: var(--gradient-islamic);
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 20px 60px rgba(0, 168, 107, 0.3);
-        margin: 2rem auto;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .tasbih-button::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-        transform: scale(0);
-        transition: transform 0.6s ease;
-      }
-
-      .tasbih-button:active::before {
-        transform: scale(1);
-      }
-
-      .tasbih-button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 30px 80px rgba(0, 168, 107, 0.4);
-      }
-
-      .tasbih-button:active {
-        transform: scale(0.95);
-      }
-
-      .notes-textarea {
-        width: 100%;
-        min-height: 200px;
-        padding: 2rem;
-        border: 2px solid var(--border-soft);
-        border-radius: 16px;
-        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
-        font-family: "Lato", sans-serif;
-        font-size: 1rem;
-        line-height: 1.6;
-        color: var(--ink);
-        resize: vertical;
-        transition: all 0.3s ease;
-      }
-
-      .notes-textarea:focus {
-        outline: none;
-        border-color: var(--islamic-green);
-        box-shadow: 0 0 0 4px rgba(0, 168, 107, 0.1);
-        background: rgba(255, 255, 255, 0.98);
-      }
-
-      .notes-textarea::placeholder {
-        color: var(--muted);
-        font-style: italic;
-      }
-
-      @media (max-width: 768px) {
-        .card {
-          padding: 1.5rem;
-        }
-
-        .journal-section {
-          padding: 2rem;
-        }
-
-        .tasbih-counter {
-          font-size: 4rem;
-        }
-
-        .tasbih-button {
-          width: 10rem;
-          height: 10rem;
-          font-size: 1.25rem;
-        }
-
         /* Amélioration des boutons de lecture sur mobile */
         .tab-btn {
           position: relative;
@@ -1257,7 +825,7 @@
           transition: transform 0.1s ease;
         }
 
-        /* Amélioration des interactions tactiles */
+        /* Améliorations pour les interactions tactiles */
         @media (hover: none) and (pointer: coarse) {
           .tab-btn {
             min-height: 44px;
@@ -1388,6 +956,402 @@
         #surah-selector p {
           font-size: 0.9rem;
           margin-bottom: 0.75rem;
+        }
+      }
+
+      /* Styles spéciaux pour la page Journal */
+      .journal-section {
+        background: var(--card);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-soft);
+        box-shadow: var(--shadow-soft);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .journal-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-islamic);
+        border-radius: 24px 24px 0 0;
+      }
+
+      .journal-section:hover {
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-2px);
+      }
+
+      .journal-title {
+        font-family: "Amiri", serif;
+        font-size: 2rem;
+        font-weight: 700;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+      }
+
+      .journal-title::after {
+        content: '';
+        position: absolute;
+        bottom: -0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--gradient-warm);
+        border-radius: 2px;
+      }
+
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.9) 100%);
+        border-radius: 16px;
+        border: 1px solid var(--border-soft);
+        transition: all 0.3s ease;
+        margin-bottom: 0.75rem;
+      }
+
+      .checkbox-container:hover {
+        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(0,168,107,0.02) 100%);
+        border-color: var(--islamic-green);
+        box-shadow: 0 8px 25px rgba(0, 168, 107, 0.1);
+      }
+
+      .checkbox-container input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        accent-color: var(--islamic-green);
+        border-radius: 4px;
+      }
+
+      .checkbox-container label {
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+        flex: 1;
+      }
+
+      .tasbih-section {
+        text-align: center;
+        background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(245,158,11,0.05) 100%);
+        border-radius: 24px;
+        padding: 3rem;
+        border: 1px solid var(--border-soft);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tasbih-section::before {
+        content: '﷽';
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        font-size: 1.5rem;
+        color: var(--islamic-green);
+        opacity: 0.3;
+      }
+
+      .tasbih-counter {
+        font-family: "Orbitron", monospace;
+        font-size: 6rem;
+        font-weight: 700;
+        background: var(--gradient-islamic);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 2rem 0;
+        text-shadow: 0 4px 20px rgba(0, 168, 107, 0.3);
+      }
+
+      .tasbih-button {
+        width: 12rem;
+        height: 12rem;
+        border-radius: 50%;
+        background: var(--gradient-islamic);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 20px 60px rgba(0, 168, 107, 0.3);
+        margin: 2rem auto;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tasbih-button::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+        transform: scale(0);
+        transition: transform 0.6s ease;
+      }
+
+      .tasbih-button:active::before {
+        transform: scale(1);
+      }
+
+      .tasbih-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 30px 80px rgba(0, 168, 107, 0.4);
+      }
+
+      .tasbih-button:active {
+        transform: scale(0.95);
+      }
+
+      .notes-textarea {
+        width: 100%;
+        min-height: 200px;
+        padding: 2rem;
+        border: 2px solid var(--border-soft);
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
+        font-family: "Lato", sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--ink);
+        resize: vertical;
+        transition: all 0.3s ease;
+      }
+
+      .notes-textarea:focus {
+        outline: none;
+        border-color: var(--islamic-green);
+        box-shadow: 0 0 0 4px rgba(0, 168, 107, 0.1);
+        background: rgba(255, 255, 255, 0.98);
+      }
+
+      .notes-textarea::placeholder {
+        color: var(--muted);
+        font-style: italic;
+      }
+
+      @media (max-width: 768px) {
+        .card {
+          padding: 1.5rem;
+        }
+
+        .journal-section {
+          padding: 2rem;
+        }
+
+        .tasbih-counter {
+          font-size: 4rem;
+        }
+
+        .tasbih-button {
+          width: 10rem;
+          height: 10rem;
+          font-size: 1.25rem;
+        }
+
+        /* Styles spéciaux pour la page Journal */
+        .journal-section {
+          background: var(--card);
+          backdrop-filter: blur(20px);
+          border-radius: 24px;
+          padding: 2.5rem;
+          margin-bottom: 2rem;
+          border: 1px solid var(--border-soft);
+          box-shadow: var(--shadow-soft);
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .journal-section::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 4px;
+          background: var(--gradient-islamic);
+          border-radius: 24px 24px 0 0;
+        }
+
+        .journal-section:hover {
+          box-shadow: var(--shadow-hover);
+          transform: translateY(-2px);
+        }
+
+        .journal-title {
+          font-family: "Amiri", serif;
+          font-size: 2rem;
+          font-weight: 700;
+          background: var(--gradient-islamic);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          text-align: center;
+          margin-bottom: 2rem;
+          position: relative;
+        }
+
+        .journal-title::after {
+          content: '';
+          position: absolute;
+          bottom: -0.5rem;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 60px;
+          height: 3px;
+          background: var(--gradient-warm);
+          border-radius: 2px;
+        }
+
+        .checkbox-container {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 1rem 1.5rem;
+          background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.9) 100%);
+          border-radius: 16px;
+          border: 1px solid var(--border-soft);
+          transition: all 0.3s ease;
+          margin-bottom: 0.75rem;
+        }
+
+        .checkbox-container:hover {
+          background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(0,168,107,0.02) 100%);
+          border-color: var(--islamic-green);
+          box-shadow: 0 8px 25px rgba(0, 168, 107, 0.1);
+        }
+
+        .checkbox-container input[type="checkbox"] {
+          width: 1.25rem;
+          height: 1.25rem;
+          accent-color: var(--islamic-green);
+          border-radius: 4px;
+        }
+
+        .checkbox-container label {
+          font-weight: 500;
+          color: var(--ink);
+          cursor: pointer;
+          flex: 1;
+        }
+
+        .tasbih-section {
+          text-align: center;
+          background: linear-gradient(135deg, rgba(0,168,107,0.05) 0%, rgba(245,158,11,0.05) 100%);
+          border-radius: 24px;
+          padding: 3rem;
+          border: 1px solid var(--border-soft);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .tasbih-section::before {
+          content: '﷽';
+          position: absolute;
+          top: 1rem;
+          right: 1.5rem;
+          font-size: 1.5rem;
+          color: var(--islamic-green);
+          opacity: 0.3;
+        }
+
+        .tasbih-counter {
+          font-family: "Orbitron", monospace;
+          font-size: 6rem;
+          font-weight: 700;
+          background: var(--gradient-islamic);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin: 2rem 0;
+          text-shadow: 0 4px 20px rgba(0, 168, 107, 0.3);
+        }
+
+        .tasbih-button {
+          width: 12rem;
+          height: 12rem;
+          border-radius: 50%;
+          background: var(--gradient-islamic);
+          border: none;
+          color: white;
+          font-size: 1.5rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 20px 60px rgba(0, 168, 107, 0.3);
+          margin: 2rem auto;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .tasbih-button::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+          transform: scale(0);
+          transition: transform 0.6s ease;
+        }
+
+        .tasbih-button:active::before {
+          transform: scale(1);
+        }
+
+        .tasbih-button:hover {
+          transform: scale(1.05);
+          box-shadow: 0 30px 80px rgba(0, 168, 107, 0.4);
+        }
+
+        .tasbih-button:active {
+          transform: scale(0.95);
+        }
+
+        .notes-textarea {
+          width: 100%;
+          min-height: 200px;
+          padding: 2rem;
+          border: 2px solid var(--border-soft);
+          border-radius: 16px;
+          background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
+          font-family: "Lato", sans-serif;
+          font-size: 1rem;
+          line-height: 1.6;
+          color: var(--ink);
+          resize: vertical;
+          transition: all 0.3s ease;
+        }
+
+        .notes-textarea:focus {
+          outline: none;
+          border-color: var(--islamic-green);
+          box-shadow: 0 0 0 4px rgba(0, 168, 107, 0.1);
+          background: rgba(255, 255, 255, 0.98);
+        }
+
+        .notes-textarea::placeholder {
+          color: var(--muted);
+          font-style: italic;
         }
       }
 
@@ -2000,7 +1964,7 @@
                   <p class="text-slate-600">Progression sur 30 jours</p>
                 </div>
               </div>
-              
+
               <!-- Sélecteur de métrique -->
               <div class="flex items-center gap-2">
                 <label for="habit-metric-select" class="text-sm font-medium text-slate-700">Métrique :</label>
@@ -2085,7 +2049,7 @@
                   <p>Amélioration de 18% par rapport au mois dernier.</p>
                 </div>
               </div>
-              
+
               <div class="bg-emerald-50 border-l-4 border-emerald-400 p-4 rounded-r-xl">
                 <h4 class="font-semibold text-emerald-800 mb-2">💡 Recommandations</h4>
                 <div id="habit-recommendations" class="text-sm text-emerald-700 space-y-1">
@@ -2587,7 +2551,7 @@
     <!-- 2) Bridge: expose window.storageAPI (via bridge.js) -->
     <script type="module" src="./bridge.js"></script>
 
-    
+
 
     <!-- 3) App Controller (horloge, onglets, prières, charts, qibla) -->
     <script type="module">
@@ -2613,14 +2577,21 @@
       const $ = (s, r = document) => r.querySelector(s);
       const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-      // Fonction utilitaire pour éviter "Unexpected token '<'"
+      // Fonction utilitaire pour charger les données JSON avec garde-fou
       async function fetchJSONStrict(url) {
         const res = await fetch(url, { cache: 'no-store' });
         const txt = await res.clone().text();
-        if (txt.trim().startsWith('<')) {
-          throw new Error('HTML reçu au lieu de JSON: ' + url);
-        }
+        if (txt.trim().startsWith('<')) throw new Error('HTML reçu au lieu de JSON: ' + url);
         return JSON.parse(txt);
+      }
+
+      async function loadJSON(url, defaultValue = null) {
+        try {
+          return await fetchJSONStrict(url);
+        } catch (error) {
+          console.error(`[JSON] Erreur chargement ${url}:`, error);
+          return defaultValue;
+        }
       }
 
       // Horloge & Dates
@@ -2963,9 +2934,9 @@
         if (!canvas) return;
 
         habitsData = await generateHabitsData();
-        
+
         const ctx = canvas.getContext('2d');
-        
+
         if (habitsChart) {
           habitsChart.destroy();
         }
@@ -3091,18 +3062,18 @@
         if (!calendarContainer) return;
 
         let html = '';
-        
+
         for (let i = 29; i >= 0; i--) {
           const date = moment().subtract(i, 'days');
           const dayScore = habitsData.overall[29 - i] || 0;
-          
+
           let colorClass = 'bg-gray-200';
           if (dayScore > 75) colorClass = 'bg-emerald-600';
           else if (dayScore > 50) colorClass = 'bg-emerald-400';
           else if (dayScore > 25) colorClass = 'bg-emerald-200';
-          
+
           html += `
-            <div class="w-8 h-8 ${colorClass} rounded-sm flex items-center justify-center text-xs font-medium text-white cursor-pointer hover:scale-110 transition-transform" 
+            <div class="w-8 h-8 ${colorClass} rounded-sm flex items-center justify-center text-xs font-medium text-white cursor-pointer hover:scale-110 transition-transform"
                  title="${date.format('DD/MM/YYYY')} - Score: ${dayScore}%"
                  data-date="${date.format('YYYY-MM-DD')}"
                  data-score="${dayScore}">
@@ -3110,7 +3081,7 @@
             </div>
           `;
         }
-        
+
         calendarContainer.innerHTML = html;
 
         // Ajouter les événements hover
@@ -3120,7 +3091,7 @@
             const score = e.target.dataset.score;
             $("#calendar-tooltip").textContent = `${date} - Score: ${score}%`;
           });
-          
+
           cell.addEventListener('mouseleave', () => {
             $("#calendar-tooltip").textContent = '';
           });
@@ -3192,7 +3163,7 @@
         const firstWeek = habitsData.overall.slice(0, 7).reduce((a, b) => a + b, 0) / 7;
         const lastWeek = habitsData.overall.slice(-7).reduce((a, b) => a + b, 0) / 7;
         const trend = lastWeek - firstWeek;
-        
+
         if (trend > 0) {
           insights.push(`Amélioration de ${Math.round(trend)}% par rapport à la semaine dernière.`);
         } else if (trend < -5) {
@@ -3213,13 +3184,13 @@
         // Afficher les insights
         const insightsContainer = $("#habit-insights");
         const recommendationsContainer = $("#habit-recommendations");
-        
+
         if (insightsContainer) {
           insightsContainer.innerHTML = insights.map(i => `<p>• ${i}</p>`).join('');
         }
-        
+
         if (recommendationsContainer) {
-          recommendationsContainer.innerHTML = recommendations.length > 0 
+          recommendationsContainer.innerHTML = recommendations.length > 0
             ? recommendations.map(r => `<p>• ${r}</p>`).join('')
             : '<p>• Continuez ainsi, vous êtes sur la bonne voie !</p>';
         }
@@ -3228,7 +3199,7 @@
       // Initialisation complète du système d'analyse des habitudes
       async function initHabitsAnalysis() {
         console.log('[Habits] Initialisation de l\'analyse des habitudes...');
-        
+
         await initHabitsChart();
         await generateHabitsCalendar();
         await updateHabitsMetrics();
@@ -4072,7 +4043,7 @@
               console.error('[Lectures] Erreur:', error);
               if (contentEl) {
                 contentEl.innerHTML = `
-                  <div class="text-red-600 p-6 rounded-xl bg-red-50 text-center">
+                  <div class="text-red-600 p-6 rounded-xl bg-red-50">
                     <p class="font-semibold mb-2">Erreur de chargement</p>
                     <p class="text-sm">${error.message}</p>
                   </div>
@@ -4107,7 +4078,7 @@
         }
       }
 
-      // Helpers pour les zikrs (simplifiés, maintenant intégrés dans le nouveau système Focus)
+      // Fonctions de gestion du focus du jour (remplace todayItems)
       function isFriday(now) {
         return now.isoWeekday() === 5; // 5 = vendredi
       }
@@ -4499,7 +4470,7 @@
               </div>
             `;
           }
-          
+
           await initLectures();
           lecturesInitialized = true;
         }
@@ -4566,9 +4537,9 @@
         function updateUI() {
           const isEnabled = window.prayerNotifications.notificationsEnabled;
           const soundEnabled = window.prayerNotifications.soundEnabled;
-          
+
           statusEl.textContent = isEnabled ? "Notifications activées" : "Activer les notifications";
-          toggleBtn.className = isEnabled 
+          toggleBtn.className = isEnabled
             ? "inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 text-sm font-medium"
             : "inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 text-sm font-medium";
 
@@ -4588,7 +4559,7 @@
         toggleBtn.addEventListener("click", async () => {
           const newState = await window.prayerNotifications.toggleNotifications();
           updateUI();
-          
+
           if (newState) {
             showNotificationFeedback("✅ Notifications activées ! Vous recevrez des rappels de prières.", "success");
           } else {
@@ -4599,9 +4570,9 @@
         soundBtn.addEventListener("click", () => {
           const newState = window.prayerNotifications.toggleSound();
           updateUI();
-          
+
           showNotificationFeedback(
-            newState ? "🔊 Sons de notification activés" : "🔇 Sons de notification désactivés", 
+            newState ? "🔊 Sons de notification activés" : "🔇 Sons de notification désactivés",
             "info"
           );
         });
@@ -4624,9 +4595,9 @@
             "bg-blue-100 text-blue-700 border border-blue-200"
           }`;
           alertDiv.textContent = message;
-          
+
           infoEl.parentNode.insertBefore(alertDiv, infoEl.nextSibling);
-          
+
           setTimeout(() => {
             if (alertDiv.parentNode) {
               alertDiv.remove();
@@ -4647,10 +4618,10 @@
         const iconEl = $("#network-icon");
         const textEl = $("#network-text");
         const syncStatusEl = $("#sync-status");
-        
+
         function updateNetworkStatus() {
           const isOnline = navigator.onLine;
-          
+
           if (!isOnline) {
             statusEl.classList.remove("hidden");
             iconEl.className = "w-2 h-2 rounded-full bg-red-500";
@@ -4661,11 +4632,11 @@
             setTimeout(() => {
               statusEl.classList.add("hidden");
             }, 2000);
-            
+
             iconEl.className = "w-2 h-2 rounded-full bg-green-500";
             textEl.textContent = "Connecté";
             syncStatusEl.textContent = "☁️ Synchronisation automatique active";
-            
+
             // Nettoyer le cache périodiquement
             if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
               navigator.serviceWorker.controller.postMessage({ type: 'CLEAN_CACHE' });
@@ -4677,13 +4648,13 @@
         window.addEventListener('online', () => {
           updateNetworkStatus();
           console.log('[Network] Reconnecté - Synchronisation en cours...');
-          
+
           // Afficher notification de reconnexion
           if (statusEl) {
             statusEl.classList.remove("hidden");
             iconEl.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
             textEl.textContent = "Reconnecté !";
-            
+
             setTimeout(() => {
               statusEl.classList.add("hidden");
             }, 3000);
