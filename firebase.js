@@ -12,7 +12,6 @@ export class FirebaseStorage {
         console.log('[Firebase] Désactivé par configuration');
         return false;
       }
-      // Configuration Firebase sera ajoutée plus tard
       console.log('[Firebase] Configuration en attente');
       return false;
     } catch (error) {
@@ -24,7 +23,6 @@ export class FirebaseStorage {
   async get(key, defaultValue) {
     if (!this.initialized) return defaultValue;
     try {
-      // Implémentation Firebase à venir
       return defaultValue;
     } catch (error) {
       console.error('[Firebase] Erreur lecture:', error);
@@ -35,7 +33,6 @@ export class FirebaseStorage {
   async set(key, value) {
     if (!this.initialized) return false;
     try {
-      // Implémentation Firebase à venir
       return false;
     } catch (error) {
       console.error('[Firebase] Erreur écriture:', error);

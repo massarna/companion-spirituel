@@ -1,9 +1,10 @@
+
 // Système de notifications intelligentes pour les prières
 export class PrayerNotificationSystem {
   constructor() {
     this.notificationsEnabled = false;
     this.soundEnabled = true;
-    this.reminderTimes = [5, 10, 15]; // minutes avant la prière
+    this.reminderTimes = [5, 10, 15];
     this.scheduledNotifications = new Map();
   }
 
@@ -90,7 +91,6 @@ export class PrayerNotificationSystem {
 
     today.setHours(hours, minutes, 0, 0);
 
-    // Si l'heure est passée aujourd'hui, programmer pour demain
     if (today <= now) {
       today.setDate(today.getDate() + 1);
     }
@@ -155,11 +155,9 @@ export class PrayerNotificationSystem {
   }
 }
 
-// Instance globale
 const prayerNotifications = new PrayerNotificationSystem();
 prayerNotifications.loadSettings();
 
-// Exposer globalement
 window.prayerNotifications = prayerNotifications;
 
 console.log('[Notifications] Système initialisé');

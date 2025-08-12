@@ -27,7 +27,6 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Retourner le cache si disponible, sinon fetch
         if (response) {
           return response;
         }
@@ -39,7 +38,6 @@ self.addEventListener('fetch', (event) => {
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'CLEAN_CACHE') {
-    // Nettoyer les anciens caches
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
