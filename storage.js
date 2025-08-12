@@ -1,4 +1,3 @@
-
 import { USE_FIREBASE } from "./config.js";
 
 let adapter;
@@ -26,89 +25,49 @@ async function makeFirebaseAdapter() {
   const mod = await import("./firebase.js");
   return {
     async get(key) {
-      return await mod.firebaseGet(key, null);
+      return await mod.kvGet(key);
     },
     async set(key, value) {
-      return await mod.firebaseSet(key, value);
+      await mod.kvSet(key, value);
     },
     async remove(key) {
-      return await mod.firebaseRemove(key);
+      // pas de remove dans cet exemple simple: on set à null
+      await mod.kvSet(key, null);
     },
-    subscribe(key, callback) {
-      return mod.firebaseSubscribe(key, callback);
+    async subscribe(key, cb) {
+      return await mod.kvSubscribe(key, cb);
     }
   };
 }
 
-// ----- Initialisation -----
-(async function initAdapter() {
-  if (USE_FIREBASE) {
-    try {
-      adapter = await makeFirebaseAdapter();
-      console.log("[Storage] Adapter Firebase activé");
-    } catch (err) {
-      console.warn("[Storage] Erreur Firebase, fallback local:", err);
-      adapter = LocalAdapter;
-    }
-  } else {
-    adapter = LocalAdapter;
-    console.log("[Storage] Adapter local utilisé");
-  }
-})();
+// Sélection de l’adapter
+export async function getStorage() {
+  if (!USE_FIREBASE) return LocalAdapter;
+  if (!adapter) adapter = await makeFirebaseAdapter();
+  return adapter;
+}
 
-// ----- API publique -----
-export async function storageGet(key, defaultValue = null) {
-  if (!adapter) {
-    // Attendre l'initialisation
-    while (!adapter) {
-      await new Promise(r => setTimeout(r, 10));
-    }
-  }
-  
-  try {
-    const result = await adapter.get(key);
-    return result !== null ? result : defaultValue;
-  } catch (error) {
-    console.error('[Storage] Erreur get:', error);
-    return defaultValue;
-  }
+// Petit helper pratique global
+export async function storageGet(key, def = null) {
+  const s = await getStorage();
+  const v = await s.get(key);
+  return (v === undefined || v === null) ? def : v;
 }
 
 export async function storageSet(key, value) {
-  if (!adapter) {
-    while (!adapter) {
-      await new Promise(r => setTimeout(r, 10));
-    }
-  }
-  
-  try {
-    return await adapter.set(key, value);
-  } catch (error) {
-    console.error('[Storage] Erreur set:', error);
-    return false;
-  }
+  const s = await getStorage();
+  return s.set(key, value);
 }
 
 export async function storageRemove(key) {
-  if (!adapter) {
-    while (!adapter) {
-      await new Promise(r => setTimeout(r, 10));
-    }
-  }
-  
-  try {
-    return await adapter.remove(key);
-  } catch (error) {
-    console.error('[Storage] Erreur remove:', error);
-    return false;
-  }
+  const s = await getStorage();
+  return s.remove(key);
 }
 
-export function storageSubscribe(key, callback) {
-  if (!adapter) {
-    console.warn('[Storage] Adapter pas encore prêt pour subscription');
-    return () => {};
-  }
-  
-  return adapter.subscribe(key, callback);
+export async function storageSubscribe(key, cb) {
+  const s = await getStorage();
+  return s.subscribe(key, cb);
 }
+
+// Expose (optionnel) sur window pour tester vite en console
+window.storageAPI = { getStorage, storageGet, storageSet, storageRemove, storageSubscribe };

@@ -17,98 +17,33 @@ const urlsToCache = [
   "https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js",
   "https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/fr.js",
   "https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.min.js",
-  "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js",
-  "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js",
-  "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"
+  "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lato:wght@300;400;700&display=swap",
 ];
 
-self.addEventListener('install', (event) => {
-  console.log('[SW] Installation...');
+self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('[SW] Mise en cache des ressources');
-        return cache.addAll(urlsToCache.map(url => {
-          if (url.startsWith('http')) {
-            return new Request(url, { mode: 'cors' });
-          }
-          return url;
-        }));
-      })
-      .catch((error) => {
-        console.error('[SW] Erreur de mise en cache:', error);
-      })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)),
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
-  console.log('[SW] Activation...');
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('[SW] Suppression ancien cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)),
+        ),
+      ),
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') return;
-  
-  // Skip Firebase requests for real-time functionality
-  if (event.request.url.includes('firestore.googleapis.com') ||
-      event.request.url.includes('identitytoolkit.googleapis.com')) {
-    return;
-  }
-
+self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        if (response) {
-          console.log('[SW] Depuis cache:', event.request.url);
-          return response;
-        }
-
-        return fetch(event.request).then((response) => {
-          // Don't cache non-successful responses
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-
-          // Clone the response
-          const responseToCache = response.clone();
-
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-
-          return response;
-        }).catch(() => {
-          // If offline and no cache, return a basic offline page
-          if (event.request.destination === 'document') {
-            return new Response(
-              '<html><body><h1>Application hors ligne</h1><p>Veuillez vérifier votre connexion.</p></body></html>',
-              { headers: { 'Content-Type': 'text/html' } }
-            );
-          }
-        });
-      })
+    caches
+      .match(event.request)
+      .then((cached) => cached || fetch(event.request)),
   );
-});
-
-// Handle messages from the main thread
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
 });

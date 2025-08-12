@@ -1,4 +1,3 @@
-
 import { firebaseConfig, USE_ANONYMOUS_AUTH } from "./config.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
@@ -15,105 +14,62 @@ export const auth = getAuth(app);
 // Offline d'abord: garde les données même sans connexion
 enableIndexedDbPersistence(db).catch((err) => {
   if (err.code == 'failed-precondition') {
+    // Plusieurs onglets ouverts, la persistance ne peut être activée que dans un onglet
     console.warn('[Firebase] Persistance désactivée: plusieurs onglets ouverts');
   } else if (err.code == 'unimplemented') {
+    // Le navigateur ne supporte pas toutes les fonctionnalités requises
     console.warn('[Firebase] Persistance non supportée par ce navigateur');
   } else {
     console.warn('[Firebase] Erreur de persistance:', err);
   }
 });
 
-let currentUser = null;
-
-// Gestion de l'authentification
-onAuthStateChanged(auth, (user) => {
-  currentUser = user;
-  if (user) {
-    console.log('[Firebase] Utilisateur connecté:', user.uid);
-  } else if (USE_ANONYMOUS_AUTH) {
-    console.log('[Firebase] Connexion anonyme...');
-    signInAnonymously(auth).catch((error) => {
-      console.error('[Firebase] Erreur connexion anonyme:', error);
-    });
-  }
+// Obtenir un UID (anonyme par défaut)
+export const uidReady = new Promise((resolve) => {
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      resolve(user.uid);
+    } else if (USE_ANONYMOUS_AUTH) {
+      const cred = await signInAnonymously(auth);
+      resolve(cred.user.uid);
+    } else {
+      // Pas d'auth → on travaille sans UID (fallback local côté storage)
+      resolve(null);
+    }
+  });
 });
 
-// API Firebase pour le storage
-export async function firebaseGet(key, defaultValue) {
-  if (!currentUser) {
-    console.warn('[Firebase] Pas d\'utilisateur connecté');
-    return defaultValue;
-  }
-
-  try {
-    const docRef = doc(db, 'users', currentUser.uid);
-    const docSnap = await getDoc(docRef);
-    
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      return data[key] !== undefined ? data[key] : defaultValue;
-    } else {
-      return defaultValue;
-    }
-  } catch (error) {
-    console.error('[Firebase] Erreur get:', error);
-    return defaultValue;
-  }
+// Helpers Firestore KV: users/{uid}/kv/{key}
+export async function getKVRef(key) {
+  const uid = await uidReady;
+  if (!uid) return null;
+  return doc(db, "users", uid, "kv", key);
 }
 
-export async function firebaseSet(key, value) {
-  if (!currentUser) {
-    console.warn('[Firebase] Pas d\'utilisateur connecté');
-    return false;
-  }
-
-  try {
-    const docRef = doc(db, 'users', currentUser.uid);
-    await updateDoc(docRef, { [key]: value }).catch(async (error) => {
-      if (error.code === 'not-found') {
-        await setDoc(docRef, { [key]: value });
-      } else {
-        throw error;
-      }
-    });
-    return true;
-  } catch (error) {
-    console.error('[Firebase] Erreur set:', error);
-    return false;
-  }
+export async function kvGet(key) {
+  const ref = await getKVRef(key);
+  if (!ref) return null;
+  const snap = await getDoc(ref);
+  return snap.exists() ? snap.data().value : null;
 }
 
-export async function firebaseRemove(key) {
-  if (!currentUser) {
-    console.warn('[Firebase] Pas d\'utilisateur connecté');
-    return false;
-  }
-
-  try {
-    const docRef = doc(db, 'users', currentUser.uid);
-    await updateDoc(docRef, { [key]: null });
-    return true;
-  } catch (error) {
-    console.error('[Firebase] Erreur remove:', error);
-    return false;
-  }
+export async function kvSet(key, value) {
+  const ref = await getKVRef(key);
+  if (!ref) return null;
+  // set avec merge pour créer/mettre à jour
+  await setDoc(ref, { value }, { merge: true });
 }
 
-export function firebaseSubscribe(key, callback) {
-  if (!currentUser) {
-    console.warn('[Firebase] Pas d\'utilisateur connecté');
-    return () => {};
-  }
+export async function kvUpdate(key, value) {
+  const ref = await getKVRef(key);
+  if (!ref) return null;
+  await updateDoc(ref, { value });
+}
 
-  const docRef = doc(db, 'users', currentUser.uid);
-  return onSnapshot(docRef, (doc) => {
-    if (doc.exists()) {
-      const data = doc.data();
-      callback(data[key]);
-    } else {
-      callback(null);
-    }
-  }, (error) => {
-    console.error('[Firebase] Erreur subscribe:', error);
+export async function kvSubscribe(key, callback) {
+  const ref = await getKVRef(key);
+  if (!ref) return () => {};
+  return onSnapshot(ref, (snap) => {
+    callback(snap.exists() ? snap.data().value : null);
   });
 }
