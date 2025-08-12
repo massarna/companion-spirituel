@@ -2920,67 +2920,73 @@
 
       // Gestion des onglets de lectures
       function setupLecturesTabs() {
-        // Attendre que les éléments soient dans le DOM
-        setTimeout(() => {
-          const lectureButtons = $$('[data-lect]');
-          console.log('[Lectures] Boutons trouvés:', lectureButtons.length);
-          
-          // Supprimer les anciens event listeners s'ils existent
-          lectureButtons.forEach(btn => {
-            const clone = btn.cloneNode(true);
-            btn.parentNode.replaceChild(clone, btn);
-          });
-          
-          // Récupérer les nouveaux éléments après clonage
-          const newLectureButtons = $$('[data-lect]');
-          
-          newLectureButtons.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              e.preventDefault();
-              console.log('[Lectures] Clic sur:', btn.dataset.lect);
-              
-              // Mise à jour visuelle des boutons
-              newLectureButtons.forEach(b => {
-                b.setAttribute('aria-pressed', 'false');
-              });
-              btn.setAttribute('aria-pressed', 'true');
+        const lectureButtons = $$('[data-lect]');
+        console.log('[Lectures] Configuration des onglets, boutons trouvés:', lectureButtons.length);
+        
+        lectureButtons.forEach(btn => {
+          // Supprimer les anciens listeners
+          btn.replaceWith(btn.cloneNode(true));
+        });
+        
+        // Réattacher les événements aux nouveaux éléments
+        const freshButtons = $$('[data-lect]');
+        freshButtons.forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            console.log('[Lectures] Clic sur onglet:', btn.dataset.lect);
+            
+            // Mise à jour visuelle des boutons
+            freshButtons.forEach(b => b.setAttribute('aria-pressed', 'false'));
+            btn.setAttribute('aria-pressed', 'true');
 
-              const lectureType = btn.dataset.lect;
+            const lectureType = btn.dataset.lect;
+            const contentEl = $("#lect-content");
 
+            try {
               if (lectureType === 'kahf') {
-                // Charger directement la sourate Al-Kahf
                 console.log('[Lectures] Chargement Al-Kahf');
-                loadSurah('kahf');
+                await loadSurah('kahf');
               } else if (lectureType === 'special') {
-                // Charger le contenu spécial quotidien avec les autres sourates
-                console.log('[Lectures] Chargement contenu spécial');
-                renderSpecialContent();
+                console.log('[Lectures] Chargement sélecteur de sourates');
+                await renderSpecialContent();
               }
-            });
+            } catch (error) {
+              console.error('[Lectures] Erreur:', error);
+              if (contentEl) {
+                contentEl.innerHTML = `
+                  <div class="text-red-600 p-6 rounded-xl bg-red-50 text-center">
+                    <p class="font-semibold mb-2">Erreur de chargement</p>
+                    <p class="text-sm">${error.message}</p>
+                  </div>
+                `;
+              }
+            }
           });
-        }, 50);
+        });
+        
+        console.log('[Lectures] Onglets configurés avec succès');
       }
 
-      // Charger les lectures lors de l'ouverture de l'onglet
+      // Initialisation des lectures
       async function initLectures() {
-        await loadSurahManifest();
+        console.log('[Lectures] Début initialisation');
         
-        // Attendre que les éléments soient dans le DOM
-        setTimeout(() => {
+        try {
+          await loadSurahManifest();
           setupLecturesTabs();
-
-          // État initial : onglet Al-Kahf sélectionné par défaut après setup
-          setTimeout(() => {
-            const kahfBtn = $('[data-lect="kahf"]');
-            if (kahfBtn) {
-              kahfBtn.setAttribute('aria-pressed', 'true');
-              loadSurah('kahf');
-              console.log('[Lectures] État initial Al-Kahf configuré');
-            }
-          }, 100);
           
-          console.log('[Lectures] Initialisation terminée');
-        }, 100);
+          // État initial : Al-Kahf par défaut
+          const kahfBtn = $('[data-lect="kahf"]');
+          if (kahfBtn) {
+            kahfBtn.setAttribute('aria-pressed', 'true');
+            await loadSurah('kahf');
+            console.log('[Lectures] Al-Kahf chargé par défaut');
+          }
+          
+          console.log('[Lectures] Initialisation terminée avec succès');
+        } catch (error) {
+          console.error('[Lectures] Erreur initialisation:', error);
+        }
       }
 
       // Helpers pour les zikrs (simplifiés, maintenant intégrés dans le nouveau système Focus)
@@ -3350,16 +3356,24 @@
       }
 
       // Charger le contenu lors de l'ouverture des onglets
+      let lecturesInitialized = false;
+      
       $$('[data-tab="programme"]')[0].addEventListener("click", renderProgramme);
-      $$('[data-tab="lectures"]')[0].addEventListener("click", () => {
-        initLectures();
+      $$('[data-tab="lectures"]')[0].addEventListener("click", async () => {
+        if (!lecturesInitialized) {
+          await initLectures();
+          lecturesInitialized = true;
+        }
       });
       $$('[data-tab="retraite"]')[0].addEventListener("click", renderRetraite);
-      $$('[data-tab="journal"]')[0].addEventListener("click", initJournal); // Assure l'initialisation si l'onglet Journal est ouvert
+      $$('[data-tab="journal"]')[0].addEventListener("click", initJournal);
       $$('[data-tab="mois"]')[0].addEventListener("click", renderMois);
 
-      // Initialiser les lectures immédiatement pour que les onglets fonctionnent
-      initLectures();
+      // Pré-initialiser les lectures
+      initLectures().then(() => {
+        lecturesInitialized = true;
+        console.log('[Lectures] Pré-initialisation terminée');
+      });
 
       // Icônes lucide
       window.lucide?.createIcons();

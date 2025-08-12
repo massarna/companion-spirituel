@@ -1,3 +1,6 @@
+// firebase.js - Configuration et utilitaires Firebase
+export { initFirebase } from './storage.js';
+
 import { firebaseConfig, USE_ANONYMOUS_AUTH } from "./config.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
