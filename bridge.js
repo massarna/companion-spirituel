@@ -1,51 +1,52 @@
 
+// Bridge pour l'API de stockage
 console.log('[Compagnon] bridge: start');
 
-// Configuration par défaut intégrée
-const config = {
-  storage: {
-    type: 'localStorage'
-  }
-};
-
-// Implémentation de stockage par défaut
-const storage = {
-  async get(key, defaultValue = null) {
+// API de stockage unifié
+const storageAPI = {
+  async storageGet(key, defaultValue) {
     try {
       const value = localStorage.getItem(key);
-      return value ? JSON.parse(value) : defaultValue;
+      return value === null ? defaultValue : JSON.parse(value);
     } catch (error) {
-      console.warn('[Storage] Erreur lecture:', error);
+      console.error('[Storage] Erreur get:', error);
       return defaultValue;
     }
   },
 
-  async set(key, value) {
+  async storageSet(key, value) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
       return true;
     } catch (error) {
-      console.error('[Storage] Erreur écriture:', error);
+      console.error('[Storage] Erreur set:', error);
       return false;
     }
   },
 
-  async remove(key) {
+  async storageRemove(key) {
     try {
       localStorage.removeItem(key);
       return true;
     } catch (error) {
-      console.error('[Storage] Erreur suppression:', error);
+      console.error('[Storage] Erreur remove:', error);
       return false;
     }
+  },
+
+  storageSubscribe(key, callback) {
+    const handler = (event) => {
+      if (event.key === key) {
+        const newValue = event.newValue ? JSON.parse(event.newValue) : null;
+        callback(newValue);
+      }
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
   }
 };
 
-window.storageAPI = { 
-  storageGet: storage.get, 
-  storageSet: storage.set, 
-  storageRemove: storage.remove, 
-  storageSubscribe: () => {} 
-};
+// Exposer l'API globalement
+window.storageAPI = storageAPI;
 
-console.log('[Compagnon] bridge: ready', window.storageAPI);
+console.log('[Compagnon] bridge: ready', storageAPI);
