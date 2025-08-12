@@ -1915,7 +1915,7 @@
     <script src="./bridge.js"></script>
 
     <!-- 3) App Controller (horloge, onglets, prières, charts, qibla) -->
-    <script type="module">
+    <script>
       // --- Fallback localStorage ---
       if (!window.storageAPI) {
         window.storageAPI = {
@@ -4411,7 +4411,6 @@
       // Icônes lucide
       window.lucide?.createIcons();
 
-
       // Horloge générale et mise à jour du focus du jour
       function tick() {
         const now = moment();
@@ -4428,7 +4427,6 @@
       // Initialisation du Focus du jour
       updateDailyFocus();
       setInterval(updateDailyFocus, 60000); // Update focus every minute
-
     </script>
   </body>
 </html>
