@@ -1,38 +1,26 @@
-// sw.js — Service Worker propre
-const CACHE_NAME = "compagnon-spirituel-v18";
-const urlsToCache = [
-  "/",
-  "/index.html",
-  "/data/invocations.json",
-  "/data/lectures/manifest.json",
-  "/data/lectures/surah-1-al-fatiha.ar.json",
-  "/data/lectures/surah-18-al-kahf.ar.json",
-  "/data/lectures/surah-36-yasin.ar.json",
-  "/data/lectures/surah-44-dukhan.ar.json",
-  "/data/lectures/surah-56-waqiah.ar.json",
-  "/data/lectures/surah-67-mulk.ar.json",
-  "/data/lectures/surah-76-insan.ar.json",
-  "/data/lectures/surah-85-buruj.ar.json",
-  "https://cdn.tailwindcss.com",
-  "https://cdn.jsdelivr.net/npm/chart.js",
-  "https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js",
-  "/data/lectures/surah-32-as-sajda.ar.json",
-  "https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/fr.js",
-  "https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.min.js",
-  "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lato:wght@300;400;700&display=swap",
-];
-self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(urlsToCache)));
+
+// Service Worker simplifié sans cache agressif
+self.addEventListener('install', (event) => {
+  console.log('SW: Install event');
   self.skipWaiting();
 });
-self.addEventListener("activate", (event) => {
+
+self.addEventListener('activate', (event) => {
+  console.log('SW: Activate event');
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null))),
-    ),
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          console.log('SW: Deleting cache:', cacheName);
+          return caches.delete(cacheName);
+        })
+      );
+    })
   );
   self.clients.claim();
 });
-self.addEventListener("fetch", (event) => {
-  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+
+self.addEventListener('fetch', (event) => {
+  // Laisser passer toutes les requêtes sans mise en cache
+  event.respondWith(fetch(event.request));
 });
