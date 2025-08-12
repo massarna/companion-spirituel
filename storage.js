@@ -1,3 +1,4 @@
+
 // Système de stockage avec localStorage comme fallback
 export const storageAPI = {
   async storageGet(key, defaultValue) {

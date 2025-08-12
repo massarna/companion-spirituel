@@ -1,3 +1,4 @@
+
 const CACHE_NAME = 'compagnon-spirituel-v1';
 const urlsToCache = [
   '/',
