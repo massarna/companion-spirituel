@@ -1,8 +1,6 @@
 
-// Bridge pour l'API de stockage
-import { storageAPI } from './storage.js';
-
-// Exposer l'API globalement
-window.storageAPI = storageAPI;
-
-console.log('[Bridge] API de stockage initialisée');
+console.log('[Compagnon] bridge: start');
+import "./config.js";
+import { storageGet, storageSet, storageRemove, storageSubscribe } from "./storage.js";
+window.storageAPI = { storageGet, storageSet, storageRemove, storageSubscribe };
+console.log('[Compagnon] bridge: ready', window.storageAPI);

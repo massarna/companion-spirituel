@@ -1,163 +1,184 @@
 
-// Système de notifications intelligentes pour les prières
-export class PrayerNotificationSystem {
+// notification-system.js - Système de notifications pour les heures de prières
+
+class PrayerNotificationSystem {
   constructor() {
     this.notificationsEnabled = false;
+    this.reminderTimes = [5, 10, 15]; // minutes avant la prière
     this.soundEnabled = true;
-    this.reminderTimes = [5, 10, 15];
-    this.scheduledNotifications = new Map();
+    this.init();
+  }
+
+  async init() {
+    // Vérifier le support des notifications
+    if ('Notification' in window) {
+      if (Notification.permission === 'default') {
+        await this.requestPermission();
+      } else if (Notification.permission === 'granted') {
+        this.notificationsEnabled = true;
+      }
+    }
+
+    // Vérifier les rappels existants
+    await this.loadSettings();
+    this.setupNotificationScheduler();
   }
 
   async requestPermission() {
-    if (!('Notification' in window)) {
-      console.warn('[Notifications] API non supportée');
-      return false;
-    }
-
-    if (Notification.permission === 'granted') {
-      return true;
-    }
-
-    if (Notification.permission !== 'denied') {
+    try {
       const permission = await Notification.requestPermission();
-      return permission === 'granted';
-    }
-
-    return false;
-  }
-
-  async toggleNotifications() {
-    if (this.notificationsEnabled) {
-      this.disable();
-      return false;
-    } else {
-      const granted = await this.requestPermission();
-      if (granted) {
-        this.enable();
-        this.scheduleAllPrayerNotifications();
-        return true;
+      this.notificationsEnabled = (permission === 'granted');
+      
+      if (this.notificationsEnabled) {
+        this.showWelcomeNotification();
       }
+      
+      return this.notificationsEnabled;
+    } catch (error) {
+      console.error('[Notifications] Erreur demande permission:', error);
       return false;
     }
   }
 
-  enable() {
-    this.notificationsEnabled = true;
-    localStorage.setItem('prayerNotificationsEnabled', 'true');
-    console.log('[Notifications] Activées');
-  }
-
-  disable() {
-    this.notificationsEnabled = false;
-    this.clearAllScheduledNotifications();
-    localStorage.setItem('prayerNotificationsEnabled', 'false');
-    console.log('[Notifications] Désactivées');
-  }
-
-  toggleSound() {
-    this.soundEnabled = !this.soundEnabled;
-    localStorage.setItem('prayerSoundEnabled', this.soundEnabled.toString());
-    return this.soundEnabled;
-  }
-
-  setReminderTimes(times) {
-    this.reminderTimes = times;
-    localStorage.setItem('prayerReminderTimes', JSON.stringify(times));
-    if (this.notificationsEnabled) {
-      this.scheduleAllPrayerNotifications();
-    }
-  }
-
-  scheduleAllPrayerNotifications() {
-    this.clearAllScheduledNotifications();
-
-    const prayers = [
-      { name: "Fajr", time: "05:00" },
-      { name: "Dhuhr", time: "12:30" },
-      { name: "Asr", time: "15:45" },
-      { name: "Maghrib", time: "18:30" },
-      { name: "Isha", time: "19:45" }
-    ];
-
-    prayers.forEach(prayer => {
-      this.schedulePrayerNotifications(prayer);
-    });
-  }
-
-  schedulePrayerNotifications(prayer) {
-    const now = new Date();
-    const today = new Date();
-    const [hours, minutes] = prayer.time.split(':').map(Number);
-
-    today.setHours(hours, minutes, 0, 0);
-
-    if (today <= now) {
-      today.setDate(today.getDate() + 1);
-    }
-
-    this.reminderTimes.forEach(minutesBefore => {
-      const notificationTime = new Date(today.getTime() - (minutesBefore * 60 * 1000));
-
-      if (notificationTime > now) {
-        const timeoutId = setTimeout(() => {
-          this.showPrayerReminder(prayer.name, minutesBefore);
-        }, notificationTime.getTime() - now.getTime());
-
-        const key = `${prayer.name}-${minutesBefore}`;
-        this.scheduledNotifications.set(key, timeoutId);
-      }
-    });
-  }
-
-  showPrayerReminder(prayerName, minutesBefore) {
-    if (!this.notificationsEnabled) return;
-
-    const notification = new Notification(`🕌 Rappel de prière`, {
-      body: `${prayerName} dans ${minutesBefore} minutes`,
+  showWelcomeNotification() {
+    new Notification('🤲 Compagnon Spirituel', {
+      body: 'Les notifications pour les prières sont maintenant activées',
       icon: '/icons/icon-192.png',
       badge: '/icons/icon-192.png',
-      tag: `prayer-${prayerName}`,
+      tag: 'welcome',
+      silent: false
+    });
+  }
+
+  setupNotificationScheduler() {
+    // Vérifier toutes les minutes
+    setInterval(() => {
+      this.checkUpcomingPrayers();
+    }, 60000);
+    
+    // Vérification immédiate
+    this.checkUpcomingPrayers();
+  }
+
+  checkUpcomingPrayers() {
+    if (!this.notificationsEnabled) return;
+
+    const now = moment();
+    const PRAYERS = [
+      { name: "Fajr", time: "05:00", emoji: "🌅" },
+      { name: "Shuruq", time: "06:15", emoji: "☀️" },
+      { name: "Dhuhr", time: "12:30", emoji: "🌞" },
+      { name: "Asr", time: "15:45", emoji: "🌤️" },
+      { name: "Maghrib", time: "18:30", emoji: "🌇" },
+      { name: "Isha", time: "19:45", emoji: "🌙" },
+    ];
+
+    PRAYERS.forEach(prayer => {
+      const prayerTime = this.todayAt(prayer.time);
+      const diffMinutes = prayerTime.diff(now, 'minutes');
+
+      // Notifications de rappel
+      this.reminderTimes.forEach(reminderMin => {
+        if (diffMinutes === reminderMin) {
+          this.showPrayerReminder(prayer, reminderMin);
+        }
+      });
+
+      // Notification au moment exact
+      if (diffMinutes === 0) {
+        this.showPrayerTimeNotification(prayer);
+      }
+    });
+  }
+
+  showPrayerReminder(prayer, minutesBefore) {
+    const notification = new Notification(`${prayer.emoji} Rappel - ${prayer.name}`, {
+      body: `La prière ${prayer.name} commence dans ${minutesBefore} minutes`,
+      icon: '/icons/icon-192.png',
+      badge: '/icons/icon-192.png',
+      tag: `reminder-${prayer.name}-${minutesBefore}`,
       requireInteraction: false,
       silent: !this.soundEnabled
     });
 
+    // Auto-fermeture après 10 secondes
+    setTimeout(() => {
+      notification.close();
+    }, 10000);
+  }
+
+  showPrayerTimeNotification(prayer) {
+    const notification = new Notification(`${prayer.emoji} Il est l'heure - ${prayer.name}`, {
+      body: `C'est maintenant l'heure de la prière ${prayer.name}`,
+      icon: '/icons/icon-192.png',
+      badge: '/icons/icon-192.png',
+      tag: `prayer-time-${prayer.name}`,
+      requireInteraction: true,
+      silent: !this.soundEnabled,
+      actions: [
+        { action: 'done', title: '✅ Prière faite' },
+        { action: 'remind', title: '⏰ Rappeler dans 5 min' }
+      ]
+    });
+
+    // Gérer les actions de notification
     notification.onclick = () => {
       window.focus();
       notification.close();
     };
-
-    setTimeout(() => {
-      notification.close();
-    }, 10000);
-
-    console.log(`[Notifications] Rappel ${prayerName} - ${minutesBefore} min`);
   }
 
-  clearAllScheduledNotifications() {
-    this.scheduledNotifications.forEach(timeoutId => {
-      clearTimeout(timeoutId);
-    });
-    this.scheduledNotifications.clear();
+  async loadSettings() {
+    try {
+      const api = window.storageAPI;
+      if (api) {
+        this.reminderTimes = await api.storageGet('notificationReminderTimes', [5, 10, 15]);
+        this.soundEnabled = await api.storageGet('notificationSoundEnabled', true);
+      }
+    } catch (error) {
+      console.error('[Notifications] Erreur chargement paramètres:', error);
+    }
   }
 
-  loadSettings() {
-    this.notificationsEnabled = localStorage.getItem('prayerNotificationsEnabled') === 'true';
-    this.soundEnabled = localStorage.getItem('prayerSoundEnabled') !== 'false';
-
-    const savedTimes = localStorage.getItem('prayerReminderTimes');
-    if (savedTimes) {
-      this.reminderTimes = JSON.parse(savedTimes);
+  async saveSettings() {
+    try {
+      const api = window.storageAPI;
+      if (api) {
+        await api.storageSet('notificationReminderTimes', this.reminderTimes);
+        await api.storageSet('notificationSoundEnabled', this.soundEnabled);
+      }
+    } catch (error) {
+      console.error('[Notifications] Erreur sauvegarde paramètres:', error);
     }
+  }
 
-    if (this.notificationsEnabled && Notification.permission === 'granted') {
-      this.scheduleAllPrayerNotifications();
+  todayAt(timeStr) {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return moment().hours(hours).minutes(minutes).seconds(0).milliseconds(0);
+  }
+
+  // Méthodes publiques pour les paramètres
+  setReminderTimes(times) {
+    this.reminderTimes = times;
+    this.saveSettings();
+  }
+
+  toggleSound() {
+    this.soundEnabled = !this.soundEnabled;
+    this.saveSettings();
+    return this.soundEnabled;
+  }
+
+  async toggleNotifications() {
+    if (!this.notificationsEnabled) {
+      this.notificationsEnabled = await this.requestPermission();
+    } else {
+      this.notificationsEnabled = false;
     }
+    return this.notificationsEnabled;
   }
 }
 
-const prayerNotifications = new PrayerNotificationSystem();
-prayerNotifications.loadSettings();
-
-window.prayerNotifications = prayerNotifications;
-
-console.log('[Notifications] Système initialisé');
+// Export de l'instance globale
+window.prayerNotifications = new PrayerNotificationSystem();
+export default window.prayerNotifications;
