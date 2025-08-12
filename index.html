@@ -2579,7 +2579,7 @@
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-          navigator.serviceWorker.register("sw.js").catch(console.error);
+          navigator.serviceWorker.register("./sw.js?ver=" + Date.now()).catch(console.error);
         });
       }
     </script>
@@ -2587,8 +2587,7 @@
     <!-- 2) Bridge: expose window.storageAPI (via bridge.js) -->
     <script type="module" src="./bridge.js"></script>
 
-    <!-- 3) Système de notifications intelligentes -->
-    <script type="module" src="./notification-system.js"></script>
+    
 
     <!-- 3) App Controller (horloge, onglets, prières, charts, qibla) -->
     <script type="module">
@@ -2613,6 +2612,16 @@
       // util
       const $ = (s, r = document) => r.querySelector(s);
       const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+      // Fonction utilitaire pour éviter "Unexpected token '<'"
+      async function fetchJSONStrict(url) {
+        const res = await fetch(url, { cache: 'no-store' });
+        const txt = await res.clone().text();
+        if (txt.trim().startsWith('<')) {
+          throw new Error('HTML reçu au lieu de JSON: ' + url);
+        }
+        return JSON.parse(txt);
+      }
 
       // Horloge & Dates
       moment.locale("fr");
