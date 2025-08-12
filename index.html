@@ -3188,31 +3188,32 @@
               </div>
             `;
           }
-        }tions.opening) {
-            invocationOpening = `
-              <div class="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
-                <h4 class="text-lg font-semibold text-blue-800 mb-4 text-center">${invocations.opening.title}</h4>
-                <div class="text-center">
-                  <p class="arabic-text text-2xl text-blue-800 mb-3" dir="rtl">${invocations.opening.arabic}</p>
-                  <p class="text-sm text-blue-600 italic mb-2">${invocations.opening.transliteration}</p>
-                  <p class="text-sm text-blue-700">${invocations.opening.french}</p>
-                </div>
-              </div>
-            `;
-          }
+        }
 
-          if (invocations.closing) {
-            invocationClosing = `
-              <div class="mt-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-200">
-                <h4 class="text-lg font-semibold text-green-800 mb-4 text-center">${invocations.closing.title}</h4>
-                <div class="text-center">
-                  <p class="arabic-text text-2xl text-green-800 mb-3" dir="rtl">${invocations.closing.arabic}</p>
-                  <p class="text-sm text-green-600 italic mb-2">${invocations.closing.transliteration}</p>
-                  <p class="text-sm text-green-700">${invocations.closing.french}</p>
-                </div>
+        if (invocations.opening) {
+          invocationOpening = `
+            <div class="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
+              <h4 class="text-lg font-semibold text-blue-800 mb-4 text-center">${invocations.opening.title}</h4>
+              <div class="text-center">
+                <p class="arabic-text text-2xl text-blue-800 mb-3" dir="rtl">${invocations.opening.arabic}</p>
+                <p class="text-sm text-blue-600 italic mb-2">${invocations.opening.transliteration}</p>
+                <p class="text-sm text-blue-700">${invocations.opening.french}</p>
               </div>
-            `;
-          }
+            </div>
+          `;
+        }
+
+        if (invocations.closing) {
+          invocationClosing = `
+            <div class="mt-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-200">
+              <h4 class="text-lg font-semibold text-green-800 mb-4 text-center">${invocations.closing.title}</h4>
+              <div class="text-center">
+                <p class="arabic-text text-2xl text-green-800 mb-3" dir="rtl">${invocations.closing.arabic}</p>
+                <p class="text-sm text-green-600 italic mb-2">${invocations.closing.transliteration}</p>
+                <p class="text-sm text-green-700">${invocations.closing.french}</p>
+              </div>
+            </div>
+          `;
         }
 
         container.innerHTML = `
