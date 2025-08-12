@@ -2068,8 +2068,10 @@
       }
 
       // Initialiser la retraite
-      await refreshRetreat();
-      await loadRetreatDate();
+      (async function initializeRetreat() {
+        await refreshRetreat();
+        await loadRetreatDate();
+      })();
 
       // Retraite: sauvegarder date
       $("#retreat-save").addEventListener("click", async () => {
