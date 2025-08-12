@@ -1,85 +1,124 @@
-
-// Système de notifications pour les prières
-class PrayerNotificationSystem {
+// Système de notifications intelligentes pour les prières
+export class PrayerNotificationSystem {
   constructor() {
     this.notificationsEnabled = false;
     this.soundEnabled = true;
-    this.reminderTimes = [5, 10, 15]; // minutes avant
-    this.activeTimeouts = new Set();
-    
-    // Horaires de prière (Bobo-Dioulasso)
-    this.prayerTimes = {
-      Fajr: "05:00",
-      Dhuhr: "12:30", 
-      Asr: "15:45",
-      Maghrib: "18:30",
-      Isha: "19:45"
-    };
-
-    this.init();
+    this.reminderTimes = [5, 10, 15]; // minutes avant la prière
+    this.scheduledNotifications = new Map();
   }
 
-  async init() {
-    // Vérifier le statut des permissions
-    if ('Notification' in window) {
-      this.notificationsEnabled = Notification.permission === 'granted';
-    }
-    
-    console.log('[Notifications] Système initialisé');
-    this.scheduleNextReminders();
-  }
-
-  async toggleNotifications() {
+  async requestPermission() {
     if (!('Notification' in window)) {
-      alert('Ce navigateur ne supporte pas les notifications.');
+      console.warn('[Notifications] API non supportée');
       return false;
     }
 
     if (Notification.permission === 'granted') {
-      this.notificationsEnabled = !this.notificationsEnabled;
-    } else if (Notification.permission === 'default') {
+      return true;
+    }
+
+    if (Notification.permission !== 'denied') {
       const permission = await Notification.requestPermission();
-      this.notificationsEnabled = permission === 'granted';
+      return permission === 'granted';
+    }
+
+    return false;
+  }
+
+  async toggleNotifications() {
+    if (this.notificationsEnabled) {
+      this.disable();
+      return false;
     } else {
-      alert('Les notifications sont bloquées. Activez-les dans les paramètres du navigateur.');
+      const granted = await this.requestPermission();
+      if (granted) {
+        this.enable();
+        this.scheduleAllPrayerNotifications();
+        return true;
+      }
       return false;
     }
+  }
 
-    if (this.notificationsEnabled) {
-      this.scheduleNextReminders();
-    } else {
-      this.clearAllTimeouts();
-    }
+  enable() {
+    this.notificationsEnabled = true;
+    localStorage.setItem('prayerNotificationsEnabled', 'true');
+    console.log('[Notifications] Activées');
+  }
 
-    console.log('[Notifications] État:', this.notificationsEnabled ? 'activé' : 'désactivé');
-    return this.notificationsEnabled;
+  disable() {
+    this.notificationsEnabled = false;
+    this.clearAllScheduledNotifications();
+    localStorage.setItem('prayerNotificationsEnabled', 'false');
+    console.log('[Notifications] Désactivées');
   }
 
   toggleSound() {
     this.soundEnabled = !this.soundEnabled;
-    console.log('[Notifications] Sons:', this.soundEnabled ? 'activés' : 'désactivés');
+    localStorage.setItem('prayerSoundEnabled', this.soundEnabled.toString());
     return this.soundEnabled;
   }
 
   setReminderTimes(times) {
     this.reminderTimes = times;
-    console.log('[Notifications] Rappels configurés:', times, 'minutes avant');
-    
+    localStorage.setItem('prayerReminderTimes', JSON.stringify(times));
     if (this.notificationsEnabled) {
-      this.clearAllTimeouts();
-      this.scheduleNextReminders();
+      this.scheduleAllPrayerNotifications();
     }
   }
 
-  showNotification(title, body, icon = '/icons/icon-192.png') {
+  scheduleAllPrayerNotifications() {
+    this.clearAllScheduledNotifications();
+
+    const prayers = [
+      { name: "Fajr", time: "05:00" },
+      { name: "Dhuhr", time: "12:30" },
+      { name: "Asr", time: "15:45" },
+      { name: "Maghrib", time: "18:30" },
+      { name: "Isha", time: "19:45" }
+    ];
+
+    prayers.forEach(prayer => {
+      this.schedulePrayerNotifications(prayer);
+    });
+  }
+
+  schedulePrayerNotifications(prayer) {
+    const now = new Date();
+    const today = new Date();
+    const [hours, minutes] = prayer.time.split(':').map(Number);
+
+    today.setHours(hours, minutes, 0, 0);
+
+    // Si l'heure est passée aujourd'hui, programmer pour demain
+    if (today <= now) {
+      today.setDate(today.getDate() + 1);
+    }
+
+    this.reminderTimes.forEach(minutesBefore => {
+      const notificationTime = new Date(today.getTime() - (minutesBefore * 60 * 1000));
+
+      if (notificationTime > now) {
+        const timeoutId = setTimeout(() => {
+          this.showPrayerReminder(prayer.name, minutesBefore);
+        }, notificationTime.getTime() - now.getTime());
+
+        const key = `${prayer.name}-${minutesBefore}`;
+        this.scheduledNotifications.set(key, timeoutId);
+      }
+    });
+  }
+
+  showPrayerReminder(prayerName, minutesBefore) {
     if (!this.notificationsEnabled) return;
 
-    const notification = new Notification(title, {
-      body: body,
-      icon: icon,
-      badge: icon,
-      tag: 'prayer-reminder',
-      requireInteraction: true
+    const notification = new Notification(`🕌 Rappel de prière`, {
+      body: `${prayerName} dans ${minutesBefore} minutes`,
+      icon: '/icons/icon-192.png',
+      badge: '/icons/icon-192.png',
+      tag: `prayer-${prayerName}`,
+      requireInteraction: false,
+      silent: !this.soundEnabled
     });
 
     notification.onclick = () => {
@@ -87,100 +126,40 @@ class PrayerNotificationSystem {
       notification.close();
     };
 
-    // Auto-close après 10 secondes
-    setTimeout(() => notification.close(), 10000);
+    setTimeout(() => {
+      notification.close();
+    }, 10000);
 
-    // Son de notification
-    if (this.soundEnabled) {
-      this.playNotificationSound();
-    }
+    console.log(`[Notifications] Rappel ${prayerName} - ${minutesBefore} min`);
   }
 
-  playNotificationSound() {
-    try {
-      // Créer un son simple
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.value = 800;
-      oscillator.type = 'sine';
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
-    } catch (error) {
-      console.warn('[Notifications] Impossible de jouer le son:', error);
-    }
-  }
-
-  scheduleNextReminders() {
-    if (!this.notificationsEnabled) return;
-
-    this.clearAllTimeouts();
-    
-    Object.entries(this.prayerTimes).forEach(([prayerName, timeStr]) => {
-      this.reminderTimes.forEach(minutesBefore => {
-        const timeoutId = this.schedulePrayerReminder(prayerName, timeStr, minutesBefore);
-        if (timeoutId) {
-          this.activeTimeouts.add(timeoutId);
-        }
-      });
+  clearAllScheduledNotifications() {
+    this.scheduledNotifications.forEach(timeoutId => {
+      clearTimeout(timeoutId);
     });
+    this.scheduledNotifications.clear();
   }
 
-  schedulePrayerReminder(prayerName, timeStr, minutesBefore) {
-    const now = new Date();
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    
-    const prayerTime = new Date();
-    prayerTime.setHours(hours, minutes, 0, 0);
-    
-    // Si l'heure est déjà passée aujourd'hui, programmer pour demain
-    if (prayerTime <= now) {
-      prayerTime.setDate(prayerTime.getDate() + 1);
-    }
-    
-    const reminderTime = new Date(prayerTime.getTime() - (minutesBefore * 60 * 1000));
-    const delay = reminderTime.getTime() - now.getTime();
-    
-    if (delay > 0) {
-      return setTimeout(() => {
-        const message = minutesBefore === 1 
-          ? `La prière ${prayerName} commence dans 1 minute` 
-          : `La prière ${prayerName} commence dans ${minutesBefore} minutes`;
-          
-        this.showNotification(`🕌 Rappel de Prière`, message);
-        
-        // Programmer le prochain rappel pour demain
-        setTimeout(() => {
-          const nextTimeoutId = this.schedulePrayerReminder(prayerName, timeStr, minutesBefore);
-          if (nextTimeoutId) {
-            this.activeTimeouts.add(nextTimeoutId);
-          }
-        }, 24 * 60 * 60 * 1000); // 24 heures
-        
-      }, delay);
-    }
-    
-    return null;
-  }
+  loadSettings() {
+    this.notificationsEnabled = localStorage.getItem('prayerNotificationsEnabled') === 'true';
+    this.soundEnabled = localStorage.getItem('prayerSoundEnabled') !== 'false';
 
-  clearAllTimeouts() {
-    this.activeTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
-    this.activeTimeouts.clear();
+    const savedTimes = localStorage.getItem('prayerReminderTimes');
+    if (savedTimes) {
+      this.reminderTimes = JSON.parse(savedTimes);
+    }
+
+    if (this.notificationsEnabled && Notification.permission === 'granted') {
+      this.scheduleAllPrayerNotifications();
+    }
   }
 }
 
-// Initialiser le système
+// Instance globale
 const prayerNotifications = new PrayerNotificationSystem();
+prayerNotifications.loadSettings();
 
 // Exposer globalement
 window.prayerNotifications = prayerNotifications;
 
-console.log('[Notifications] Système de notifications de prières initialisé');
+console.log('[Notifications] Système initialisé');

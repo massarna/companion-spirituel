@@ -2,20 +2,46 @@
 // Firebase module (optionnel)
 export class FirebaseStorage {
   constructor() {
-    this.enabled = false;
+    this.initialized = false;
+    this.db = null;
+  }
+
+  async initialize(config) {
+    try {
+      if (!config.enabled) {
+        console.log('[Firebase] Désactivé par configuration');
+        return false;
+      }
+      // Configuration Firebase sera ajoutée plus tard
+      console.log('[Firebase] Configuration en attente');
+      return false;
+    } catch (error) {
+      console.error('[Firebase] Erreur initialisation:', error);
+      return false;
+    }
   }
 
   async get(key, defaultValue) {
-    return defaultValue;
+    if (!this.initialized) return defaultValue;
+    try {
+      // Implémentation Firebase à venir
+      return defaultValue;
+    } catch (error) {
+      console.error('[Firebase] Erreur lecture:', error);
+      return defaultValue;
+    }
   }
 
   async set(key, value) {
-    return true;
-  }
-
-  async remove(key) {
-    return true;
+    if (!this.initialized) return false;
+    try {
+      // Implémentation Firebase à venir
+      return false;
+    } catch (error) {
+      console.error('[Firebase] Erreur écriture:', error);
+      return false;
+    }
   }
 }
 
-console.log('[Firebase] Module Firebase initialisé (mode désactivé)');
+console.log('[Firebase] Module chargé');
